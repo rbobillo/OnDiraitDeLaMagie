@@ -17,31 +17,30 @@ import (
 	"strings"
 )
 
-// Name is one of the Identity components
+// Name is used for RandomNames JSON parsing
+// it is one of the Identity components
+// { "title" : "", "first" : "", "last" }
+// excluding the "title" key
 type Name struct {
-	Title string
 	First string
 	Last  string
 }
 
-// Identity is the type contains in "results"
+// Identity is used for RandomNames JSON parsing
+// it is the type contains in "results"
+// { "name" : { ... } }
 type Identity struct {
 	Name Name
 }
 
-// Info has some infos about the result page,
-// it is not relevant
-type Info struct {
-	Seed    string
-	Results float64
-	Page    float64
-	Version string
-}
-
-// Names is the whole JSON content for generated names
+// Names is used for RandomNames JSON parsing
+// it is the whole JSON content for generated names
+// { "result" : [ { "name" : { ... } }, ... ], "info" : { ... } }
+// excluding the "info" key
+// cf: https://randomuser.me/documentation#howto
 type Names struct {
 	Results []Identity
-	Info      Info
+	// if
 }
 
 // Wizard is the content for the Magic Inventory DB
@@ -100,8 +99,8 @@ func GenerateWizards(body []byte) (wizards []Wizard, err error) {
 }
 
 // GetRandomNames build a custom URL
-// and print JSON data via a GET request
-// no real error handling has been done
+// (target: random names generator API)
+// and print JSON data resulting from GET request
 func GetRandomNames(qty int) (body []byte, errs []error) {
 	wizardsQty := strconv.Itoa(qty)
 	wizardsOrigin := "gb" // "gb,fr,us" ...
