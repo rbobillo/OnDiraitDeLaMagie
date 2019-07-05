@@ -134,3 +134,13 @@ func GetRandomNames(qty int) (body []byte, errs []error) {
 
 	return body, nil
 }
+
+func main() {
+	body, _ := GetRandomNames(1000)
+	wizards, _ := GenerateWizards(body)
+
+	for _, w := range wizards {
+		j, _ := json.Marshal(w)
+		fmt.Println(string(j))
+	}
+}
