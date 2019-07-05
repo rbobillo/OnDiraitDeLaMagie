@@ -1,6 +1,5 @@
 # On Dirait De La Magie !
 
-
-A little Micro-services architecture project
+This branch is your branch. You should work here, and create Pull Requests to `master`
 
 Cf [Readme](https://github.com/rbobillo/OnDiraitDeLaMagie/blob/reference/reference/first_iteration/Readme.md) from the `reference` branch
