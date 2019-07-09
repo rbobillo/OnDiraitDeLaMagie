@@ -10,3 +10,8 @@
 	- The API should be documented, using swagger
 	- The service should populate *'Magic Inventory'* with the right fields (`ID`, `FIRST_NAME`...)
 	- Why not put data in the DB, using the [wizard generator](https://github.com/rbobillo/OnDiraitDeLaMagie/blob/reference/generate_random_wizards.go), using it to request the *'Magic'* service
+
+### Run with
+```
+docker-compose up
+```

@@ -5,7 +5,7 @@ COPY . /go/src/magic/api
 WORKDIR /go/src/magic/api
 
 # added vendor services will need to be included here
-RUN go get ./vendor/database
+#RUN go get ./database
 
 RUN go get ./
 RUN go build
