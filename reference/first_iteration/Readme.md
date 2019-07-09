@@ -15,3 +15,7 @@
 ```
 docker-compose up
 ```
+
+### Once the containers run
+ - First, request this URL: `http://localhost:9090/` (it should give you the API description)
+ - Then, this URL: `http://localhost:9090/wizards` (it should give you a list of existing Wizards, from the `magic_inventory`)
