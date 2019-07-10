@@ -15,10 +15,7 @@
 ```
 docker-compose up
 ```
-If the web service did not start properly, start it separately
-```
-docker-compose up magic
-```
+Retry it, if the web service did not start properly
 
 ### Once the containers run
  - First, request this URL: `http://localhost:9090/` (it should give you the API description)
