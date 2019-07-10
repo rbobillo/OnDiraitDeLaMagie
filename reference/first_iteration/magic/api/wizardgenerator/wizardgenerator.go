@@ -1,10 +1,7 @@
-// main is a standalone package,
-// it is used to generate and print
-// random wizards names
-// its functions (except 'main', of course)
-// should be used to "create Magic Life"
-// -> well, for the MAGIC CRUD...
-package main
+// wizardgenerator is a simple library
+// it requests a random id generator API
+// to create random wizards
+package wizardgenerator
 
 import (
 	"encoding/json"
