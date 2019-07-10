@@ -40,7 +40,6 @@ type Identity struct {
 // cf: https://randomuser.me/documentation#howto
 type Names struct {
 	Results []Identity
-	// if
 }
 
 // Wizard is the content for the Magic Inventory DB
@@ -51,6 +50,7 @@ type Wizard struct {
 	Age       float64 `json:"age"`
 	Category  string  `json:"category"` // Families, Guests, Villains
 	Arrested  bool    `json:"arrested"`
+	Dead      bool    `json:"dead"`
 }
 
 // Any checks if id of a new Wizard doesn't already exist
@@ -71,6 +71,7 @@ func AddWizard(categories []string, name Name, wizards []Wizard) []Wizard {
 			strings.Title(name.Last),
 			float64(rand.Int() % 20 + 20),
 			categories[rand.Int() % 3],
+			false,
 			false}
 
 	if Any(wizard.ID, wizards) {
@@ -135,11 +136,16 @@ func GetRandomNames(qty int) (body []byte, errs []error) {
 }
 
 func main() {
-	body, _ := GetRandomNames(1000)
+	body, _ := GetRandomNames(10)
 	wizards, _ := GenerateWizards(body)
 
+	js, _ := json.Marshal(wizards)
+	fmt.Println(string(js))
+
+	/*
 	for _, w := range wizards {
 		j, _ := json.Marshal(w)
 		fmt.Println(string(j))
 	}
+	 */
 }

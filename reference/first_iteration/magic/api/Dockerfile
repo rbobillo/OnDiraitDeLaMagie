@@ -7,6 +7,7 @@ WORKDIR /go/src/magic/api
 # added vendor services will need to be included here
 #RUN go get ./database
 
+RUN go get -u github.com/lib/pq
 RUN go get ./
 RUN go build
 

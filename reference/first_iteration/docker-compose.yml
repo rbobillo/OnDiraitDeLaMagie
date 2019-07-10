@@ -1,6 +1,6 @@
 version: '2'
 services:
-  database:
+  magic_inventory:
     container_name: magic_inventory
     image: postgres:latest
     ports:
@@ -9,7 +9,10 @@ services:
       - ./magic/magic_inventory/pgdata:/pgdata
     env_file:
       - ./magic/magic.env
-  webserver:
+    environment:
+      - POSTGRES_DB=magic_inventory
+      - PGDATA=/var/lib/postgresql/data
+  magic:
     container_name: magic
     build: ./magic/api
     ports:
@@ -17,4 +20,6 @@ services:
     env_file:
       - ./magic/magic.env
     depends_on:
-      - database
+      - magic_inventory
+    links:
+      - magic_inventory
