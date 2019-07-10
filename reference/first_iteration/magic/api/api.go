@@ -46,15 +46,12 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 // InitMagic starts the Magic service
-func InitMagic(db *sql.DB) error {
-	fmt.Println("Init Magic service")
-
+func InitMagic(db *sql.DB) {
 	http.HandleFunc("/", Index)
 	http.HandleFunc("/wizards", func(w http.ResponseWriter, r *http.Request) { GetWizards(db, &w) })
-
-	return nil
 }
 
+// TODO: these const should not be hardcoded
 const (
 	host     = "magic_inventory"
 	port     = 5432
@@ -80,6 +77,8 @@ func PopulateMagicInventory(db *sql.DB) error {
 			return err
 		}
 	}
+
+	log.Println("Wizards table populated")
 
 	return err
 }
@@ -114,6 +113,8 @@ func InitMagicInventory() (*sql.DB, error) {
 		panic(err)
 	}
 
+	log.Println("Wizards table created")
+
 	err = PopulateMagicInventory(db)
 
 	return db, err
@@ -126,11 +127,7 @@ func main() {
 		panic(err)
 	}
 
-	err = InitMagic(db)
-
-	if err != nil {
-		panic(err)
-	}
+	InitMagic(db)
 
 	defer db.Close()
 
