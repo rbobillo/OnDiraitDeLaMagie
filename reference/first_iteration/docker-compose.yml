@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   magic_inventory:
     container_name: magic_inventory
@@ -19,9 +19,6 @@ services:
       - "9090:9090"
     env_file:
       - ./magic/magic.env
-    environment:
-      - POSTGRES_DB=magic_inventory
-      - PGDATA=/var/lib/postgresql/data
     depends_on:
       - magic_inventory
     links:
