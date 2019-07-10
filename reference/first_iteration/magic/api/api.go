@@ -56,7 +56,7 @@ func InitMagic(db *sql.DB) error {
 }
 
 const (
-	host     = "localhost"
+	host     = "magic_inventory"
 	port     = 5432
 	user     = "magic"
 	password = "magic"
@@ -85,6 +85,7 @@ func PopulateMagicInventory(db *sql.DB) error {
 }
 
 // InitMagicInventory function sets up the magic_inventory db
+// TODO: use `gORM` rather than `pq` ?
 // TODO: add an event listener ? https://godoc.org/github.com/lib/pq/example/listen
 func InitMagicInventory() (*sql.DB, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s "+

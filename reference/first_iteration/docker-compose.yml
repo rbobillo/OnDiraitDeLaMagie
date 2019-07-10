@@ -19,6 +19,9 @@ services:
       - "9090:9090"
     env_file:
       - ./magic/magic.env
+    environment:
+      - POSTGRES_DB=magic_inventory
+      - PGDATA=/var/lib/postgresql/data
     depends_on:
       - magic_inventory
     links:
