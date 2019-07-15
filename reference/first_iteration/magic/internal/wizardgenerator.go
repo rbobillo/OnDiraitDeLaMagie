@@ -43,7 +43,7 @@ type Names struct {
 }
 
 // Any checks if id of a new Wizard doesn't already exist
-func Any(id string, wizards []dao.Wizard) bool {
+func Any(id uuid.UUID, wizards []dao.Wizard) bool {
 	for _, w := range wizards {
 		if w.ID == id {
 			return true
@@ -55,7 +55,7 @@ func Any(id string, wizards []dao.Wizard) bool {
 // AddWizard adds a new one only if its generated id
 // does not already belong to another created Wizard
 func AddWizard(categories []string, name Name, wizards []dao.Wizard) []dao.Wizard {
-	wizard := dao.Wizard{ID: uuid.Must(uuid.NewV4()).String(),
+	wizard := dao.Wizard{ID: uuid.Must(uuid.NewV4()),
 		FirstName: strings.Title(name.First),
 		LastName:  strings.Title(name.Last),
 		Age:       float64(rand.Int()%20 + 20),

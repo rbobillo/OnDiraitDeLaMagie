@@ -1,4 +1,4 @@
-// magicinventory is used to setup and manipulate
+// Package magicinventory is used to setup and manipulate
 // the magic database (magicinventory)
 package magicinventory
 
@@ -56,15 +56,14 @@ func InitMagicInventory() (*sql.DB, error) {
 
 	initQuery :=
 		`create table if not exists wizards (
-                    id         varchar(50) not null primary key,
-                    first_name varchar(50) not null,
-                    last_name  varchar(50) not null,
-                    age        float       not null,
-                    category   varchar(50) not null,
-                    arrested   boolean     not null,
-                    dead       boolean     not null
-                );
-                alter table wizards owner to magic;`
+            id         uuid        not null primary key,
+            first_name varchar(50) not null,
+            last_name  varchar(50) not null,
+            age        float       not null,
+        	category   varchar(50) not null,
+            arrested   boolean     not null,
+            dead       boolean     not null
+         ); alter table wizards owner to magic;`
 
 	_, err = db.Query(initQuery)
 

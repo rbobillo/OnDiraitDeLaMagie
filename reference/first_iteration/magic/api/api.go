@@ -1,3 +1,5 @@
+// Package api is the entry point of 'magic' service
+//
 package api
 
 import (
@@ -12,8 +14,6 @@ import (
 	_ "github.com/lib/pq" // go get -u github.com/lib/pq
 )
 
-type Wizard = dao.Wizard
-
 // GetWizards function requests the Magic Inventory
 // to find wizards
 func GetWizards(db *sql.DB, w *http.ResponseWriter) error {
@@ -25,10 +25,10 @@ func GetWizards(db *sql.DB, w *http.ResponseWriter) error {
 		panic(err)
 	}
 
-	var wizards []Wizard
+	var wizards []dao.Wizard
 
 	for rows.Next() {
-		var wz Wizard
+		var wz dao.Wizard
 		err = rows.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
 		if err != nil {
