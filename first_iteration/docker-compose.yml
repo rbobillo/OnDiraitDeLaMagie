@@ -11,16 +11,22 @@ services:
       - ./magic/magic.env
     environment:
       - PGDATA=/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5432"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
   magic:
     container_name: magic
-    build: ./magic
+    build: magic
     ports:
       - "9090:9090"
     env_file:
       - ./magic/magic.env
+    restart: "on-failure"
     depends_on:
       - magic_inventory
     links:
       - magic_inventory
     volumes:
-      - ./magic/magic.env:/etc/sysconfig/magic
+      - ../../OnDiraitDeLaMagie:/go/src/github.com/rbobillo/OnDiraitDeLaMagie

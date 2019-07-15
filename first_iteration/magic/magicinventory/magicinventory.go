@@ -5,18 +5,8 @@ package magicinventory
 import (
 	"database/sql"
 	"fmt"
+	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"log"
-
-	"OnDiraitDeLaMagie/reference/first_iteration/magic/internal"
-)
-
-// TODO: these const should not be hardcoded
-const (
-	host     = "localhost" // "magicinventory" // or localhost (if you run the service outside of Docker)
-	port     = 5432
-	user     = "magic"
-	password = "magic"
-	dbname   = "magicinventory"
 )
 
 // PopulateMagicInventory function should create random users
@@ -46,8 +36,14 @@ func PopulateMagicInventory(db *sql.DB) error {
 // TODO: use `gORM` rather than `pq` ?
 // TODO: add an event listener ? https://godoc.org/github.com/lib/pq/example/listen
 func InitMagicInventory() (*sql.DB, error) {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s "+
-		"dbname=%s sslmode=disable", host, port, user, password, dbname)
+	host := internal.GetEnvOrElse("PG_HOST", "localhost")
+	port := internal.GetEnvOrElse("PG_PORT", "5432")
+	username := internal.GetEnvOrElse("POSTGRES_USER", "magic")
+	password := internal.GetEnvOrElse("POSTGRES_PASSWORD", "magic")
+	dbname := internal.GetEnvOrElse("POSTGRES_DB", "magicinventory")
+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s "+
+		"dbname=%s sslmode=disable", host, port, username, password, dbname)
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {

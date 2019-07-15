@@ -1,11 +1,10 @@
 package main
 
 import (
+	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/api"
+	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"log"
 	"net/http"
-
-	"OnDiraitDeLaMagie/reference/first_iteration/magic/api"
-	"OnDiraitDeLaMagie/reference/first_iteration/magic/magicinventory"
 )
 
 func main() {

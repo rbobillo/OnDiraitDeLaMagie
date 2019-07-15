@@ -6,10 +6,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"log"
 	"net/http"
-
-	"OnDiraitDeLaMagie/reference/first_iteration/magic/dao"
 
 	_ "github.com/lib/pq" // go get -u github.com/lib/pq
 )
@@ -38,7 +37,7 @@ func GetWizards(db *sql.DB, w *http.ResponseWriter) error {
 		wizards = append(wizards, wz)
 	}
 
-	js, _ := json.Marshal(map[string][]dao.Wizard{"wizards":wizards})
+	js, _ := json.Marshal(map[string][]dao.Wizard{"wizards": wizards})
 
 	_, err = fmt.Fprintf(*w, string(js))
 
@@ -46,9 +45,11 @@ func GetWizards(db *sql.DB, w *http.ResponseWriter) error {
 }
 
 // Index function exposes the swagger API description
-func Index(w http.ResponseWriter, r *http.Request) {
+func Index(w http.ResponseWriter, r *http.Request) (err error) {
 	log.Println("/Index")
-	fmt.Fprintf(w, "TODO: add Swagger API documentation")
+	_, err = fmt.Fprintf(w, "TODO: add Swagger API documentation")
+
+	return err
 }
 
 // InitMagic starts the Magic service
