@@ -45,7 +45,7 @@ func GetWizards(db *sql.DB, w *http.ResponseWriter) error {
 }
 
 // Index function exposes the swagger API description
-func Index(w http.ResponseWriter, r *http.Request) (err error) {
+func Index(w *http.ResponseWriter, r *http.Request) (err error) {
 	log.Println("/Index")
 	_, err = fmt.Fprintf(w, "TODO: add Swagger API documentation")
 
@@ -54,7 +54,9 @@ func Index(w http.ResponseWriter, r *http.Request) (err error) {
 
 // InitMagic starts the Magic service
 func InitMagic(db *sql.DB) (err error) {
-	http.HandleFunc("/", Index)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		err = Index(&w, r)
+	})
 
 	http.HandleFunc("/wizards", func(w http.ResponseWriter, r *http.Request) {
 		err = GetWizards(db, &w)
