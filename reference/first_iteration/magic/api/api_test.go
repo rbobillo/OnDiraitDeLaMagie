@@ -1,21 +1,21 @@
-package main
+package api
 
 import "testing"
 
 func TestGetWizards(t *testing.T) {
-  _, err := GetWizards()
+	err := GetWizards(nil, nil)
 
-  if err != nil {
-    t.Fatal("No Error Expected")
-  }
+	if err != nil {
+		t.Fatal("No Error Expected")
+	}
 }
 
 func TestInitMagic(t *testing.T) {
-  _, err := InitMagic()
+	err := InitMagic(nil)
 
-  if err != nil {
-    t.Fatal("No Error Expected")
-  }
+	if err != nil {
+		t.Fatal("No Error Expected")
+	}
 }
 
 func BenchmarkHamming(b *testing.B) {

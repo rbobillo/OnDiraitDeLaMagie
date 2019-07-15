@@ -1,27 +1,29 @@
-// magic_inventory is used to setup and manipulate
-// the magic database (magic_inventory)
-package magic_inventory
+// magicinventory is used to setup and manipulate
+// the magic database (magicinventory)
+package magicinventory
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	"OnDiraitDeLaMagie/reference/first_iteration/magic/internal"
 )
 
 // TODO: these const should not be hardcoded
 const (
-	host     = "magic_inventory"
+	host     = "localhost" // "magicinventory" // or localhost (if you run the service outside of Docker)
 	port     = 5432
 	user     = "magic"
 	password = "magic"
-	dbname   = "magic_inventory"
+	dbname   = "magicinventory"
 )
 
 // PopulateMagicInventory function should create random users
-// and fill the magic_inventory with them
+// and fill the magicinventory with them
 func PopulateMagicInventory(db *sql.DB) error {
-	body, _ := GetRandomNames(10)
-	wizards, err := GenerateWizards(body)
+	body, _ := internal.GetRandomNames(10)
+	wizards, err := internal.GenerateWizards(body)
 
 	populateQuery :=
 		`insert into wizards (id, first_name, last_name, age, category, arrested, dead)
@@ -40,7 +42,7 @@ func PopulateMagicInventory(db *sql.DB) error {
 	return err
 }
 
-// InitMagicInventory function sets up the magic_inventory db
+// InitMagicInventory function sets up the magicinventory db
 // TODO: use `gORM` rather than `pq` ?
 // TODO: add an event listener ? https://godoc.org/github.com/lib/pq/example/listen
 func InitMagicInventory() (*sql.DB, error) {

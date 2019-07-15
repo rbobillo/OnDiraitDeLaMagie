@@ -6,14 +6,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	""
+
+	"OnDiraitDeLaMagie/reference/first_iteration/magic/dao"
 
 	_ "github.com/lib/pq" // go get -u github.com/lib/pq
 )
 
+type Wizard = dao.Wizard
+
 // GetWizards function requests the Magic Inventory
 // to find wizards
-func GetWizards(db *sql.DB, w *http.ResponseWriter) {
+func GetWizards(db *sql.DB, w *http.ResponseWriter) error {
 	log.Println("/GetWizards")
 
 	rows, err := db.Query("SELECT * FROM wizards")
@@ -37,7 +40,9 @@ func GetWizards(db *sql.DB, w *http.ResponseWriter) {
 
 	js, _ := json.Marshal(wizards)
 
-	fmt.Fprintf(*w, string(js))
+	_, err = fmt.Fprintf(*w, string(js))
+
+	return err
 }
 
 // Index function exposes the swagger API description
@@ -47,7 +52,12 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 // InitMagic starts the Magic service
-func InitMagic(db *sql.DB) {
+func InitMagic(db *sql.DB) (err error) {
 	http.HandleFunc("/", Index)
-	http.HandleFunc("/wizards", func(w http.ResponseWriter, r *http.Request) { GetWizards(db, &w) })
+
+	http.HandleFunc("/wizards", func(w http.ResponseWriter, r *http.Request) {
+		err = GetWizards(db, &w)
+	})
+
+	return err
 }

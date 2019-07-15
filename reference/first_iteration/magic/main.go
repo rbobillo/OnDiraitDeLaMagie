@@ -4,18 +4,18 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/rbobillo/OnDiraitDeLaMagie/reference/first_iteration/magic/api"
-	"github.com/rbobillo/OnDiraitDeLaMagie/reference/first_iteration/magic/magic_inventory"
+	"OnDiraitDeLaMagie/reference/first_iteration/magic/api"
+	"OnDiraitDeLaMagie/reference/first_iteration/magic/magicinventory"
 )
 
 func main() {
-	db, err := InitMagicInventory()
+	db, err := magicinventory.InitMagicInventory()
 
 	if err != nil {
 		panic(err)
 	}
 
-	InitMagic(db)
+	err = api.InitMagic(db)
 
 	defer db.Close()
 

@@ -1,16 +1,16 @@
 version: '3'
 services:
   magic_inventory:
-    container_name: magic_inventory
+    container_name: magicinventory
     image: postgres:latest
     ports:
       - "5432:5432"
     volumes:
-      - ./magic/magic_inventory/pgdata:/pgdata
+      - ./magic/magicinventory/pgdata:/pgdata
     env_file:
       - ./magic/magic.env
     environment:
-      - POSTGRES_DB=magic_inventory
+      - POSTGRES_DB=magicinventory
       - PGDATA=/var/lib/postgresql/data
   magic:
     container_name: magic
