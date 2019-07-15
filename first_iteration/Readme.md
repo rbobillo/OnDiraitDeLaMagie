@@ -15,7 +15,6 @@
 ```
 docker-compose up
 ```
-If the `magic` did not start properly, it might be due to a slow boot of the database container. Simply run `docker-compose up magic` in a new term, once the database container is properly running.
 
 ### Run 'magic' locally, with a database container
 ```shell
