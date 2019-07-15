@@ -38,7 +38,7 @@ func GetWizards(db *sql.DB, w *http.ResponseWriter) error {
 		wizards = append(wizards, wz)
 	}
 
-	js, _ := json.Marshal(wizards)
+	js, _ := json.Marshal(map[string][]dao.Wizard{"wizards":wizards})
 
 	_, err = fmt.Fprintf(*w, string(js))
 

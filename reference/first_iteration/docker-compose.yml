@@ -10,7 +10,6 @@ services:
     env_file:
       - ./magic/magic.env
     environment:
-      - POSTGRES_DB=magicinventory
       - PGDATA=/var/lib/postgresql/data
   magic:
     container_name: magic
@@ -23,3 +22,5 @@ services:
       - magic_inventory
     links:
       - magic_inventory
+    volumes:
+      - ./magic/magic.env:/etc/sysconfig/magic
