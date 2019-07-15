@@ -4,23 +4,36 @@ package magicinventory
 
 import (
 	"database/sql"
-	"fmt"
+	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"log"
 )
 
-// PopulateMagicInventory function should create random users
+// CreateWizard inserts a new Wizard into magicinventory
+func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
+	populateQuery :=
+		`insert into wizards (id, first_name, last_name, age, category, arrested, dead)
+                values ($1, $2, $3, $4, $5, $6, $7);`
+
+	_, err = db.Exec(populateQuery, w.ID, w.FirstName, w.LastName, w.Age, w.Category, w.Arrested, w.Dead)
+
+	return err
+}
+
+// UpdateWizard should update a Wizard in magicinventory
+func UpdateWizard(w dao.Wizard, db *sql.DB) (err error) { return nil }
+
+// DeleteWizard should update a Wizard in magicinventory
+func DeleteWizard(w dao.Wizard, db *sql.DB) (err error) { return nil }
+
+// PopulateMagicInventory function should create random wizards
 // and fill the magicinventory with them
 func PopulateMagicInventory(db *sql.DB) error {
 	body, _ := internal.GetRandomNames(10)
 	wizards, err := internal.GenerateWizards(body)
 
-	populateQuery :=
-		`insert into wizards (id, first_name, last_name, age, category, arrested, dead)
-                values ($1, $2, $3, $4, $5, $6, $7);`
-
 	for _, w := range wizards {
-		_, err = db.Exec(populateQuery, w.ID, w.FirstName, w.LastName, w.Age, w.Category, w.Arrested, w.Dead)
+		err = CreateWizard(w, db)
 
 		if err != nil {
 			return err
@@ -35,16 +48,7 @@ func PopulateMagicInventory(db *sql.DB) error {
 // InitMagicInventory function sets up the magicinventory db
 // TODO: use `gORM` rather than `pq` ?
 // TODO: add an event listener ? https://godoc.org/github.com/lib/pq/example/listen
-func InitMagicInventory() (*sql.DB, error) {
-	host := internal.GetEnvOrElse("PG_HOST", "localhost")
-	port := internal.GetEnvOrElse("PG_PORT", "5432")
-	username := internal.GetEnvOrElse("POSTGRES_USER", "magic")
-	password := internal.GetEnvOrElse("POSTGRES_PASSWORD", "magic")
-	dbname := internal.GetEnvOrElse("POSTGRES_DB", "magicinventory")
-
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s "+
-		"dbname=%s sslmode=disable", host, port, username, password, dbname)
-
+func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
