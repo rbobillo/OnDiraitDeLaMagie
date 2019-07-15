@@ -67,12 +67,12 @@ func Any(id string, wizards []Wizard) bool {
 // does not already belong to another created Wizard
 func AddWizard(categories []string, name Name, wizards []Wizard) []Wizard {
 	wizard := Wizard{uuid.Must(uuid.NewV4()).String(), //GenerateRandomID(32),
-			strings.Title(name.First),
-			strings.Title(name.Last),
-			float64(rand.Int() % 20 + 20),
-			categories[rand.Int() % 3],
-			false,
-			false}
+		strings.Title(name.First),
+		strings.Title(name.Last),
+		float64(rand.Int()%20 + 20),
+		categories[rand.Int()%3],
+		false,
+		false}
 
 	if Any(wizard.ID, wizards) {
 		return AddWizard(categories, name, wizards)
@@ -85,7 +85,7 @@ func AddWizard(categories []string, name Name, wizards []Wizard) []Wizard {
 // random wizard identities, from GetRandomNames
 func GenerateWizards(body []byte) (wizards []Wizard, err error) {
 	names := Names{}
-	categories := []string{"Families","Guests","Villains"}
+	categories := []string{"Families", "Guests", "Villains"}
 	err = json.Unmarshal(body, &names)
 
 	if err != nil {
@@ -119,7 +119,7 @@ func GetRandomNames(qty int) (body []byte, errs []error) {
 		return body, append(errs, err)
 	}
 
-	defer func () {
+	defer func() {
 		err = resp.Body.Close()
 		if err != nil {
 			errs = append(errs, err)
@@ -143,9 +143,9 @@ func main() {
 	fmt.Println(string(js))
 
 	/*
-	for _, w := range wizards {
-		j, _ := json.Marshal(w)
-		fmt.Println(string(j))
-	}
-	 */
+		for _, w := range wizards {
+			j, _ := json.Marshal(w)
+			fmt.Println(string(j))
+		}
+	*/
 }
