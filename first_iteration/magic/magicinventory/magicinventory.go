@@ -17,7 +17,14 @@ func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
 
 	_, err = db.Exec(populateQuery, w.ID, w.FirstName, w.LastName, w.Age, w.Category, w.Arrested, w.Dead)
 
-	return err
+	if err != nil {
+		log.Println("Cannot create wizard:", w, err)
+		return err
+	}
+
+	log.Println("Created wizard:", w)
+
+	return nil
 }
 
 // UpdateWizard should update a Wizard in magicinventory

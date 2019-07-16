@@ -6,8 +6,6 @@ import (
 	"database/sql"
 	"github.com/gorilla/mux"
 	"net/http"
-
-	_ "github.com/lib/pq" // go get -u github.com/lib/pq
 )
 
 // InitMagic starts the Magic service
@@ -22,7 +20,10 @@ func InitMagic(db *sql.DB) (err error) {
 	rt.Methods("GET").Path("/wizards/").HandlerFunc(func(w W, r *R) { err = GetWizards(&w, db) })
 	rt.Methods("GET").Path("/wizards/{id}/").HandlerFunc(func(w W, r *R) { err = GetWizardsById(&w, r, db) })
 
+	rt.Methods("POST").Path("/spawn/").HandlerFunc(func(w W, r *R) { err = SpawnWizard(&w, r, db) })
+
 	http.Handle("/", rt)
+
 
 	return err
 }
