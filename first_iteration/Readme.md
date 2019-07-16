@@ -28,4 +28,4 @@ source magic/magic.env && go run magic/main.go
 ### Once the containers run
  - First, request this URL: `http://localhost:9090/` (it should give you the API description)
  - Then, this URL: `http://localhost:9090/wizards` (it should give you a list of existing Wizards, from the `magic_inventory`)
- - And now, just implement everything, according to the [magic Readme]()
+ - And now, just implement everything, according to the [magic Readme](https://github.com/rbobillo/OnDiraitDeLaMagie/blob/reference/first_iteration/magic/Readme.md)
