@@ -14,10 +14,10 @@ import (
 	_ "github.com/lib/pq" // go get -u github.com/lib/pq
 )
 
-// GetWizardsById function requests the Magic Inventory
+// GetWizardsByID function requests the Magic Inventory
 // to find a specific wizard
 // returns { "wizard" : <some_wizard> }
-func GetWizardsById(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
+func GetWizardsByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	id := mux.Vars(r)["id"]
 
 	if len(mux.Vars(r)) == 0 {

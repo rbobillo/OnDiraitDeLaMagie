@@ -10,14 +10,14 @@ import (
 )
 
 func main() {
-	host := internal.GetEnvOrElse("PG_HOST", "localhost")
-	port := internal.GetEnvOrElse("PG_PORT", "5432")
+	hostname := internal.GetEnvOrElse("PG_HOST", "localhost")
+	portaddr := internal.GetEnvOrElse("PG_PORT", "5432")
 	username := internal.GetEnvOrElse("POSTGRES_USER", "magic")
 	password := internal.GetEnvOrElse("POSTGRES_PASSWORD", "magic")
-	dbname := internal.GetEnvOrElse("POSTGRES_DB", "magicinventory")
+	database := internal.GetEnvOrElse("POSTGRES_DB", "magicinventory")
 
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s "+
-		"dbname=%s sslmode=disable", host, port, username, password, dbname)
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		hostname, portaddr, username, password, database)
 
 	db, err := magicinventory.InitMagicInventory(psqlInfo)
 
