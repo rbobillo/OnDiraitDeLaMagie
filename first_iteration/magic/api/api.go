@@ -19,7 +19,8 @@ func InitMagic(db *sql.DB) (err error) {
 	type R = http.Request
 
 	// Swagger handling
-	rt.Methods("GET").Path("/").Handler(http.FileServer(http.Dir("first_iteration/magic/api/swaggerui")))
+	// TODO: better handling (404 with docker, and sometimes, nothing is displayed locally)
+	rt.Methods("GET").Path("/").Handler(http.FileServer(http.Dir("./first_iteration/magic/api/swaggerui")))
 
 	// GET actions
 	rt.Methods("GET").Path("/wizards/").HandlerFunc(func(w W, r *R) { err = GetWizards(&w, db) })
