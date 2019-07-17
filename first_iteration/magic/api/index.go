@@ -3,7 +3,6 @@
 package api
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -12,8 +11,8 @@ import (
 
 // Index function exposes the swagger API description
 func Index(w *http.ResponseWriter, r *http.Request) (err error) {
-	log.Println("/")
-	_, err = fmt.Fprintf(*w, "TODO: add Swagger API documentation")
+	log.Println("/ redirect to /swaggerui/")
+	http.Redirect(*w, r, "/swaggerui/", http.StatusFound)
 
 	return err
 }

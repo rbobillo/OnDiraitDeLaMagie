@@ -38,6 +38,7 @@ func InitMagic(db *sql.DB) (err error) {
 	ServeSwaggerUI(rt)
 
 	// GET actions
+	rt.Methods("GET").Path("/").HandlerFunc(func(w W, r *R) { err = Index(&w, r) })
 	rt.Methods("GET").Path("/wizards/").HandlerFunc(func(w W, r *R) { err = GetWizards(&w, db) })
 	rt.Methods("GET").Path("/wizards/{id}/").HandlerFunc(func(w W, r *R) { err = GetWizardsByID(&w, r, db) })
 
