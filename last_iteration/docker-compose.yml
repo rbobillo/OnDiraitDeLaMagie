@@ -1,0 +1,38 @@
+version: '3'
+services:
+  magic_inventory:
+    container_name: magicinventory
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./magic/magicinventory/pgdata:/pgdata
+      # store locally the Dockerized postgres data
+    env_file:
+      - ./magic/magic.env
+      # use env vars from a common file, to setup postgres DB
+    environment:
+      - PGDATA=/pgdata
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5432"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      # check if 'magicinventory' is properly running, to handle 'magic' start/restart (on docker-compose up)
+  magic:
+    container_name: magic
+    build: magic
+    ports:
+      - "9090:9090"
+    env_file:
+      - ./magic/magic.env
+    restart: "on-failure"
+      # restart the service if a start failure happened (unreachable DB, for example)
+    depends_on:
+      # waits for 'magic_inventory' to run before running 'magic' container
+      - magic_inventory
+    links:
+      - magic_inventory
+    volumes:
+      - ../../OnDiraitDeLaMagie:/go/src/github.com/rbobillo/OnDiraitDeLaMagie
+      # copies current dir to container, according to this project packages structure
