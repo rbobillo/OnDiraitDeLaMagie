@@ -6,6 +6,8 @@ import (
 	"database/sql"
 	"github.com/gorilla/mux"
 	"net/http"
+	"path"
+	"runtime"
 )
 
 // InitMagic starts the Magic service
@@ -19,8 +21,9 @@ func InitMagic(db *sql.DB) (err error) {
 	type R = http.Request
 
 	// Swagger handling
-	// TODO: better handling (404 with docker, and sometimes, nothing is displayed locally)
-	rt.Methods("GET").Path("/").Handler(http.FileServer(http.Dir("./first_iteration/magic/api/swaggerui")))
+	_, mainDir, _, _ := runtime.Caller(1) // get main.go's working directory
+	swaggerUiDir := path.Join(path.Dir(mainDir), "api/swaggerui/")
+	rt.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(swaggerUiDir))))
 
 	// GET actions
 	rt.Methods("GET").Path("/wizards/").HandlerFunc(func(w W, r *R) { err = GetWizards(&w, db) })
