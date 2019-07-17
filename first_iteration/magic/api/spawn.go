@@ -17,8 +17,10 @@ import (
 func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	var wizard dao.Wizard
 
-	log.Println("/spawn")
+	log.Println("/wizards/spawn")
+	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
+	// TODO: handle string to uuid unmarshal
 	decoder := json.NewDecoder(r.Body)
 	err = decoder.Decode(&wizard)
 

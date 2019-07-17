@@ -20,4 +20,5 @@
       - GET  `/wizards` _(should output a JSON `{ "wizards" : [ ... ] }` with every wizards from `magicinventory`)_
       - GET  `/wizards/{id}` _(should output a JSON `{ "wizard" : {} }` with a single wizard (filtered by ID) from `magicinventory`)_
       - POST `/wizards/spawn` _(should create and insert a new wizard into `magicinventory`, and return a JSON describing him)_
+    - The service tends to respect [OpenAPI](https://openapi-map.apihandyman.io/)
       

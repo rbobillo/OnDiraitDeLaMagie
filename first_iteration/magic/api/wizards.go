@@ -25,6 +25,7 @@ func GetWizardsByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 	}
 
 	log.Printf("/wizards/%s", id)
+	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	row := db.QueryRow("SELECT * FROM wizards WHERE id = $1", id)
 
@@ -54,6 +55,7 @@ func GetWizardsByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 // returns { "wizards" : [ <every_wizards> ] }
 func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
 	log.Println("/wizards")
+	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	rows, err := db.Query("SELECT * FROM wizards")
 

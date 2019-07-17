@@ -9,18 +9,24 @@ import (
 )
 
 // InitMagic starts the Magic service
+// The exposed API is documented via Swagger (https://swagger.io/docs/specification/about/)
+// The swagger-ui is handled with the folder 'swaggerui'
+// it contains official swagger-ui 'dist' folder components, and this API swagger.yaml
 func InitMagic(db *sql.DB) (err error) {
 	rt := mux.NewRouter().StrictSlash(true) // handle trailing slash on each route
 
 	type W = http.ResponseWriter
 	type R = http.Request
 
-	rt.Methods("GET").Path("/").HandlerFunc(func(w W, r *R) { err = Index(&w, r) })
+	// Swagger handling
+	rt.Methods("GET").Path("/").Handler(http.FileServer(http.Dir("first_iteration/magic/api/swaggerui")))
 
+	// GET actions
 	rt.Methods("GET").Path("/wizards/").HandlerFunc(func(w W, r *R) { err = GetWizards(&w, db) })
 	rt.Methods("GET").Path("/wizards/{id}/").HandlerFunc(func(w W, r *R) { err = GetWizardsByID(&w, r, db) })
 
-	rt.Methods("POST").Path("/spawn/").HandlerFunc(func(w W, r *R) { err = SpawnWizard(&w, r, db) })
+	// POST actions
+	rt.Methods("POST").Path("/wizards/spawn/").HandlerFunc(func(w W, r *R) { err = SpawnWizard(&w, r, db) })
 
 	http.Handle("/", rt)
 
