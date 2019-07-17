@@ -38,7 +38,7 @@ func GetWizardsByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 		return err
 	}
 
-	js, _ := json.Marshal(map[string]dao.Wizard{"wizard": wz})
+	js, _ := json.Marshal(wz)
 
 	_, err = fmt.Fprintf(*w, string(js))
 

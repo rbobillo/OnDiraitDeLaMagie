@@ -88,8 +88,10 @@ paths:
           description: "successful operation"
           schema:
             $ref: '#/definitions/SingleWizardResponse'
+        422:
+          description: "Cannot insert to database (might be duplicate)"
         405:
-          description: "Invalid input"
+          description: "Method not Allowed: Invalid input"
 
 definitions:
   Wizard:

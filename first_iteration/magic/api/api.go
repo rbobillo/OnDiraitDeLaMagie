@@ -39,11 +39,11 @@ func InitMagic(db *sql.DB) (err error) {
 
 	// GET actions
 	rt.Methods("GET").Path("/").HandlerFunc(func(w W, r *R) { err = Index(&w, r) })
-	rt.Methods("GET").Path("/wizards/").HandlerFunc(func(w W, r *R) { err = GetWizards(&w, db) })
-	rt.Methods("GET").Path("/wizards/{id}/").HandlerFunc(func(w W, r *R) { err = GetWizardsByID(&w, r, db) })
+	rt.Methods("GET").Path("/wizards").HandlerFunc(func(w W, r *R) { err = GetWizards(&w, db) })
+	rt.Methods("GET").Path("/wizards/{id}").HandlerFunc(func(w W, r *R) { err = GetWizardsByID(&w, r, db) })
 
 	// POST actions
-	rt.Methods("POST").Path("/wizards/spawn/").HandlerFunc(func(w W, r *R) { err = SpawnWizard(&w, r, db) })
+	rt.Methods("POST").Path("/wizards/spawn").HandlerFunc(func(w W, r *R) { err = SpawnWizard(&w, r, db) })
 
 	http.Handle("/", rt)
 

@@ -12,7 +12,7 @@ import (
 
 // SpawnWizard function requests the Magic Inventory
 // to create a new wizard
-// TODO: handle error on db error (duplicates, whatever...)
+// TODO: handle error on db error (with proper http return codes)
 func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	var wizard dao.Wizard
 
@@ -23,18 +23,32 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 	err = decoder.Decode(&wizard)
 
 	if err != nil {
-		(*w).WriteHeader(http.StatusUnprocessableEntity)
+		(*w).WriteHeader(http.StatusMethodNotAllowed)
+		log.Println("warning: cannot convert Body to JSON")
 		return err
 	}
 
 	err = magicinventory.CreateWizard(wizard, db)
 
-	js, _ := json.Marshal(wizard)
+	if err != nil {
+		(*w).WriteHeader(http.StatusUnprocessableEntity)
+		log.Println("warning: cannot insert new Wizard")
+		return err
+	}
+
+	js, err := json.Marshal(wizard)
+
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		log.Fatal("error: cannot serialize Wizard to JSON")
+		return err
+	}
 
 	_, err = fmt.Fprintf(*w, string(js))
 
 	if err != nil {
-		(*w).WriteHeader(http.StatusUnprocessableEntity)
+		(*w).WriteHeader(http.StatusInternalServerError)
+		log.Fatal("warning: cannot convert Body to JSON")
 		return err
 	}
 
