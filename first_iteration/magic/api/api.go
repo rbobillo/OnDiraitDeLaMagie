@@ -10,7 +10,7 @@ import (
 	"runtime"
 )
 
-// function ServeSwaggerUI allows to display
+// ServeSwaggerUI allows to display
 // API documentation on localhost:9090/
 // It find current working dir (cwd)
 // And joins it to swagger-ui dir relative path
