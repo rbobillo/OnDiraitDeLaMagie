@@ -13,7 +13,6 @@ import (
 // SpawnWizard function requests the Magic Inventory
 // to create a new wizard
 // TODO: handle error on db error (duplicates, whatever...)
-// returns { "wizard" : <some_wizard> }
 func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	var wizard dao.Wizard
 

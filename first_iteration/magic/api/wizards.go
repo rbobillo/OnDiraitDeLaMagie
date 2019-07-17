@@ -52,7 +52,6 @@ func GetWizardsByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 
 // GetWizards function requests the Magic Inventory
 // to find every wizards
-// returns { "wizards" : [ <every_wizards> ] }
 func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
 	log.Println("/wizards")
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -78,7 +77,7 @@ func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
 		wizards = append(wizards, wz)
 	}
 
-	js, _ := json.Marshal(map[string][]dao.Wizard{"wizards": wizards})
+	js, _ := json.Marshal(wizards)
 
 	_, err = fmt.Fprintf(*w, string(js))
 

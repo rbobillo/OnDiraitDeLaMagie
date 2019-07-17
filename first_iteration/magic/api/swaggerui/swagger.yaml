@@ -12,77 +12,77 @@ info:
 host: "localhost:9090"
 basePath: "/"
 tags:
-- name: "wizards"
-  description: "Everything about Wizards"
+  - name: "wizards"
+    description: "Everything about Wizards"
 #  externalDocs:
 #    description: "Find out more"
 #    url: "http://swagger.io"
 schemes:
-- "http"
+  - "http"
 #- "https"
 paths:
   /wizards:
     get:
       tags:
-      - "wizards"
+        - "wizards"
       summary: "Find every Wizards from magicinventory DB"
       description: ""
       operationId: ""
       produces:
-      - "application/json"
-#      - "application/xml"
+        - "application/json"
+      #      - "application/xml"
       responses:
         200:
           description: "successful operation"
           schema:
             $ref: '#/definitions/MultipleWizardResponse'
-#        405:
-#          description: "Cannot reach database"
+  #        405:
+  #          description: "Cannot reach database"
   /wizards/{id}:
     get:
       tags:
-      - "wizards"
+        - "wizards"
       summary: "Find Wizard by ID"
       description: "Returns a single wizard"
       operationId: "GetWizardByID"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of Wizard to return"
-        required: true
-        type: "string"
-#        format: "string"
+        - name: "id"
+          in: "path"
+          description: "ID of Wizard to return"
+          required: true
+          type: "string"
+      #        format: "string"
       responses:
         200:
           description: "successful operation"
           schema:
             $ref: '#/definitions/SingleWizardResponse'
-#        400:
-#          description: "Invalid ID supplied"
+        #        400:
+        #          description: "Invalid ID supplied"
         404:
           description: "Wizard not found"
   /wizards/spawn:
     post:
       tags:
-      - "wizards"
+        - "wizards"
       summary: "Add Wizard to magicinventory DB"
       description: ""
       operationId: ""
       consumes:
-      - "application/json"
-#      - "application/xml"
+        - "application/json"
+      #      - "application/xml"
       produces:
-      - "application/json"
-#      - "application/xml"
+        - "application/json"
+      #      - "application/xml"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Wizard object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/Wizard"
+        - in: "body"
+          name: "body"
+          description: "Wizard object that needs to be added to the store"
+          required: true
+          schema:
+            $ref: "#/definitions/Wizard"
       responses:
         200:
           description: "successful operation"
@@ -95,11 +95,11 @@ definitions:
   Wizard:
     type: "object"
     required:
-    - "id"
-    - "first_name"
-    - "last_name"
-    - "age"
-    - "category"
+      - "id"
+      - "first_name"
+      - "last_name"
+      - "age"
+      - "category"
     properties:
       id:
         type: "string"
@@ -117,34 +117,28 @@ definitions:
         type: "string"
         description: "Wizard category in the magicinventory"
         enum:
-        - "Families"
-        - "Guests"
-        - "Villains"
+          - "Families"
+          - "Guests"
+          - "Villains"
       arrested:
         type: "boolean"
         description: "Wizard jail status in the magicinventory"
         enum:
-        - false
-        - true
+          - false
+          - true
       dead:
         type: "boolean"
         description: "Wizard life status in the magicinventory"
         enum:
-        - false
-        - true
+          - false
+          - true
   SingleWizardResponse:
-    type: object
-    properties:
-      wizard:
-        $ref: '#/definitions/Wizard'
+    $ref: '#/definitions/Wizard'
   MultipleWizardResponse:
-    type: object
-    properties:
-      wizard:
-        type: "array"
-        items:
-          $ref: '#/definitions/Wizard'
-            
+    type: "array"
+    items:
+      $ref: '#/definitions/Wizard'
+
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
