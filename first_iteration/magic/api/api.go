@@ -22,9 +22,9 @@ func InitMagic(db *sql.DB) (err error) {
 
 	// Swagger handling
 	_, mainDir, _, _ := runtime.Caller(1) // get main.go's working directory
-	swaggerUiDir := path.Join(path.Dir(mainDir), "api/swaggerui/")
+	swaggerUIDir := path.Join(path.Dir(mainDir), "api/swaggerui/")
 	rt.PathPrefix("/swaggerui/").Handler( // adding and stripping prefix to load (not serve) swaggerui)
-		http.StripPrefix("/swaggerui/", http.FileServer(http.Dir(swaggerUiDir))))
+		http.StripPrefix("/swaggerui/", http.FileServer(http.Dir(swaggerUIDir))))
 
 	// GET actions
 	rt.Methods("GET").Path("/wizards/").HandlerFunc(func(w W, r *R) { err = GetWizards(&w, db) })
