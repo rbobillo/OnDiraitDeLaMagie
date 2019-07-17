@@ -1,5 +1,6 @@
 version: '3'
 services:
+
   magic_inventory:
     container_name: magicinventory
     image: postgres:latest
@@ -34,5 +35,15 @@ services:
     links:
       - magic_inventory
     volumes:
-      - ../../OnDiraitDeLaMagie:/go/src/github.com/rbobillo/OnDiraitDeLaMagie
+      - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/last_iteration/magic
       # copies current dir to container, according to this project packages structure
+
+  owls:
+    container_name: owls
+    image: "rabbitmq:3-management"
+    hostname: "rabbit"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    #volumes:
+    #  - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
