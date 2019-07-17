@@ -10,6 +10,20 @@ import (
 	"runtime"
 )
 
+// function ServeSwaggerUI allows to display
+// API documentation on localhost:9090/
+// It find current working dir (cwd)
+// And joins it to swagger-ui dir relative path
+// Then it loads this dir (and trims it from serve path)
+func ServeSwaggerUI(rt *mux.Router) {
+	_, cwd, _, _ := runtime.Caller(1)
+
+	ui := path.Join(path.Dir(cwd), "/swaggerui/")
+
+	rt.PathPrefix("/swaggerui/").Handler(
+		http.StripPrefix("/swaggerui/", http.FileServer(http.Dir(ui))))
+}
+
 // InitMagic starts the Magic service
 // The exposed API is documented via Swagger (https://swagger.io/docs/specification/about/)
 // The swagger-ui is handled with the folder 'swaggerui'
@@ -21,10 +35,7 @@ func InitMagic(db *sql.DB) (err error) {
 	type R = http.Request
 
 	// Swagger handling
-	_, mainDir, _, _ := runtime.Caller(1) // get main.go's working directory
-	swaggerUIDir := path.Join(path.Dir(mainDir), "api/swaggerui/")
-	rt.PathPrefix("/swaggerui/").Handler( // adding and stripping prefix to load (not serve) swaggerui)
-		http.StripPrefix("/swaggerui/", http.FileServer(http.Dir(swaggerUIDir))))
+	ServeSwaggerUI(rt)
 
 	// GET actions
 	rt.Methods("GET").Path("/wizards/").HandlerFunc(func(w W, r *R) { err = GetWizards(&w, db) })
