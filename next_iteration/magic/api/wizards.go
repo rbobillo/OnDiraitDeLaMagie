@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
+	"github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/magic/dao"
 	"log"
 	"net/http"
 

@@ -7,7 +7,7 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
+	"github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/magic/dao"
 	"github.com/satori/go.uuid" // go get github.com/satori/go.uuid
 	"io/ioutil"
 	"math/rand"

@@ -35,7 +35,7 @@ services:
     links:
       - magic_inventory
     volumes:
-      - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/last_iteration/magic
+      - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/magic
       # copies current dir to container, according to this project packages structure
 
   owls:

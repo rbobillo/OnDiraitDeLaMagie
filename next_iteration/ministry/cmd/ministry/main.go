@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/rbobillo/OnDiraitDeLaMagie/last_iteration/ministry/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/ministry/internal"
 	"log"
 
 	"github.com/streadway/amqp"
