@@ -41,8 +41,8 @@ type Names struct {
 	Results []Identity
 }
 
-// Any checks if id of a new Wizard doesn't already exist
-func Any(id uuid.UUID, wizards []dao.Wizard) bool {
+// any checks if id of a new Wizard doesn't already exist
+func any(id uuid.UUID, wizards []dao.Wizard) bool {
 	for _, w := range wizards {
 		if w.ID == id {
 			return true
@@ -51,9 +51,9 @@ func Any(id uuid.UUID, wizards []dao.Wizard) bool {
 	return false
 }
 
-// AddWizard adds a new one only if its generated id
+// addWizard adds a new one only if its generated id
 // does not already belong to another created Wizard
-func AddWizard(categories []string, name Name, wizards []dao.Wizard) []dao.Wizard {
+func addWizard(categories []string, name Name, wizards []dao.Wizard) []dao.Wizard {
 	wizard := dao.Wizard{ID: uuid.Must(uuid.NewV4()),
 		FirstName: strings.Title(name.First),
 		LastName:  strings.Title(name.Last),
@@ -62,8 +62,8 @@ func AddWizard(categories []string, name Name, wizards []dao.Wizard) []dao.Wizar
 		Arrested:  false,
 		Dead:      false}
 
-	if Any(wizard.ID, wizards) {
-		return AddWizard(categories, name, wizards)
+	if any(wizard.ID, wizards) {
+		return addWizard(categories, name, wizards)
 	}
 
 	return append(wizards, wizard)
@@ -81,7 +81,7 @@ func GenerateWizards(body []byte) (wizards []dao.Wizard, err error) {
 	}
 
 	for _, name := range names.Results {
-		wizards = AddWizard(categories, name.Name, wizards)
+		wizards = addWizard(categories, name.Name, wizards)
 	}
 
 	return wizards, err
