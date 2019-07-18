@@ -33,9 +33,9 @@ func UpdateWizard(w dao.Wizard, db *sql.DB) (err error) { return nil }
 // DeleteWizard should update a Wizard in magicinventory
 func DeleteWizard(w dao.Wizard, db *sql.DB) (err error) { return nil }
 
-// PopulateMagicInventory function should create random wizards
+// populateMagicInventory function should create random wizards
 // and fill the magicinventory with them
-func PopulateMagicInventory(db *sql.DB) error {
+func populateMagicInventory(db *sql.DB) error {
 	body, _ := internal.GetRandomNames(10)
 	wizards, err := internal.GenerateWizards(body)
 
@@ -80,7 +80,7 @@ func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
 
 	log.Println("Wizards table created")
 
-	err = PopulateMagicInventory(db)
+	err = populateMagicInventory(db)
 
 	return db, err
 }

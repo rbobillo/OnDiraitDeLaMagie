@@ -10,12 +10,12 @@ import (
 	"runtime"
 )
 
-// ServeSwaggerUI allows to display
+// serveSwaggerUI allows to display
 // API documentation on localhost:9090/
 // It find current working dir (cwd)
 // And joins it to swagger-ui dir relative path
 // Then it loads this dir (and trims it from serve path)
-func ServeSwaggerUI(rt *mux.Router) {
+func serveSwaggerUI(rt *mux.Router) {
 	_, cwd, _, _ := runtime.Caller(1)
 
 	ui := path.Join(path.Dir(cwd), "/swaggerui/")
@@ -35,7 +35,7 @@ func InitMagic(db *sql.DB) (err error) {
 	type R = http.Request
 
 	// Swagger handling
-	ServeSwaggerUI(rt)
+	serveSwaggerUI(rt)
 
 	// GET actions
 	rt.Methods("GET").Path("/").HandlerFunc(func(w W, r *R) { err = Index(&w, r) })
