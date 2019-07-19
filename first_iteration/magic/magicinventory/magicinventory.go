@@ -7,6 +7,7 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"log"
+	"strconv"
 )
 
 // CreateWizard inserts a new Wizard into magicinventory
@@ -28,7 +29,18 @@ func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
 }
 
 // UpdateWizard should update a Wizard in magicinventory
-func UpdateWizard(w dao.Wizard, db *sql.DB) (err error) { return nil }
+func UpdateWizard(w dao.Wizard, db *sql.DB, n float64) (err error) {
+	updateQuery :=
+		`update wizards set age = age + $n;`
+	_, err = db.Exec(updateQuery, n);
+
+	if err != nil {
+		log.Println("Cannot increase wizard age")
+		return err
+	}
+	log.Println("Wizards's age increased by " + strconv.Itoa(int(n)))
+	return nil
+}
 
 // DeleteWizard should update a Wizard in magicinventory
 func DeleteWizard(w dao.Wizard, db *sql.DB) (err error) { return nil }

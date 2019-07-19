@@ -45,6 +45,10 @@ func InitMagic(db *sql.DB) (err error) {
 	// POST actions
 	rt.Methods("POST").Path("/wizards/spawn").HandlerFunc(func(w W, r *R) { err = SpawnWizard(&w, r, db) })
 
+	// UPDATE actions
+	rt.Methods("UPDATE").Path("/wizards/age").HandlerFunc(func(w W, r *R) { err = UpdateWizardsAge(&w, r, db) })
+
+
 	http.Handle("/", rt)
 
 	return err
