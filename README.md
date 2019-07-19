@@ -1,7 +1,7 @@
 # On Dirait De La Magie !
 
 
-A little Micro-services architecture project: cf [Architecture Graph](https://github.com/rbobillo/OnDiraitDeLaMagie/blob/master/documentation/On%20Dirait%20De%20La%20Magie.pdfhttps://github.com/rbobillo/OnDiraitDeLaMagie/blob/master/documentation/On%20Dirait%20De%20La%20Magie.pdf)
+A little Micro-services architecture project: cf [Architecture Graph](https://github.com/rbobillo/OnDiraitDeLaMagie/blob/master/documentation/On%20Dirait%20De%20La%20Magie.pdf)
 
 ##
 ### First Iteration
