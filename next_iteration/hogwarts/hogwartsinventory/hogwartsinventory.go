@@ -22,7 +22,7 @@ func InitHogwartsInventory(psqlInfo string) (*sql.DB, error) {
             magic_id   uuid        not null,
             house      varchar(50) not null,
             status     varchar(50) not null
-         ); alter table students owner to magic;`
+         ); alter table students owner to hogwarts;`
 
 	_, err = db.Query(initQuery)
 

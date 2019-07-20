@@ -7,7 +7,7 @@ import (
 
 // Pubq are all the queues
 // where Hogwarts should publish in
-var Pubq map[string]amqp.Queue
+var Pubq = make(map[string]amqp.Queue)
 
 // Subq is the queue Hogwarts listens to
 var Subq amqp.Queue
