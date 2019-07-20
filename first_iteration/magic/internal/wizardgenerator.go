@@ -120,7 +120,7 @@ func GetRandomNames(qty int) (body []byte, errs []error) {
 		return body, append(errs, err)
 	}
 
-	fmt.Println("Random names generated")
+	fmt.Println("Random names generated coucou")
 
 	return body, nil
 }

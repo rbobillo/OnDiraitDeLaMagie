@@ -42,6 +42,7 @@ func UpdateWizard(w dao.Wizard, db *sql.DB, n float64) (err error) {
 	return nil
 }
 
+
 // DeleteWizard should update a Wizard in magicinventory
 func DeleteWizard(w dao.Wizard, db *sql.DB) (err error) { return nil }
 
