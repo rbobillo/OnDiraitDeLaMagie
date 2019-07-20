@@ -38,6 +38,43 @@ services:
       - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/magic
       # copies current dir to container, according to this project packages structure
 
+  hogwarts_inventory:
+    container_name: hogwartsinventory
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./hogwarts/hogwartsinventory/pgdata:/pgdata
+    env_file:
+      - ./hogwarts/hogwarts.env
+    environment:
+      - PGDATA=/pgdata
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5433"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  hogwarts:
+    container_name: hogwarts
+    build: hogwarts
+    ports:
+      - "9091:9090"
+    env_file:
+      - ./hogwarts/hogwarts.env
+    restart: "on-failure"
+    depends_on:
+      - magic_inventory
+      - hogwarts_inventory
+      - owls
+      #- magic
+    links:
+      - magic
+      - owls
+      - hogwarts_inventory
+    volumes:
+      - ./hogwarts:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/hogwarts
+      - ./owls/owls.env:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/hogwarts/owls.env
+
   owls:
     container_name: owls
     image: "rabbitmq:3-management"
@@ -45,5 +82,5 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
-    #volumes:
-    #  - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+    volumes:
+      - ./owls/rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config

@@ -1,0 +1,180 @@
+swagger: "2.0"
+info:
+  description: "This is the `magic` server. Documented with [Swagger](http://swagger.io)."
+  version: "1.0.0"
+  title: "Magic Service"
+  termsOfService: "http://swagger.io/terms/"
+#  contact:
+#    email: ""
+#  license:
+#    name: "Apache 2.0"
+#    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:9090"
+basePath: "/"
+tags:
+  - name: "hogwarts"
+    description: "Everything about Hogwarts"
+  - name: "students"
+    description: "Everything about Students"
+#  externalDocs:
+#    description: "Find out more"
+#    url: "http://swagger.io"
+schemes:
+  - "http"
+#- "https"
+paths:
+  /protect:
+    post:
+      tags:
+        - "hogwarts"
+      summary: "Protect Hogwarts from threats and attacks"
+      description: ""
+      operationId: ""
+      consumes:
+        - "application/json"
+      #      - "application/xml"
+      produces:
+        - "application/json"
+      #      - "application/xml"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/Protection"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/ProtectionResponse'
+        #422:
+        #  description: "Cannot insert to database (might be duplicate)"
+        405:
+          description: "Invalid input"
+
+definitions:
+  Wizard:
+    type: "object"
+    required:
+      - "id"
+      - "first_name"
+      - "last_name"
+      - "age"
+      - "category"
+    properties:
+      id:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+      first_name:
+        type: "string"
+        example: "john"
+      last_name:
+        type: "string"
+        example: "doe"
+      age:
+        type: "number"
+        example: 0
+      category:
+        type: "string"
+        description: "Wizard category in the magicinventory"
+        enum:
+          - "Families"
+          - "Guests"
+          - "Villains"
+      arrested:
+        type: "boolean"
+        description: "Wizard jail status in the magicinventory"
+        enum:
+          - false
+          - true
+      dead:
+        type: "boolean"
+        description: "Wizard life status in the magicinventory"
+        enum:
+          - false
+          - true
+  Student:
+    type: "object"
+    required:
+      - "id"
+      - "magic_id"
+      - "house"
+      - "status"
+    properties:
+      id:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+      magic_id:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+      house:
+        type: "string"
+        example: "griffindor"
+      status:
+        type: "string"
+        description: "Student status in the hogwartsinventory"
+        enum:
+          - "1st_year"
+          - "2nd_year"
+          - "3rd_year"
+          - "4th_year"
+          - "5th_year"
+          - "6th_year"
+          - "7th_year"
+          - "degreed"
+  Protection:
+    type: "object"
+    required:
+      - "id"
+      - "quick"
+      - "strong"
+    properties:
+      id:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+      quick:
+        type: "boolean"
+        description: "Will the Ministry be quick to act"
+        enum:
+          - true
+          - false
+      strong:
+        type: "boolean"
+        description: "Will the Ministry be strong (quick to save Hogwarts)"
+        enum:
+          - true
+          - false
+      status:
+        type: "string"
+        description: "Student status in the hogwartsinventory"
+        enum:
+          - "1st_year"
+          - "2nd_year"
+          - "3rd_year"
+          - "4th_year"
+          - "5th_year"
+          - "6th_year"
+          - "7th_year"
+          - "degreed"
+  SingleWizardResponse:
+    $ref: '#/definitions/Wizard'
+  SingleStudentResponse:
+    $ref: '#/definitions/Student'
+  MultipleWizardResponse:
+    type: "array"
+    items:
+      $ref: '#/definitions/Wizard'
+  MultipleStudentResponse:
+    type: "array"
+    items:
+      $ref: '#/definitions/Student'
+  ProtectionResponse:
+    type: "object"
+    properties:
+      saved:
+        type: boolean
+
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
