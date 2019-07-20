@@ -57,8 +57,6 @@ func setupHogwartsInventory() (*sql.DB, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		hostname, portaddr, username, password, database)
 
-	println(psqlInfo)
-
 	return hogwartsinventory.InitHogwartsInventory(psqlInfo)
 }
 
@@ -79,5 +77,5 @@ func main() {
 
 	defer db.Close()
 
-	log.Fatal(http.ListenAndServe(":9091", nil))
+	log.Fatal(http.ListenAndServe(":9090", nil))
 }
