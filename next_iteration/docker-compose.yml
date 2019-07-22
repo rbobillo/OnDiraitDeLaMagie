@@ -1,0 +1,98 @@
+version: '3'
+services:
+
+  magic_inventory:
+    container_name: magicinventory
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./magic/magicinventory/pgdata:/pgdata
+    env_file:
+      - ./magic/magic.env
+    environment:
+      - PGDATA=/pgdata
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5432"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  magic:
+    container_name: magic
+    build: magic
+    ports:
+      - "9090:9090"
+    env_file:
+      - ./magic/magic.env
+    restart: "on-failure"
+    depends_on:
+      - magic_inventory
+    links:
+      - magic_inventory
+    volumes:
+      - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/magic
+
+
+  owls:
+    container_name: owls
+    image: "rabbitmq:3-management"
+    hostname: "rabbit"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - ./owls/rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+
+  ministry:
+    container_name: ministry
+    build: ministry
+    env_file:
+      - ./ministry/ministry.env
+    restart: "on-failure"
+    depends_on:
+      - magic_inventory
+      - hogwarts_inventory
+      - owls
+      #- magic
+    links:
+      - magic
+      - owls
+      - hogwarts
+    volumes:
+      - ./ministry:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/ministry
+
+  hogwarts_inventory:
+    container_name: hogwartsinventory
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./hogwarts/hogwartsinventory/pgdata:/pgdata
+    env_file:
+      - ./hogwarts/hogwarts.env
+    environment:
+      - PGDATA=/pgdata
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5433"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  hogwarts:
+    container_name: hogwarts
+    build: hogwarts
+    ports:
+      - "9091:9091"
+    env_file:
+      - ./hogwarts/hogwarts.env
+    restart: "on-failure"
+    depends_on:
+      - magic_inventory
+      - hogwarts_inventory
+      - owls
+      #- magic
+    links:
+      - magic
+      - owls
+      - hogwarts_inventory
+    volumes:
+      - ./hogwarts:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/hogwarts
