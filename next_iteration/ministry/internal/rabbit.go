@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/ministry/dto"
-	uuid "github.com/satori/go.uuid"
-	"github.com/streadway/amqp"
+	"github.com/satori/go.uuid" // go get github.com/satori/go.uuid
+	"github.com/streadway/amqp" // go get github.com/streadway/amqp
 	"log"
 	"net/http"
 )
@@ -46,7 +46,7 @@ func Subscribe() {
 	msgs, err := Chan.Consume(
 		Subq.Name, // queue
 		"",        // consumer
-		false,      // auto-ack (should the message be removed from queue after beind read)
+		false,     // auto-ack (should the message be removed from queue after beind read)
 		false,     // exclusive
 		false,     // no-local
 		false,     // no-wait
@@ -81,8 +81,10 @@ func Subscribe() {
 	<-forever
 }
 
+// ProtectHogwarts does a Protection call on Hogwarts
+// TODO: extract function
 func ProtectHogwarts(help dto.Help) {
-	url := GetEnvOrElse("PROTECT_URL", "http://localhost:9091/protect")
+	hogwartsURL := GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
 
 	protection, err := json.Marshal(dto.Protection{
 		ID:     uuid.Must(uuid.NewV4()),
@@ -90,7 +92,7 @@ func ProtectHogwarts(help dto.Help) {
 		Strong: help.Emergency.Strong,
 	})
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(protection))
+	req, err := http.NewRequest("POST", hogwartsURL+"/protect", bytes.NewBuffer(protection))
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}

@@ -6,7 +6,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/streadway/amqp"
+	"github.com/streadway/amqp" // go get github.com/streadway/amqp
 )
 
 // initMinistry sets up Owls with ministry related stuffs

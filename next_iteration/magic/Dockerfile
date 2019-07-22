@@ -11,7 +11,7 @@ RUN cat /etc/sysconfig/magic | sed -e "s/^/export /g" >> ~/.bashrc
 # get go project external dependencies
 RUN go get .
 
-# build project create binary file (./magic/magic)
+# build project create binary file
 RUN go build
 
 CMD magic

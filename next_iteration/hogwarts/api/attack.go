@@ -31,10 +31,10 @@ func AttackHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 	// TODO: implement attack logic (impact on Hogwarts services...)
 
 	help, err := json.Marshal(dto.Help{
-		ID: uuid.Must(uuid.NewV4()),
-		Message:"HELP",
+		ID:      uuid.Must(uuid.NewV4()),
+		Message: "HELP",
 		Emergency: dto.Emergency{
-			Quick: attack.Quick,
+			Quick:  attack.Quick,
 			Strong: attack.Strong,
 		},
 	})

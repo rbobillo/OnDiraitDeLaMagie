@@ -40,7 +40,7 @@ func Subscribe() {
 	msgs, err := Chan.Consume(
 		Subq.Name, // queue
 		"",        // consumer
-		false,      // auto-ack (should the message be removed from queue after beind read)
+		false,     // auto-ack (should the message be removed from queue after beind read)
 		false,     // exclusive
 		false,     // no-local
 		false,     // no-wait
