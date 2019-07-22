@@ -38,7 +38,8 @@ func InitHogwarts(db *sql.DB) (err error) {
 	rt.Methods("GET").Path("/").HandlerFunc(func(w W, r *R) { err = Index(&w, r) })
 
 	// POST actions
-	rt.Methods("POST").Path("/hogwarts/protect").HandlerFunc(func(w W, r *R) { err = ProtectHogwarts(&w, r, db) })
+	rt.Methods("POST").Path("/attack").HandlerFunc(func(w W, r *R) { err = AttackHogwarts(&w, r, db) })
+	rt.Methods("POST").Path("/protect").HandlerFunc(func(w W, r *R) { err = ProtectHogwarts(&w, r, db) })
 
 	// /students/attend
 

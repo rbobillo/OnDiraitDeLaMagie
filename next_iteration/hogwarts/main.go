@@ -13,7 +13,7 @@ import (
 )
 
 // setupOwls configures rabbit with mandatory queues
-func setupOwls() {
+func setupOwls() (err error) {
 	host := internal.GetEnvOrElse("RABBIT_HOST", "localhost")
 	port := internal.GetEnvOrElse("RABBIT_PORT", "5672")
 	user := internal.GetEnvOrElse("RABBIT_USER", "magic")
@@ -21,11 +21,11 @@ func setupOwls() {
 
 	url := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, pass, host, port)
 
-	conn, err := amqp.Dial(url)
+	internal.Conn, err = amqp.Dial(url)
 
 	internal.FailOnError(err, "Failed to connect to RabbitMQ")
 
-	ch, err := conn.Channel()
+	internal.Chan, err = internal.Conn.Channel()
 
 	internal.FailOnError(err, "Failed to open a channel")
 
@@ -33,18 +33,15 @@ func setupOwls() {
 
 	// subscribe to the hogwarts queue
 	// if it doesn't exist, it creates it
-	internal.Subq = internal.DeclareBasicQueue(ch, internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "hogwarts"))
+	internal.Subq = internal.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "hogwarts"))
 
 	// set up queues to publish in
 	// if they dont exist, it creates them
-	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "ministry"), ",") {
-		internal.Pubq[q] = internal.DeclareBasicQueue(ch, q)
+	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "ministry,families,guests"), ",") {
+		internal.Pubq[q] = internal.DeclareBasicQueue(q)
 	}
 
-	internal.Subscribe(ch)
-
-	defer ch.Close()
-	defer conn.Close()
+	return err
 }
 
 func setupHogwartsInventory() (*sql.DB, error) {
@@ -73,9 +70,17 @@ func main() {
 		panic(err)
 	}
 
-	setupOwls()
+	err = setupOwls()
 
+	if err != nil {
+		panic(err)
+	}
+
+	go internal.Subscribe()
+
+	defer internal.Chan.Close()
+	defer internal.Conn.Close()
 	defer db.Close()
 
-	log.Fatal(http.ListenAndServe(":9090", nil))
+	log.Fatal(http.ListenAndServe(":9091", nil))
 }

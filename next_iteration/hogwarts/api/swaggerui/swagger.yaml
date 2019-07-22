@@ -4,25 +4,39 @@ info:
   version: "1.0.0"
   title: "Magic Service"
   termsOfService: "http://swagger.io/terms/"
-#  contact:
-#    email: ""
-#  license:
-#    name: "Apache 2.0"
-#    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "localhost:9090"
+host: "localhost:9091"
 basePath: "/"
 tags:
   - name: "hogwarts"
     description: "Everything about Hogwarts"
   - name: "students"
     description: "Everything about Students"
-#  externalDocs:
-#    description: "Find out more"
-#    url: "http://swagger.io"
 schemes:
   - "http"
-#- "https"
 paths:
+  /attack:
+    post:
+      tags:
+        - "hogwarts"
+      summary: "Attack on Hogwarts by the villains"
+      description: ""
+      operationId: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: ""
+          required: true
+          schema:
+            $ref: "#/definitions/Attack"
+      responses:
+        204:
+          description: "successful operation"
+        405:
+          description: "Invalid input"
   /protect:
     post:
       tags:
@@ -32,10 +46,8 @@ paths:
       operationId: ""
       consumes:
         - "application/json"
-      #      - "application/xml"
       produces:
         - "application/json"
-      #      - "application/xml"
       parameters:
         - in: "body"
           name: "body"
@@ -44,12 +56,8 @@ paths:
           schema:
             $ref: "#/definitions/Protection"
       responses:
-        200:
+        204:
           description: "successful operation"
-          schema:
-            $ref: '#/definitions/ProtectionResponse'
-        #422:
-        #  description: "Cannot insert to database (might be duplicate)"
         405:
           description: "Invalid input"
 
@@ -123,6 +131,28 @@ definitions:
           - "6th_year"
           - "7th_year"
           - "degreed"
+  Attack:
+    type: "object"
+    required:
+      - "id"
+      - "quick"
+      - "strong"
+    properties:
+      id:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+      quick:
+        type: "boolean"
+        description: "If false, it means that Hogwarts sentinels found approaching Villains. Ministry will know, before Villains attack"
+        enum:
+          - true
+          - false
+      strong:
+        type: "boolean"
+        description: "Strength of the attack: impact on Hogwarts services"
+        enum:
+          - true
+          - false
   Protection:
     type: "object"
     required:
@@ -145,18 +175,6 @@ definitions:
         enum:
           - true
           - false
-      status:
-        type: "string"
-        description: "Student status in the hogwartsinventory"
-        enum:
-          - "1st_year"
-          - "2nd_year"
-          - "3rd_year"
-          - "4th_year"
-          - "5th_year"
-          - "6th_year"
-          - "7th_year"
-          - "degreed"
   SingleWizardResponse:
     $ref: '#/definitions/Wizard'
   SingleStudentResponse:
@@ -169,11 +187,6 @@ definitions:
     type: "array"
     items:
       $ref: '#/definitions/Student'
-  ProtectionResponse:
-    type: "object"
-    properties:
-      saved:
-        type: boolean
 
 externalDocs:
   description: "Find out more about Swagger"

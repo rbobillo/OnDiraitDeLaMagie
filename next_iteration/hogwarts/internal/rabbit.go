@@ -5,6 +5,12 @@ import (
 	"log"
 )
 
+// Conn is the main connection to rabbit
+var Conn *amqp.Connection
+
+// Chan is the main rabbit channel
+var Chan *amqp.Channel
+
 // Pubq are all the queues
 // where Hogwarts should publish in
 var Pubq = make(map[string]amqp.Queue)
@@ -13,8 +19,8 @@ var Pubq = make(map[string]amqp.Queue)
 var Subq amqp.Queue
 
 // Publish sends messages to 'pubq'
-func Publish(ch *amqp.Channel, qname string, payload string) {
-	err := ch.Publish(
+func Publish(qname string, payload string) {
+	err := Chan.Publish(
 		"",               // exchange
 		Pubq[qname].Name, // routing key
 		false,            // mandatory
@@ -30,12 +36,11 @@ func Publish(ch *amqp.Channel, qname string, payload string) {
 // Subscribe listens to 'subq' (hogwarts)
 // Each time a message is received
 // it is parsed and handled
-// TODO: better handling; ack/nack ?
-func Subscribe(ch *amqp.Channel) {
-	msgs, err := ch.Consume(
+func Subscribe() {
+	msgs, err := Chan.Consume(
 		Subq.Name, // queue
 		"",        // consumer
-		true,      // auto-ack
+		false,      // auto-ack (should the message be removed from queue after beind read)
 		false,     // exclusive
 		false,     // no-local
 		false,     // no-wait
@@ -51,20 +56,20 @@ func Subscribe(ch *amqp.Channel) {
 
 			// TODO: check message content, and publish on condition, to the right queue
 			if d.Body != nil {
-				Publish(ch, "ministry", "{}")
+				d.Ack(false)
 			}
 		}
 	}()
 
-	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	log.Printf("Waiting for mails...")
 
 	<-forever
 }
 
 // DeclareBasicQueue is used to declare once
 // a RabbitMQ queue, with default parameters
-func DeclareBasicQueue(ch *amqp.Channel, name string) amqp.Queue {
-	q, err := ch.QueueDeclare(name,
+func DeclareBasicQueue(name string) amqp.Queue {
+	q, err := Chan.QueueDeclare(name,
 		false, // durable
 		false, // autoDelete
 		false, // exclusive
