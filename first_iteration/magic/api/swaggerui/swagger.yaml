@@ -92,7 +92,7 @@ paths:
           description: "Cannot insert to database (might be duplicate)"
         405:
           description: "Method not Allowed: Invalid input"
-  /wizards/age:
+  /wizards/{age}/age:
     patch:
       tags:
         - "wizards"
@@ -108,17 +108,17 @@ paths:
           in: "path"
           description: "Number of year who passed"
           required: true
-          type: int
+          type: "integer"
       responses:
         200:
           description: "successful operation"
-          schema:
-            $ref: '#/definitions/SingleWizardResponse'
+        #          schema:
+        #            $ref: '#/definitions/SingleWizardResponse'
         422:
           description: "Cannot insert to database (might be duplicate)"
         405:
           description: "Method not Allowed: Invalid input"
-  /wizards/death:
+  /wizards/{id}/death:
     patch:
       tags:
         - "wizards"
@@ -144,7 +144,7 @@ paths:
           description: "Cannot update the database (might be already dead)"
         405:
           description: "Method not Allowed: Invalid input"
-  /wizards/jail:
+  /wizards/{id}/jail:
     patch:
       tags:
         - "wizards"

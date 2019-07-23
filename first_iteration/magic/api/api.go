@@ -47,7 +47,7 @@ func InitMagic(db *sql.DB) (err error) {
 
 	// UPDATE actions
 	rt.Methods("PATCH").Path("/wizards/{age}/age").HandlerFunc(func(w W, r *R) { err = UpdateWizardsAge(&w, r, db)})
-	rt.Methods("PATCH").Path("/wizards/{id}/die").HandlerFunc(func(w W, r *R) { err = UpdateWizardsDeath(&w, r, db) })
+	rt.Methods("PATCH").Path("/wizards/{id}/death").HandlerFunc(func(w W, r *R) { err = UpdateWizardsDeath(&w, r, db) })
 	rt.Methods("PATCH").Path("/wizards/{id}/jail").HandlerFunc(func(w W, r *R) { err = UpdateWizardsJail(&w, r, db) })
 
 	// DELETE actions

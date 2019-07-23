@@ -33,11 +33,11 @@ func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
 //}
 // GetWizardStatusById return the status of an wizard.
 //func GetWizardStatusById(db *sql.DB, status string, id string)(err error){
-//
+//	_, err = db.Exec("SELECT FROM ")
 //}
 // UpdateWizard should update a Wizard in magicinventory
 func UpdateWizards(db *sql.DB, status string, value string) (err error) {
-	log.Println(status)
+
 	_, err = db.Exec(fmt.Sprintf("UPDATE wizards SET %s = %s + $1", status, status), value)
 
 	if err != nil {
@@ -51,8 +51,7 @@ func UpdateWizards(db *sql.DB, status string, value string) (err error) {
 // UpdateWizard should update a Wizard in magicinventory
 func UpdateWizardById(db *sql.DB, status string, id string) (err error) {
 
-	_, err = db.Exec(fmt.Sprintf("UPDATE wizards SET %s = $1 WHERE id = $2", status), true, id);
-
+	_, err = db.Exec(fmt.Sprintf("UPDATE wizards SET %s = $1 WHERE id = $2", status), false, id);
 	log.Println(err)
 	if err != nil {
 		log.Println("Cannot update wizard status")
@@ -69,6 +68,8 @@ func UpdateWizardById(db *sql.DB, status string, id string) (err error) {
 func DeleteWizardById(db *sql.DB, id string) (err error) {
 
 	_, err = db.Exec("DELETE FROM wizards WHERE id = $1", id)
+
+
 
 	if err != nil {
 		log.Println("Cannot delete wizard")
