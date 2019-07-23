@@ -21,6 +21,7 @@ func GetWizardsByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 	id := mux.Vars(r)["id"]
 
 	if len(mux.Vars(r)) == 0 {
+		log.Print(GetWizards(w, db))
 		return GetWizards(w, db)
 	}
 

@@ -9,23 +9,20 @@ import (
 )
 
 // UpdateWizardsAges function request the Magic Inventory
-// to update every wizard age by increment it n times
-// Todo: Change n to json
-func UpdateWizardsAge(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error){
-	test := mux.Vars(r)["age"]
-	log.Println(test)
+// to update one wizard
+// Todo: UpdateWizardDeath and UpdateWizardJail are almost the same function
+func UpdateWizardsDeath(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error){
+	id := mux.Vars(r)["id"]
+	log.Printf("/wizards/{%s}/die", id)
 
-	log.Println("/wizards/age")
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
+	err = magicinventory.UpdateWizardById(db, "dead", id)
 
-	err = magicinventory.UpdateWizards(db, "age", "2")
-	log.Println(err)
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		log.Println("error: cannot update wizards's age")
+		log.Printf("error: cannot kill wizards %s", id)
 		return err
 	}
 
 	return nil
 }
-

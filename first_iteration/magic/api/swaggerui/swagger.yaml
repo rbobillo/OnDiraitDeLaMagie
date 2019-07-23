@@ -104,12 +104,11 @@ paths:
       produces:
         - "application/json"
       parameters:
-        - in: "body"
-          name: "body"
-          description: "Wizard object that needs to be added to the store"
+        - name: "age"
+          in: "path"
+          description: "Number of year who passed"
           required: true
-          schema:
-            $ref: "#/definitions/Wizard"
+          type: int
       responses:
         200:
           description: "successful operation"
@@ -119,7 +118,84 @@ paths:
           description: "Cannot insert to database (might be duplicate)"
         405:
           description: "Method not Allowed: Invalid input"
-
+  /wizards/death:
+    patch:
+      tags:
+        - "wizards"
+      summary: "Kill a wizard"
+      description: ""
+      operationId: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of Wizard to kill"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/SingleWizardResponse'
+        422:
+          description: "Cannot update the database (might be already dead)"
+        405:
+          description: "Method not Allowed: Invalid input"
+  /wizards/jail:
+    patch:
+      tags:
+        - "wizards"
+      summary: "Put a wizard in jail"
+      description: ""
+      operationId: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of Wizard to put in jail"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/SingleWizardResponse'
+        422:
+          description: "Cannot update the database (might be already in jail)"
+        405:
+          description: "Method not Allowed: Invalid input"
+  /wizards/obliviate:
+    delete:
+      tags:
+        - "wizards"
+      summary: "Obliviate a wizard"
+      description: ""
+      operationId: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of Wizard to obliviate"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/SingleWizardResponse'
+        422:
+          description: "Cannot update the database (might not existe)"
+        405:
+          description: "Method not Allowed: Invalid input"
 definitions:
   Wizard:
     type: "object"
