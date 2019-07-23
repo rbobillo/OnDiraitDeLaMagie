@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"log"
@@ -26,12 +27,27 @@ func UpdateWizardsAge(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err 
 		log.Println("warning: cannot convert Body to JSON")
 		return err
 	}
-	log.Println(wizard.Age)
 
 	err = magicinventory.UpdateWizards(db, "age", wizard.Age)
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		log.Println("error: cannot update wizards's age")
+		return err
+	}
+
+	js, err := json.Marshal(wizard)
+
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		log.Fatal("error: cannot serialize Wizard to JSON")
+		return err
+	}
+
+	_, err = fmt.Fprintf(*w, string(js))
+
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		log.Fatal("warning: cannot convert Body to JSON")
 		return err
 	}
 
