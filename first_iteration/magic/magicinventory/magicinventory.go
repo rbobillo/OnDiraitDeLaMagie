@@ -36,7 +36,7 @@ func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
 //	_, err = db.Exec("SELECT FROM ")
 //}
 // UpdateWizard should update a Wizard in magicinventory
-func UpdateWizards(db *sql.DB, status string, value string) (err error) {
+func UpdateWizards(db *sql.DB, status string, value float64) (err error) {
 
 	_, err = db.Exec(fmt.Sprintf("UPDATE wizards SET %s = %s + $1", status, status), value)
 
