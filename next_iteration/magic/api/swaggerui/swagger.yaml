@@ -4,22 +4,13 @@ info:
   version: "1.0.0"
   title: "Magic Service"
   termsOfService: "http://swagger.io/terms/"
-#  contact:
-#    email: ""
-#  license:
-#    name: "Apache 2.0"
-#    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 host: "localhost:9090"
 basePath: "/"
 tags:
   - name: "wizards"
     description: "Everything about Wizards"
-#  externalDocs:
-#    description: "Find out more"
-#    url: "http://swagger.io"
 schemes:
   - "http"
-#- "https"
 paths:
   /wizards:
     get:
@@ -30,14 +21,11 @@ paths:
       operationId: ""
       produces:
         - "application/json"
-      #      - "application/xml"
       responses:
         200:
           description: "successful operation"
           schema:
             $ref: '#/definitions/MultipleWizardResponse'
-  #        405:
-  #          description: "Cannot reach database"
   /wizards/{id}:
     get:
       tags:
@@ -53,14 +41,11 @@ paths:
           description: "ID of Wizard to return"
           required: true
           type: "string"
-      #        format: "string"
       responses:
         200:
           description: "successful operation"
           schema:
             $ref: '#/definitions/SingleWizardResponse'
-        #        400:
-        #          description: "Invalid ID supplied"
         404:
           description: "Wizard not found"
   /wizards/spawn:
@@ -72,10 +57,8 @@ paths:
       operationId: ""
       consumes:
         - "application/json"
-      #      - "application/xml"
       produces:
         - "application/json"
-      #      - "application/xml"
       parameters:
         - in: "body"
           name: "body"
