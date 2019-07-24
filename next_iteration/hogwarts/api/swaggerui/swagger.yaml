@@ -14,7 +14,7 @@ tags:
 schemes:
   - "http"
 paths:
-  /attack:
+  /actions/attack:
     post:
       tags:
         - "hogwarts"
@@ -37,7 +37,7 @@ paths:
           description: "successful operation"
         405:
           description: "Invalid input"
-  /protect:
+  /actions/{id}protect:
     post:
       tags:
         - "hogwarts"

@@ -67,7 +67,7 @@ paths:
           schema:
             $ref: "#/definitions/Wizard"
       responses:
-        200:
+        201:
           description: "successful operation"
           schema:
             $ref: '#/definitions/SingleWizardResponse'

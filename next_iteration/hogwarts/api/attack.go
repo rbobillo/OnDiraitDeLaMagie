@@ -12,11 +12,11 @@ import (
 
 // AttackHogwarts stops Hogwarts activity
 // while Hogwarts is not protected
-// TODO: create status in hogwartsinventory ?
+// TODO: create DB insert in hogwartsinventory (actions table)
 func AttackHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	var attack dto.Attack
 
-	log.Println("/attack : Hogwarts is under attack")
+	log.Println("/actions/attack : Hogwarts is under attack")
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	decoder := json.NewDecoder(r.Body)
@@ -28,11 +28,12 @@ func AttackHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 		return err
 	}
 
-	// TODO: implement attack logic (impact on Hogwarts services...)
+	// TODO: implement attack logic (impact on Hogwarts services + table insert...)
 
 	help, err := json.Marshal(dto.Help{
-		ID:      uuid.Must(uuid.NewV4()),
-		Message: "HELP",
+		ID:       uuid.Must(uuid.NewV4()),
+		AttackID: attack.ID,
+		Message:  "HELP",
 		Emergency: dto.Emergency{
 			Quick:  attack.Quick,
 			Strong: attack.Strong,

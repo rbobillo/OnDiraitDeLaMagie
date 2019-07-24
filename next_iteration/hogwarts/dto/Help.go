@@ -14,6 +14,7 @@ type Emergency struct {
 // false, if they are on their way to Hogwarts
 type Help struct {
 	ID        uuid.UUID `json:"id"`
+	AttackID  uuid.UUID `json:"attack_id"`
 	Message   string    `json:"message"`
 	Emergency Emergency `json:"emergency"`
 }

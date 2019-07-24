@@ -52,5 +52,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 		return err
 	}
 
+	(*w).WriteHeader(http.StatusCreated)
+
 	return nil
 }

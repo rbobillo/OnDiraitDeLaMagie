@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/ministry/dto"
-	"github.com/satori/go.uuid" // go get github.com/satori/go.uuid
 	"github.com/streadway/amqp" // go get github.com/streadway/amqp
 	"log"
 	"net/http"
@@ -41,7 +40,6 @@ func Publish(qname string, payload string) {
 // Subscribe listens to 'subq' (ministry)
 // Each time a message is received
 // it is parsed and handled
-// TODO: better handling; ack/nack ?
 func Subscribe() {
 	msgs, err := Chan.Consume(
 		Subq.Name, // queue
@@ -81,21 +79,24 @@ func Subscribe() {
 	<-forever
 }
 
-// ProtectHogwarts does a Protection call on Hogwarts
-// TODO: extract function
+// ProtectHogwarts evaluates the emergency
+// and helps Hogwarts
 func ProtectHogwarts(help dto.Help) {
 	hogwartsURL := GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
 
 	protection, err := json.Marshal(dto.Protection{
-		ID:     uuid.Must(uuid.NewV4()),
 		Quick:  help.Emergency.Quick,
 		Strong: help.Emergency.Strong,
 	})
 
-	req, err := http.NewRequest("POST", hogwartsURL+"/protect", bytes.NewBuffer(protection))
+	protectEndpoint := "/actions/" + help.AttackID.String() + "/protect"
+
+	req, err := http.NewRequest("POST", hogwartsURL+protectEndpoint, bytes.NewBuffer(protection))
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
+
+	// TODO: help logic (delay before sending help ? ...)
 	resp, err := client.Do(req)
 
 	if err != nil {
