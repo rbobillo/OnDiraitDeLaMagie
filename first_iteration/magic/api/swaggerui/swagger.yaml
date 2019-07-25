@@ -119,7 +119,7 @@ paths:
           description: "Not Found"
 #        405:
 #          description: "Method not Allowed: Invalid input"
-  /wizards/{id}/death:
+  /wizards/{id}/die:
     patch:
       tags:
         - "wizards"

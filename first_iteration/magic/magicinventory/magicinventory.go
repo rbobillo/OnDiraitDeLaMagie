@@ -10,6 +10,13 @@ import (
 	"log"
 )
 
+//func getId(r *http.Request) string{
+//	return mux.Vars(r)["id"]
+//}
+//type args interface {
+//	getId() string
+//}
+
 // CreateWizard inserts a new Wizard into magicinventory
 func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
 	populateQuery :=
@@ -35,7 +42,9 @@ func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
 //func GetWizardStatusById(db *sql.DB, status string, id string)(err error){
 //	_, err = db.Exec("SELECT FROM ")
 //}
+
 // UpdateWizard should update a Wizard in magicinventory
+// TODO: must take a query
 func UpdateWizards(db *sql.DB, status string, value float64) (err error) {
 
 	_, err = db.Exec(fmt.Sprintf("UPDATE wizards SET %s = %s + $1", status, status), value)
@@ -48,35 +57,32 @@ func UpdateWizards(db *sql.DB, status string, value float64) (err error) {
 	return nil
 }
 
-// UpdateWizard should update a Wizard in magicinventory
-func UpdateWizardById(db *sql.DB, status string, id string) (err error) {
 
-	_, err = db.Exec(fmt.Sprintf("UPDATE wizards SET %s = $1 WHERE id = $2", status), false, id);
+// UpdateWizard should update asignle status for single Wizard in magicinventory
+func UpdateWizardById(db *sql.DB, query string, args  interface{}) (err error){
+	_, err = db.Exec(query, args)
+
 	log.Println(err)
 	if err != nil {
 		log.Println("Cannot update wizard status")
 		return err
 	}
 
-	log.Printf("Wizards %s status have been updated", id)
+	log.Printf("Wizards %s 's status have been updated", args)
 	return nil
+
 }
 
-
-
 // DeleteWizard should update a Wizard in magicinventory
-func DeleteWizardById(db *sql.DB, id string) (err error) {
-
-	_, err = db.Exec("DELETE FROM wizards WHERE id = $1", id)
-
-
+func DeleteWizardById(db *sql.DB, args interface{}) (err error) {
+	_, err = db.Exec("DELETE FROM wizards WHERE id = $1;", args)
 
 	if err != nil {
 		log.Println("Cannot delete wizard")
 		return err
 	}
 
-	log.Printf("Wizards %s have been obliviated", id)
+	log.Printf("Wizards %s have been obliviated", args)
 	return nil
 }
 

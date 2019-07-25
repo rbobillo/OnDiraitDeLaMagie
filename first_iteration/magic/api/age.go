@@ -29,6 +29,7 @@ func UpdateWizardsAge(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err 
 	}
 
 	err = magicinventory.UpdateWizards(db, "age", wizard.Age)
+
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		log.Println("error: cannot update wizards's age")
@@ -36,7 +37,7 @@ func UpdateWizardsAge(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err 
 	}
 
 	js, err := json.Marshal(wizard)
-
+	log.Println(js)
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
 		log.Fatal("error: cannot serialize Wizard to JSON")

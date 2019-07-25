@@ -6,6 +6,7 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"log"
 	"net/http"
+	"fmt"
 )
 
 // UpdateWizardsJail put one wizard in jail by updating
@@ -16,8 +17,8 @@ func UpdateWizardsJail(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err
 	log.Printf("/wizards/{%s}/jail", id)
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
-
-	err = magicinventory.UpdateWizardById(db, "arrested", id)
+	query := fmt.Sprintf("UPDATE wizards SET arrested = %t WHERE id = $1", true)
+	err = magicinventory.UpdateWizardById(db, query, id)
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
