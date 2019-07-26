@@ -37,7 +37,6 @@ func UpdateWizardsAge(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err 
 	}
 
 	js, err := json.Marshal(wizard)
-	log.Println(js)
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
 		log.Fatal("error: cannot serialize Wizard to JSON")
@@ -45,7 +44,6 @@ func UpdateWizardsAge(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err 
 	}
 
 	_, err = fmt.Fprintf(*w, string(js))
-
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
 		log.Fatal("warning: cannot convert Body to JSON")

@@ -21,7 +21,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 
 	decoder := json.NewDecoder(r.Body)
 	err = decoder.Decode(&wizard)
-
+	log.Println(err)
 	if err != nil {
 		(*w).WriteHeader(http.StatusMethodNotAllowed)
 		log.Println("warning: cannot convert Body to JSON")
@@ -37,7 +37,6 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 	}
 
 	js, err := json.Marshal(wizard)
-
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
 		log.Fatal("error: cannot serialize Wizard to JSON")

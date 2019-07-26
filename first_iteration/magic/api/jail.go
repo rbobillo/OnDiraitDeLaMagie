@@ -17,11 +17,16 @@ func UpdateWizardsJail(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err
 	log.Printf("/wizards/{%s}/jail", id)
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
-	query := fmt.Sprintf("UPDATE wizards SET arrested = %t WHERE id = $1", true)
-	err = magicinventory.UpdateWizardById(db, query, id)
+
+	query := fmt.Sprintf("UPDATE wizards SET arrested = %t WHERE id = $1 AND arrested != %t RETURNING *;", true, true)
+	err = magicinventory.UpdateWizardById(w,db, query, id)
+
+	if err == sql.ErrNoRows {
+		log.Println(fmt.Sprintf("Wizard %s is already in jail or wizard doesn't exists", id ))
+		return err
+	}
 
 	if err != nil {
-		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		log.Printf("error: cannot arrest wizards %s", id)
 		return err
 	}

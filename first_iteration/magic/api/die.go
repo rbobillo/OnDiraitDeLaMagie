@@ -12,7 +12,7 @@ import (
 // UpdateWizardsAges function request the Magic Inventory
 // to update one wizard
 // Todo: UpdateWizardDeath and UpdateWizardJail are almost the same function
-//
+
 func UpdateWizardsDeath(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error){
 
 	id := mux.Vars(r)["id"]
@@ -21,8 +21,13 @@ func UpdateWizardsDeath(w *http.ResponseWriter, r *http.Request, db *sql.DB) (er
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	query := fmt.Sprintf("UPDATE wizards SET dead = %t WHERE id = $1 RETURNING *;", true)
-	err = magicinventory.UpdateWizardById(db, query, id)
+	query := fmt.Sprintf("UPDATE wizards SET dead = %t WHERE id = $1 AND dead != %t RETURNING *;", true, true)
+	err = magicinventory.UpdateWizardById(w, db, query, id)
+
+	if err == sql.ErrNoRows {
+		log.Println(fmt.Sprintf("Wizard %s is already dead or doesn't exists",id))
+		return err
+	}
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)

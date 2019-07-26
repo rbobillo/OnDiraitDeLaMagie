@@ -51,7 +51,8 @@ func InitMagic(db *sql.DB) (err error) {
 	rt.Methods("PATCH").Path("/wizards/{id}/jail").HandlerFunc(func(w W, r *R) { err = UpdateWizardsJail(&w, r, db) })
 
 	// DELETE actions
-	rt.Methods("PATCH").Path("/wizards/{id}/obliviate").HandlerFunc(func(w W, r *R) { err = ObliviateWizard(&w, r, db) })
+	rt.Methods("DELETE").Path("/wizards/{id}/obliviate").HandlerFunc(func(w W, r *R) { err = ObliviateWizard(&w, r, db) })
+
 
 
 	http.Handle("/", rt)

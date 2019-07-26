@@ -4,10 +4,12 @@ package magicinventory
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"log"
+	"net/http"
 )
 
 //func getId(r *http.Request) string{
@@ -58,19 +60,30 @@ func UpdateWizards(db *sql.DB, status string, value float64) (err error) {
 }
 
 
-// UpdateWizard should update asignle status for single Wizard in magicinventory
-func UpdateWizardById(db *sql.DB, query string, args  interface{}) (err error){
-	_, err = db.Exec(query, args)
+// UpdateWizard should update a single status for single Wizard in magicinventory
+func UpdateWizardById(w *http.ResponseWriter, db *sql.DB, query string, args  interface{}) (err error){
+	var wz dao.Wizard
+	row := db.QueryRow(query, args)
 
-	log.Println(err)
+	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
+
 	if err != nil {
+		(*w).WriteHeader(http.StatusNotFound)
+		return err
+	}
+
+	js, _ := json.Marshal(wz)
+
+	_, err = fmt.Fprintf(*w, string(js))
+
+	if err != nil {
+		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		log.Println("Cannot update wizard status")
 		return err
 	}
 
 	log.Printf("Wizards %s 's status have been updated", args)
 	return nil
-
 }
 
 // DeleteWizard should update a Wizard in magicinventory
