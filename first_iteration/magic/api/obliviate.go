@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// Nimporte quoi
 func ObliviateWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB)(err error){
 	id := mux.Vars(r)["id"]
 
