@@ -19,7 +19,7 @@ func UpdateWizardsJail(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	query := fmt.Sprintf("UPDATE wizards SET arrested = %t WHERE id = $1 AND arrested != %t RETURNING *;", true, true)
-	err = magicinventory.UpdateWizardById(w,db, query, id)
+	err = magicinventory.UpdateWizardByID(w,db, query, id)
 
 	if err == sql.ErrNoRows {
 		log.Println(fmt.Sprintf("Wizard %s is already in jail or wizard doesn't exists", id ))

@@ -22,7 +22,7 @@ func UpdateWizardsDeath(w *http.ResponseWriter, r *http.Request, db *sql.DB) (er
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	query := fmt.Sprintf("UPDATE wizards SET dead = %t WHERE id = $1 AND dead != %t RETURNING *;", true, true)
-	err = magicinventory.UpdateWizardById(w, db, query, id)
+	err = magicinventory.UpdateWizardByID(w, db, query, id)
 
 	if err == sql.ErrNoRows {
 		log.Println(fmt.Sprintf("Wizard %s is already dead or doesn't exists",id))

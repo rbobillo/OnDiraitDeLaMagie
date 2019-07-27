@@ -61,7 +61,7 @@ func UpdateWizards(db *sql.DB, status string, value float64) (err error) {
 
 
 // UpdateWizard should update a single status for single Wizard in magicinventory
-func UpdateWizardById(w *http.ResponseWriter, db *sql.DB, query string, args  interface{}) (err error){
+func UpdateWizardByID(w *http.ResponseWriter, db *sql.DB, query string, args  interface{}) (err error){
 	var wz dao.Wizard
 	row := db.QueryRow(query, args)
 
@@ -87,7 +87,7 @@ func UpdateWizardById(w *http.ResponseWriter, db *sql.DB, query string, args  in
 }
 
 // DeleteWizard should update a Wizard in magicinventory
-func DeleteWizardById(db *sql.DB, args interface{}) (err error) {
+func DeleteWizardByID(db *sql.DB, args interface{}) (err error) {
 	_, err = db.Exec("DELETE FROM wizards WHERE id = $1;", args)
 
 	if err != nil {
