@@ -10,10 +10,9 @@ import (
 	"net/http"
 )
 
-// UpdateWizardsAges function request the Magic Inventory
-// to update every wizard age by increment it n times
+// AgeWizards function request the Magic Inventory to update every wizard age by increment it n times
 // Todo: Change n to json
-func UpdateWizardsAge(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error){
+func AgeWizards(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	var wizard dao.Wizard
 
 	log.Println("/wizards/age")
@@ -49,7 +48,6 @@ func UpdateWizardsAge(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err 
 		log.Fatal("warning: cannot convert Body to JSON")
 		return err
 	}
-
+	(*w).WriteHeader(http.StatusNoContent)
 	return nil
 }
-

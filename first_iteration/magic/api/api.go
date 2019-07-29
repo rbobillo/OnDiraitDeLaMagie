@@ -40,20 +40,18 @@ func InitMagic(db *sql.DB) (err error) {
 	// GET actions
 	rt.Methods("GET").Path("/").HandlerFunc(func(w W, r *R) { err = Index(&w, r) })
 	rt.Methods("GET").Path("/wizards").HandlerFunc(func(w W, r *R) { err = GetWizards(&w, db) })
-	rt.Methods("GET").Path("/wizards/{id}").HandlerFunc(func(w W, r *R) { err = GetWizardsByID(&w, r, db) })
+	rt.Methods("GET").Path("/wizards/{id}").HandlerFunc(func(w W, r *R) { err = GetWizard(&w, r, db) })
 
 	// POST actions
 	rt.Methods("POST").Path("/wizards/spawn").HandlerFunc(func(w W, r *R) { err = SpawnWizard(&w, r, db) })
 
 	// UPDATE actions
-	rt.Methods("PATCH").Path("/wizards/age").HandlerFunc(func(w W, r *R) { err = UpdateWizardsAge(&w, r, db)})
-	rt.Methods("PATCH").Path("/wizards/{id}/die").HandlerFunc(func(w W, r *R) { err = UpdateWizardsDeath(&w, r, db) })
-	rt.Methods("PATCH").Path("/wizards/{id}/jail").HandlerFunc(func(w W, r *R) { err = UpdateWizardsJail(&w, r, db) })
+	rt.Methods("PATCH").Path("/wizards/age").HandlerFunc(func(w W, r *R) { err = AgeWizards(&w, r, db) })
+	rt.Methods("PATCH").Path("/wizards/{id}/die").HandlerFunc(func(w W, r *R) { err = KillWizardByID(&w, r, db) })
+	rt.Methods("PATCH").Path("/wizards/{id}/jail").HandlerFunc(func(w W, r *R) { err = JailWizardByID(&w, r, db) })
 
 	// DELETE actions
-	rt.Methods("DELETE").Path("/wizards/{id}/obliviate").HandlerFunc(func(w W, r *R) { err = ObliviateWizard(&w, r, db) })
-
-
+	rt.Methods("DELETE").Path("/wizards/{id}/obliviate").HandlerFunc(func(w W, r *R) { err = ObliviateWizardByID(&w, r, db) })
 
 	http.Handle("/", rt)
 

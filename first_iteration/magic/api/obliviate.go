@@ -8,20 +8,20 @@ import (
 	"net/http"
 )
 
-// Nimporte quoi
-func ObliviateWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB)(err error){
+// ObliviateWizardByID obliviate a wizard from the magic
+func ObliviateWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (status error) {
 	id := mux.Vars(r)["id"]
 
-	log.Printf("/wizards/{%s}/obliviate", id)
+	log.Printf("/wizards/%s/obliviate", id)
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	err = magicinventory.DeleteWizardByID(db, id)
+	err := magicinventory.DeleteWizardsByID(db, id)
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		log.Printf("error: cannot obliviate wizards %s", id)
 		return err
 	}
-	return err
+	return nil
 }

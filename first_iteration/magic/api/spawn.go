@@ -10,8 +10,7 @@ import (
 	"net/http"
 )
 
-// SpawnWizard function requests the Magic Inventory
-// to create a new wizard
+// SpawnWizard function requests the Magic Inventory to create a new wizard
 // TODO: handle error on db error (with proper http return codes)
 func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	var wizard dao.Wizard
@@ -21,7 +20,6 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 
 	decoder := json.NewDecoder(r.Body)
 	err = decoder.Decode(&wizard)
-	log.Println(err)
 	if err != nil {
 		(*w).WriteHeader(http.StatusMethodNotAllowed)
 		log.Println("warning: cannot convert Body to JSON")
@@ -50,6 +48,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 		log.Fatal("warning: cannot convert Body to JSON")
 		return err
 	}
-
+	(*w).WriteHeader(http.StatusCreated)
+	log.Println("new wizard created")
 	return nil
 }

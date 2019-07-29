@@ -4,12 +4,10 @@ package magicinventory
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"log"
-	"net/http"
 )
 
 //func getId(r *http.Request) string{
@@ -36,17 +34,8 @@ func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
 
 	return nil
 }
-// CheckWizardStatusById check if the status of an wizard is already set {jail, die, whatever)
-//func CheckWizardStatusById(db *sql.DB, status string, id string)(err error){
-//
-//}
-// GetWizardStatusById return the status of an wizard.
-//func GetWizardStatusById(db *sql.DB, status string, id string)(err error){
-//	_, err = db.Exec("SELECT FROM ")
-//}
 
-// UpdateWizard should update a Wizard in magicinventory
-// TODO: must take a query
+// UpdateWizards should update a Wizard in magicinventory
 func UpdateWizards(db *sql.DB, status string, value float64) (err error) {
 
 	_, err = db.Exec(fmt.Sprintf("UPDATE wizards SET %s = %s + $1", status, status), value)
@@ -59,43 +48,68 @@ func UpdateWizards(db *sql.DB, status string, value float64) (err error) {
 	return nil
 }
 
+// UpdateWizardsByID should update a single status for single Wizard in magicinventory
+func UpdateWizardsByID(db *sql.DB, query string, args interface{}, wz dao.Wizard) (err error) {
 
-// UpdateWizard should update a single status for single Wizard in magicinventory
-func UpdateWizardByID(w *http.ResponseWriter, db *sql.DB, query string, args  interface{}) (err error){
-	var wz dao.Wizard
 	row := db.QueryRow(query, args)
 
 	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
 	if err != nil {
-		(*w).WriteHeader(http.StatusNotFound)
-		return err
-	}
-
-	js, _ := json.Marshal(wz)
-
-	_, err = fmt.Fprintf(*w, string(js))
-
-	if err != nil {
-		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		log.Println("Cannot update wizard status")
 		return err
 	}
-
-	log.Printf("Wizards %s 's status have been updated", args)
+	log.Println(fmt.Sprintf("Wizards %s 's status have been updated", args))
 	return nil
 }
 
-// DeleteWizard should update a Wizard in magicinventory
-func DeleteWizardByID(db *sql.DB, args interface{}) (err error) {
+// DeleteWizardsByID should update a Wizard in magicinventory
+func DeleteWizardsByID(db *sql.DB, args interface{}) (err error) {
 	_, err = db.Exec("DELETE FROM wizards WHERE id = $1;", args)
 
 	if err != nil {
-		log.Println("Cannot delete wizard")
+		log.Println("cannot delete wizard")
 		return err
 	}
 
-	log.Printf("Wizards %s have been obliviated", args)
+	log.Printf("wizards %s have been obliviated", args)
+	return nil
+}
+
+// GetAllWizards should search in the magicinventory and return all wizards
+func GetAllWizards(db *sql.DB, query string, wizards []dao.Wizard) (err error) {
+
+	rows, err := db.Query(query)
+
+	if err != nil {
+		log.Println("cannot get all wizards")
+		return err
+	}
+
+	for rows.Next() {
+		var wz dao.Wizard
+		err = rows.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
+
+		if err != nil {
+			log.Println("cannot get all wizards: error while browsing wizards")
+			return err
+		}
+
+		wizards = append(wizards, wz)
+	}
+	return nil
+}
+
+// GetWizardsByID should search a wizard by ID in the magicinventory and return it
+func GetWizardsByID(db *sql.DB, query string, args interface{}, wz dao.Wizard) (err error) {
+	row := db.QueryRow(query, args)
+	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
+
+	if err != nil {
+		log.Println("cannot get wizards %s", args)
+		return err
+	}
+	log.Println("wizard %s have been found", args)
 	return nil
 }
 

@@ -84,7 +84,7 @@ paths:
           schema:
             $ref: "#/definitions/Wizard"
       responses:
-        200:
+        201:
           description: "successful operation"
           schema:
             $ref: '#/definitions/SingleWizardResponse'
@@ -111,7 +111,7 @@ paths:
           schema:
             $ref: "#/definitions/Age"
       responses:
-        200:
+        204:
           description: "successful operation"
         #          schema:
         #            $ref: '#/definitions/SingleWizardResponse'
@@ -140,9 +140,9 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: '#/definitions/SingleWizardResponse'
+            $ref: '#/definitions/SingleDeadWizardResponse'
         422:
-          description: "Cannot update the database (might be already dead)"
+          description: "Cannot update the database (may be already dead)"
         405:
           description: "Method not Allowed: Invalid input"
   /wizards/{id}/jail:
@@ -246,14 +246,59 @@ definitions:
       Age:
         type: "number"
         example: 0
-
+  DeadWizard:
+    type: "object"
+    required:
+      - "id"
+      - "first_name"
+      - "last_name"
+      - "age"
+      - "category"
+    properties:
+      id:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+      first_name:
+        type: "string"
+        example: "john"
+      last_name:
+        type: "string"
+        example: "doe"
+      age:
+        type: "number"
+        example: 0
+      category:
+        type: "string"
+        description: "Wizard category in the magicinventory"
+        enum:
+          - "Families"
+          - "Guests"
+          - "Villains"
+      arrested:
+        type: "boolean"
+        description: "Wizard jail status in the magicinventory"
+        bool: true
+      dead:
+        type: "boolean"
+        description: "Wizard life status in the magicinventory"
+        example: true
+        value: true
+    Age:
+      type: "object"
+      required:
+        - "Age"
+      properties:
+        Age:
+          type: "number"
+          example: 0
   SingleWizardResponse:
     $ref: '#/definitions/Wizard'
   MultipleWizardResponse:
     type: "array"
     items:
       $ref: '#/definitions/Wizard'
-
+  SingleDeadWizardResponse:
+    $ref: '#/definitions/DeadWizard'
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
