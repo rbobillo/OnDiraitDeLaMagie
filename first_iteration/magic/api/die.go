@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"log"
 	"net/http"
@@ -13,7 +12,6 @@ import (
 
 // KillWizardByID function request the Magic Inventory to update one wizard
 func KillWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
-	var wz dao.Wizard
 	id := mux.Vars(r)["id"]
 
 	log.Printf("/wizards/%s/die", id)
@@ -21,11 +19,11 @@ func KillWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	query := fmt.Sprintf("UPDATE wizards SET dead = %t WHERE id = $1 AND dead != %t RETURNING *;", true, true)
-	err = magicinventory.UpdateWizardsByID(db, query, id, wz)
+	wz, err := magicinventory.UpdateWizardsByID(db, query, id)
 
 	if err == sql.ErrNoRows {
 		(*w).WriteHeader(http.StatusNotFound)
-		log.Println(fmt.Sprintf("Wizard %s is already dead or doesn't exists", id))
+		log.Println(fmt.Sprintf("wizard %s is already dead or doesn't exists", id))
 		return err
 	}
 

@@ -26,7 +26,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 		return err
 	}
 
-	err = magicinventory.CreateWizard(wizard, db)
+	err = magicinventory.CreateWizards(wizard, db)
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)

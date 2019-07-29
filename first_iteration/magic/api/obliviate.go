@@ -9,7 +9,7 @@ import (
 )
 
 // ObliviateWizardByID obliviate a wizard from the magic
-func ObliviateWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (status error) {
+func ObliviateWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) error {
 	id := mux.Vars(r)["id"]
 
 	log.Printf("/wizards/%s/obliviate", id)

@@ -10,8 +10,8 @@ import (
 	"log"
 )
 
-// CreateWizard inserts a new Wizard into magicinventory
-func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
+// CreateWizards inserts a new Wizard into magicinventory
+func CreateWizards(w dao.Wizard, db *sql.DB) (err error) {
 	populateQuery :=
 		`insert into wizards (id, first_name, last_name, age, category, arrested, dead)
                 values ($1, $2, $3, $4, $5, $6, $7);`
@@ -30,30 +30,36 @@ func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
 
 // UpdateWizards should update a Wizard in magicinventory
 func UpdateWizards(db *sql.DB, status string, value float64) (err error) {
-
 	_, err = db.Exec(fmt.Sprintf("UPDATE wizards SET %s = %s + $1", status, status), value)
 
 	if err != nil {
-		log.Println(fmt.Sprintf("Cannot update wizards %s", status))
+		log.Println(fmt.Sprintf("cannot update wizards %s", status))
 		return err
 	}
-	log.Println(fmt.Sprintf("Wizards's %s updated", status))
+
+	log.Println(fmt.Sprintf("wizards's %s updated", status))
+
 	return nil
 }
 
 // UpdateWizardsByID should update a single status for single Wizard in magicinventory
-func UpdateWizardsByID(db *sql.DB, query string, args interface{}, wz dao.Wizard) (err error) {
-
+func UpdateWizardsByID(db *sql.DB, query string, args interface{}) (wz dao.Wizard, err error) {
 	row := db.QueryRow(query, args)
 
 	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
 	if err != nil {
-		log.Println("Cannot update wizard status")
-		return err
+		log.Println("cannot update wizard status")
+		return wz, err
 	}
+
+	if err == sql.ErrNoRows {
+		log.Println(fmt.Sprintf("wizard %s doesn't exists or is already", args))
+		return wz, err
+	}
+
 	log.Println(fmt.Sprintf("Wizards %s 's status have been updated", args))
-	return nil
+	return wz, err
 }
 
 // DeleteWizardsByID should update a Wizard in magicinventory
@@ -71,7 +77,6 @@ func DeleteWizardsByID(db *sql.DB, args interface{}) (err error) {
 
 // GetAllWizards should search in the magicinventory and return all wizards
 func GetAllWizards(db *sql.DB, query string, wizards []dao.Wizard) (err error) {
-
 	rows, err := db.Query(query)
 
 	if err != nil {
@@ -113,7 +118,7 @@ func populateMagicInventory(db *sql.DB) error {
 	wizards, err := internal.GenerateWizards(body)
 
 	for _, w := range wizards {
-		err = CreateWizard(w, db)
+		err = CreateWizards(w, db)
 
 		if err != nil {
 			return err
