@@ -10,13 +10,6 @@ import (
 	"log"
 )
 
-//func getId(r *http.Request) string{
-//	return mux.Vars(r)["id"]
-//}
-//type args interface {
-//	getId() string
-//}
-
 // CreateWizard inserts a new Wizard into magicinventory
 func CreateWizard(w dao.Wizard, db *sql.DB) (err error) {
 	populateQuery :=
