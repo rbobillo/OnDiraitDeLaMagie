@@ -36,6 +36,6 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 	js, _ := json.Marshal(wz)
 	_, err = fmt.Fprintf(*w, string(js))
 
-	(*w).WriteHeader(200)
+	(*w).WriteHeader(http.StatusOK)
 	return nil
 }
