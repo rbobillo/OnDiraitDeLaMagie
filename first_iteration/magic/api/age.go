@@ -48,6 +48,7 @@ func AgeWizards(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 		log.Fatal("warning: cannot convert Body to JSON")
 		return err
 	}
+
 	(*w).WriteHeader(http.StatusNoContent)
 	return nil
 }

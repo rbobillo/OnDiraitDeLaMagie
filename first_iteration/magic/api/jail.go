@@ -10,8 +10,9 @@ import (
 	"net/http"
 )
 
-// JailWizardByID put one wizard in jail by updating his jail status.
-func JailWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
+// JailWizard put one wizard in jail by updating his jail status.
+// TODO: better error handling (row not modified, db not reachable) - switch for err handling
+func JailWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	id := mux.Vars(r)["id"]
 
 	log.Printf("/wizards/%s/jail", id)
@@ -22,11 +23,14 @@ func JailWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 	wz, err := magicinventory.UpdateWizardsByID(db, query, id)
 
 	if err != nil {
+
 		log.Printf("error: cannot arrest wizards %s", id)
 		return err
 	}
+
 	js, _ := json.Marshal(wz)
 	_, err = fmt.Fprintf(*w, string(js))
+
 	(*w).WriteHeader(http.StatusOK)
 
 	return nil

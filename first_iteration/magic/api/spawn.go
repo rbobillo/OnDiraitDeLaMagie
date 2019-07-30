@@ -27,7 +27,6 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 	}
 
 	err = magicinventory.CreateWizards(wizard, db)
-
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		log.Println("warning: cannot insert new Wizard")
@@ -42,12 +41,12 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 	}
 
 	_, err = fmt.Fprintf(*w, string(js))
-
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
 		log.Fatal("warning: cannot convert Body to JSON")
 		return err
 	}
+
 	(*w).WriteHeader(http.StatusCreated)
 	log.Println("new wizard created")
 	return nil

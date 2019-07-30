@@ -8,8 +8,8 @@ import (
 	"net/http"
 )
 
-// ObliviateWizardByID obliviate a wizard from the magic
-func ObliviateWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) error {
+// ObliviateWizard obliviate a wizard from the magic
+func ObliviateWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) error {
 	id := mux.Vars(r)["id"]
 
 	log.Printf("/wizards/%s/obliviate", id)
@@ -23,5 +23,6 @@ func ObliviateWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) er
 		log.Printf("error: cannot obliviate wizards %s", id)
 		return err
 	}
+
 	return nil
 }

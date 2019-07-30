@@ -47,11 +47,11 @@ func InitMagic(db *sql.DB) (err error) {
 
 	// UPDATE actions
 	rt.Methods("PATCH").Path("/wizards/age").HandlerFunc(func(w W, r *R) { err = AgeWizards(&w, r, db) })
-	rt.Methods("PATCH").Path("/wizards/{id}/die").HandlerFunc(func(w W, r *R) { err = KillWizardByID(&w, r, db) })
-	rt.Methods("PATCH").Path("/wizards/{id}/jail").HandlerFunc(func(w W, r *R) { err = JailWizardByID(&w, r, db) })
+	rt.Methods("PATCH").Path("/wizards/{id}/die").HandlerFunc(func(w W, r *R) { err = KillWizard(&w, r, db) })
+	rt.Methods("PATCH").Path("/wizards/{id}/jail").HandlerFunc(func(w W, r *R) { err = JailWizard(&w, r, db) })
 
 	// DELETE actions
-	rt.Methods("DELETE").Path("/wizards/{id}/obliviate").HandlerFunc(func(w W, r *R) { err = ObliviateWizardByID(&w, r, db) })
+	rt.Methods("DELETE").Path("/wizards/{id}/obliviate").HandlerFunc(func(w W, r *R) { err = ObliviateWizard(&w, r, db) })
 
 	http.Handle("/", rt)
 

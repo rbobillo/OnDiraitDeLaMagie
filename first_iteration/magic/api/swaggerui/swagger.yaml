@@ -168,7 +168,7 @@ paths:
           schema:
             $ref: '#/definitions/SingleWizardResponse'
         422:
-          description: "Cannot update the database (might be already in jail)"
+          description: "Cannot update the database"
         405:
           description: "Method not Allowed: Invalid input"
   /wizards/obliviate:
@@ -189,12 +189,12 @@ paths:
           required: true
           type: "string"
       responses:
-        200:
+        204:
           description: "successful operation"
           schema:
             $ref: '#/definitions/SingleWizardResponse'
         422:
-          description: "Cannot update the database (might not existe)"
+          description: "Cannot update the database"
         405:
           description: "Method not Allowed: Invalid input"
 definitions:
@@ -281,8 +281,9 @@ definitions:
       dead:
         type: "boolean"
         description: "Wizard life status in the magicinventory"
-        example: true
-        value: true
+        enum:
+          - true
+          - false
     Age:
       type: "object"
       required:

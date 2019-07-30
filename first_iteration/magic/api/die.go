@@ -10,8 +10,8 @@ import (
 	"net/http"
 )
 
-// KillWizardByID function request the Magic Inventory to update one wizard
-func KillWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
+// KillWizard function request the Magic Inventory to update one wizard
+func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	id := mux.Vars(r)["id"]
 
 	log.Printf("/wizards/%s/die", id)
@@ -35,6 +35,7 @@ func KillWizardByID(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 
 	js, _ := json.Marshal(wz)
 	_, err = fmt.Fprintf(*w, string(js))
+
 	(*w).WriteHeader(http.StatusOK)
 	return nil
 }

@@ -26,6 +26,7 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 		log.Print(GetWizards(w, db))
 		return GetWizards(w, db)
 	}
+
 	log.Printf("/wizards/%s", id)
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -40,6 +41,7 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		return err
 	}
+
 	(*w).WriteHeader(http.StatusOK)
 	return nil
 }
@@ -63,6 +65,7 @@ func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		return err
 	}
+
 	(*w).WriteHeader(http.StatusOK)
 	return nil
 }
