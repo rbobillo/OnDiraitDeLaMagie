@@ -1,3 +1,4 @@
+#TODO: update refs : use 'SingleWizard' for age & jail just change one param
 swagger: "2.0"
 info:
   description: "This is the `magic` server. Documented with [Swagger](http://swagger.io)."
@@ -117,8 +118,8 @@ paths:
         #            $ref: '#/definitions/SingleWizardResponse'
         404:
           description: "Not Found"
-#        405:
-#          description: "Method not Allowed: Invalid input"
+  #        405:
+  #          description: "Method not Allowed: Invalid input"
   /wizards/{id}/die:
     patch:
       tags:
@@ -166,7 +167,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: '#/definitions/SingleWizardResponse'
+            $ref: '#/definitions/SingleArrestedWizardResponse'
         422:
           description: "Cannot update the database"
         405:
@@ -191,8 +192,6 @@ paths:
       responses:
         204:
           description: "successful operation"
-          schema:
-            $ref: '#/definitions/SingleWizardResponse'
         422:
           description: "Cannot update the database"
         405:
@@ -277,21 +276,55 @@ definitions:
       arrested:
         type: "boolean"
         description: "Wizard jail status in the magicinventory"
-        bool: true
+        enum:
+          - false
+          - true
       dead:
         type: "boolean"
         description: "Wizard life status in the magicinventory"
         enum:
           - true
           - false
-    Age:
-      type: "object"
-      required:
-        - "Age"
-      properties:
-        Age:
-          type: "number"
-          example: 0
+  ArrestedWizard:
+    type: "object"
+    required:
+      - "id"
+      - "first_name"
+      - "last_name"
+      - "age"
+      - "category"
+    properties:
+      id:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+      first_name:
+        type: "string"
+        example: "john"
+      last_name:
+        type: "string"
+        example: "doe"
+      age:
+        type: "number"
+        example: 0
+      category:
+        type: "string"
+        description: "Wizard category in the magicinventory"
+        enum:
+          - "Families"
+          - "Guests"
+          - "Villains"
+      arrested:
+        type: "boolean"
+        description: "Wizard jail status in the magicinventory"
+        enum:
+          - true
+          - false
+      dead:
+        type: "boolean"
+        description: "Wizard life status in the magicinventory"
+        enum:
+          - false
+          - true
   SingleWizardResponse:
     $ref: '#/definitions/Wizard'
   MultipleWizardResponse:
@@ -300,6 +333,8 @@ definitions:
       $ref: '#/definitions/Wizard'
   SingleDeadWizardResponse:
     $ref: '#/definitions/DeadWizard'
+  SingleArrestedWizardResponse:
+    $ref: '#/definitions/ArrestedWizard'
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
