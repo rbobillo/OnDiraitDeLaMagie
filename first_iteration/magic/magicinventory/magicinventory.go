@@ -133,7 +133,7 @@ func UpdateWizardsByID(db *sql.DB, query string, args ...interface{}) (wz dao.Wi
 
 	if err == sql.ErrNoRows {
 		log.Println(fmt.Sprintf("wizard %s doesn't exists or is already", args))
-		return wz, internal.ErrWizNotFound
+		return wz, internal.ErrWizardNotFound
 	}
 
 	if err != nil {
