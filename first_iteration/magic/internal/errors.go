@@ -2,6 +2,7 @@ package internal
 
 import "fmt"
 
-var ( ErrWizNotFound = fmt.Errorf("wizard not found")
-	ErrWizNotModified = fmt.Errorf("wizard not found")
-	)
+var (
+	ErrWizardNotFound = fmt.Errorf("wizard not found")
+	ErrWizardNotModified = fmt.Errorf("wizard not found")
+)
