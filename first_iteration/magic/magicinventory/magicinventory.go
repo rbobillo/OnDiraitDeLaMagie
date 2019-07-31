@@ -61,11 +61,11 @@ func GetAllWizards(db *sql.DB, query string) (wizards []dao.Wizard, err error) {
 		wizards = append(wizards, wz)
 	}
 
-	return  wizards, nil
+	return wizards, nil
 }
 
 // GetWizardsByID should search a wizard by ID in the magicinventory and return it
-func GetWizardsByID(db *sql.DB, query string, id string )(wz dao.Wizard, err error) {
+func GetWizardsByID(db *sql.DB, query string, id string) (wz dao.Wizard, err error) {
 	row := db.QueryRow(query, id)
 	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
@@ -93,7 +93,7 @@ func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
             first_name varchar(50) not null,
             last_name  varchar(50) not null,
             age        float       not null,
-        	category   varchar(50) not null,
+            category   varchar(50) not null,
             arrested   boolean     not null,
             dead       boolean     not null
          ); alter table wizards owner to magic;`
@@ -112,27 +112,27 @@ func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
 }
 
 // UpdateWizards should update a Wizard in magicinventory
-func UpdateWizards(db *sql.DB, status string, value float64) (err error) {
-	_, err = db.Exec(fmt.Sprintf("UPDATE wizards SET %s = %s + $1", status, status), value)
+func UpdateWizards(db *sql.DB, query string, args ...interface{}) (err error) {
+	_, err = db.Exec(query, args...)
 
 	if err != nil {
-		log.Println(fmt.Sprintf("cannot update wizards %s", status))
+		log.Printf("cannot update wizards")
 		return err
 	}
 
-	log.Println(fmt.Sprintf("wizards's %s updated", status))
+	log.Println(fmt.Sprintf("wizards updated"))
 
 	return nil
 }
 
 // UpdateWizardsByID should update a single status for single Wizard in magicinventory
-func UpdateWizardsByID(db *sql.DB, query string, args interface{}) (wz dao.Wizard, err error) {
-	row := db.QueryRow(query, args)
+func UpdateWizardsByID(db *sql.DB, id string, query string, args ...interface{}) (wz dao.Wizard, err error) {
+	args = append([]interface{}{id}, args...)
+	row := db.QueryRow(query, args...)
 
 	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
 	if err == sql.ErrNoRows {
-		log.Println(fmt.Sprintf("wizard %s doesn't exists or is already", args))
 		return wz, internal.ErrWizardNotFound
 	}
 
@@ -141,10 +141,10 @@ func UpdateWizardsByID(db *sql.DB, query string, args interface{}) (wz dao.Wizar
 		return wz, err
 	}
 
-	log.Println(fmt.Sprintf("Wizards %s 's status have been updated", args))
+	log.Printf("wizard %s's status has been updated", id)
+
 	return wz, err
 }
-
 
 // populateMagicInventory function should create random wizards
 // and fill the magicinventory with them
@@ -163,4 +163,3 @@ func populateMagicInventory(db *sql.DB) error {
 	log.Println("Wizards table populated")
 	return err
 }
-
