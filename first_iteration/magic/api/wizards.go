@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"log"
 	"net/http"
@@ -19,7 +18,6 @@ import (
 // to find a specific wizard
 // returns { "wizard" : <some_wizard> }
 func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
-	var wz dao.Wizard
 	id := mux.Vars(r)["id"]
 
 	if len(mux.Vars(r)) == 0 {
@@ -32,30 +30,28 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 
 	query := "SELECT * FROM wizards WHERE id = $1"
 
-	err = magicinventory.GetWizardsByID(db, query, id, wz)
-
+	wz,err := magicinventory.GetWizardsByID(db, query, id)
 	js, _ := json.Marshal(wz)
-	_, err = fmt.Fprintf(*w, string(js))
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		return err
 	}
 
-	(*w).WriteHeader(http.StatusOK)
-	return nil
+	_, err = fmt.Fprintf(*w, string(js))
+
+	return err
 }
 
 // GetWizards function requests the Magic Inventory
 // to find every wizards
 func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
-	var wizards []dao.Wizard
 	log.Println("/wizards")
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	query := "SELECT * FROM wizards"
 
-	err := magicinventory.GetAllWizards(db, query, wizards)
+	wizards, err := magicinventory.GetAllWizards(db, query)
 
 	js, _ := json.Marshal(wizards)
 
@@ -66,6 +62,5 @@ func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
 		return err
 	}
 
-	(*w).WriteHeader(http.StatusOK)
 	return nil
 }

@@ -41,12 +41,12 @@ func DeleteWizardsByID(db *sql.DB, args interface{}) (err error) {
 }
 
 // GetAllWizards should search in the magicinventory and return all wizards
-func GetAllWizards(db *sql.DB, query string, wizards []dao.Wizard) (err error) {
+func GetAllWizards(db *sql.DB, query string) (wizards []dao.Wizard, err error) {
 	rows, err := db.Query(query)
 
 	if err != nil {
 		log.Println("cannot get all wizards")
-		return err
+		return wizards, err
 	}
 
 	for rows.Next() {
@@ -55,27 +55,27 @@ func GetAllWizards(db *sql.DB, query string, wizards []dao.Wizard) (err error) {
 
 		if err != nil {
 			log.Println("cannot get all wizards: error while browsing wizards")
-			return err
+			return wizards, err
 		}
 
 		wizards = append(wizards, wz)
 	}
 
-	return nil
+	return  wizards, nil
 }
 
 // GetWizardsByID should search a wizard by ID in the magicinventory and return it
-func GetWizardsByID(db *sql.DB, query string, args interface{}, wz dao.Wizard) (err error) {
+func GetWizardsByID(db *sql.DB, query string, args interface{}) (wz dao.Wizard, err error) {
 	row := db.QueryRow(query, args)
 	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
 	if err != nil {
-		log.Println("cannot get wizards %s", args)
-		return err
+		log.Println(fmt.Sprintf("cannot get wizards %s", args))
+		return wz, err
 	}
 
-	log.Println("wizard %s have been found", args)
-	return nil
+	log.Println(fmt.Sprintf("wizard %s have been found ", args))
+	return wz, nil
 }
 
 // InitMagicInventory function sets up the magicinventory db
@@ -126,7 +126,7 @@ func UpdateWizards(db *sql.DB, status string, value float64) (err error) {
 }
 
 // UpdateWizardsByID should update a single status for single Wizard in magicinventory
-func UpdateWizardsByID(db *sql.DB, query string, args ...interface{}) (wz dao.Wizard, err error) {
+func UpdateWizardsByID(db *sql.DB, query string, args interface{}) (wz dao.Wizard, err error) {
 	row := db.QueryRow(query, args)
 
 	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)

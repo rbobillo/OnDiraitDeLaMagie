@@ -31,7 +31,5 @@ func JailWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 	js, _ := json.Marshal(wz)
 	_, err = fmt.Fprintf(*w, string(js))
 
-	(*w).WriteHeader(http.StatusOK)
-
 	return nil
 }

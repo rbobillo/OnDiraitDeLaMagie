@@ -17,7 +17,7 @@ func ObliviateWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) error 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	err := magicinventory.DeleteWizardsByID(db, id)
-
+	log.Println(err)
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		log.Printf("error: cannot obliviate wizards %s", id)

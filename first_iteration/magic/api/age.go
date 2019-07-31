@@ -49,6 +49,6 @@ func AgeWizards(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 		return err
 	}
 
-	(*w).WriteHeader(http.StatusNoContent)
+	//(*w).WriteHeader(http.StatusNoContent)
 	return nil
 }
