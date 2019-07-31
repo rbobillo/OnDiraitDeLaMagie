@@ -31,5 +31,10 @@ func JailWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 	js, _ := json.Marshal(wz)
 	_, err = fmt.Fprintf(*w, string(js))
 
+	if err != nil {
+		(*w).WriteHeader(http.StatusUnprocessableEntity)
+		return err
+	}
+
 	return nil
 }

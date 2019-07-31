@@ -14,7 +14,7 @@ import (
 func CreateWizards(w dao.Wizard, db *sql.DB) (err error) {
 	populateQuery :=
 		`insert into wizards (id, first_name, last_name, age, category, arrested, dead)
-                values ($1, $2, $3, $4, $5, $6, $7);`
+                     values ($1, $2, $3, $4, $5, $6, $7);`
 
 	_, err = db.Exec(populateQuery, w.ID, w.FirstName, w.LastName, w.Age, w.Category, w.Arrested, w.Dead)
 
@@ -28,15 +28,15 @@ func CreateWizards(w dao.Wizard, db *sql.DB) (err error) {
 }
 
 // DeleteWizardsByID should update a Wizard in magicinventory
-func DeleteWizardsByID(db *sql.DB, args interface{}) (err error) {
-	_, err = db.Exec("DELETE FROM wizards WHERE id = $1;", args)
+func DeleteWizardsByID(db *sql.DB, id string) (err error) {
+	_, err = db.Exec("DELETE FROM wizards WHERE id = $1;", id)
 
 	if err != nil {
 		log.Println("cannot delete wizard")
 		return err
 	}
 
-	log.Printf("wizards %s have been obliviated", args)
+	log.Printf("wizards %s have been obliviated", id)
 	return nil
 }
 
@@ -65,16 +65,16 @@ func GetAllWizards(db *sql.DB, query string) (wizards []dao.Wizard, err error) {
 }
 
 // GetWizardsByID should search a wizard by ID in the magicinventory and return it
-func GetWizardsByID(db *sql.DB, query string, args interface{}) (wz dao.Wizard, err error) {
-	row := db.QueryRow(query, args)
+func GetWizardsByID(db *sql.DB, query string, id string )(wz dao.Wizard, err error) {
+	row := db.QueryRow(query, id)
 	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
 	if err != nil {
-		log.Println(fmt.Sprintf("cannot get wizards %s", args))
+		log.Println(fmt.Sprintf("cannot get wizards %s", id))
 		return wz, err
 	}
 
-	log.Println(fmt.Sprintf("wizard %s have been found ", args))
+	log.Println(fmt.Sprintf("wizard %s have been found ", id))
 	return wz, nil
 }
 

@@ -31,14 +31,14 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 	query := "SELECT * FROM wizards WHERE id = $1"
 
 	wz,err := magicinventory.GetWizardsByID(db, query, id)
+
 	js, _ := json.Marshal(wz)
+	_, err = fmt.Fprintf(*w, string(js))
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		return err
 	}
-
-	_, err = fmt.Fprintf(*w, string(js))
 
 	return err
 }

@@ -27,14 +27,14 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 		return err
 	}
 
-	log.Println(err)
+	js, _ := json.Marshal(wz)
+	_, err = fmt.Fprintf(*w, string(js))
+
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		log.Printf("error: cannot kill wizards %s", id)
 		return err
 	}
-	js, _ := json.Marshal(wz)
-	_, err = fmt.Fprintf(*w, string(js))
 
 	return nil
 }
