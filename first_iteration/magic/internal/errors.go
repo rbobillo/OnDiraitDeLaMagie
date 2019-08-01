@@ -3,6 +3,7 @@ package internal
 import "fmt"
 
 var (
-	ErrWizardNotFound    = fmt.Errorf("wizard not found")
-	ErrWizardNotModified = fmt.Errorf("wizard not found")
+	/*ErrWizardsNotFounds is use when trying to find a Wizard in database
+	 with is id but the id doesn't existe or is not found */
+	ErrWizardsNotFounds    = fmt.Errorf("wizard not found")
 )

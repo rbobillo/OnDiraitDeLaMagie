@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"log"
 	"net/http"
@@ -21,7 +22,7 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 	query := "UPDATE wizards SET dead = $2 WHERE id = $1 RETURNING *;"
 	wz, err := magicinventory.UpdateWizardsByID(db, id, query, true)
 
-	if err == sql.ErrNoRows {
+	if err == internal.ErrWizardsNotFounds {
 		(*w).WriteHeader(http.StatusNotFound)
 		log.Println(fmt.Sprintf("wizard %s doesn't exists", id))
 		return err

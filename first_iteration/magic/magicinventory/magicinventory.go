@@ -44,6 +44,10 @@ func DeleteWizardsByID(db *sql.DB, id string) (err error) {
 func GetAllWizards(db *sql.DB, query string) (wizards []dao.Wizard, err error) {
 	rows, err := db.Query(query)
 
+	if err == sql.ErrNoRows {
+		return wizards, internal.ErrWizardsNotFounds
+	}
+
 	if err != nil {
 		log.Println("cannot get all wizards")
 		return wizards, err
@@ -69,6 +73,9 @@ func GetWizardsByID(db *sql.DB, query string, id string) (wz dao.Wizard, err err
 	row := db.QueryRow(query, id)
 	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
+	if err == sql.ErrNoRows{
+		return wz, internal.ErrWizardsNotFounds
+	}
 	if err != nil {
 		log.Println(fmt.Sprintf("cannot get wizards %s", id))
 		return wz, err
@@ -115,6 +122,10 @@ func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
 func UpdateWizards(db *sql.DB, query string, args ...interface{}) (err error) {
 	_, err = db.Exec(query, args...)
 
+	if err == sql.ErrNoRows {
+		return  internal.ErrWizardsNotFounds
+	}
+
 	if err != nil {
 		log.Printf("cannot update wizards")
 		return err
@@ -133,7 +144,7 @@ func UpdateWizardsByID(db *sql.DB, id string, query string, args ...interface{})
 	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
 	if err == sql.ErrNoRows {
-		return wz, internal.ErrWizardNotFound
+		return wz, internal.ErrWizardsNotFounds
 	}
 
 	if err != nil {

@@ -19,6 +19,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 
 	decoder := json.NewDecoder(r.Body)
 	err = decoder.Decode(&wizard)
+
 	if err != nil {
 		(*w).WriteHeader(http.StatusMethodNotAllowed)
 		log.Println("warning: cannot convert Body to JSON")
@@ -26,6 +27,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 	}
 
 	err = magicinventory.CreateWizards(wizard, db)
+
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		log.Println("warning: cannot insert new Wizard")

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"log"
 	"net/http"
@@ -32,12 +33,22 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 
 	wz, err := magicinventory.GetWizardsByID(db, query, id)
 
-	if err != nil {
+	if err == internal.ErrWizardsNotFounds {
 		(*w).WriteHeader(http.StatusNotFound)
 		return err
 	}
+	if err != nil {
+		(*w).WriteHeader(http.StatusUnprocessableEntity)
+		log.Printf("error: cannot find wizard %s", id)
+	}
 
 	js, err := json.Marshal(wz)
+
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		log.Fatal("error: cannot serialize Wizard to JSON")
+		return err
+	}
 	_, err = fmt.Fprintf(*w, string(js))
 
 	if err != nil {
@@ -49,7 +60,7 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 
 // GetWizards function requests the Magic Inventory
 // to find every wizards
-func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
+func GetWizards(w *http.ResponseWriter, db *sql.DB)  error {
 	log.Println("/wizards")
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -57,7 +68,22 @@ func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
 
 	wizards, err := magicinventory.GetAllWizards(db, query)
 
+	if err == internal.ErrWizardsNotFounds {
+		(*w).WriteHeader(http.StatusNotFound)
+		return err
+	}
+	if err != nil{
+		(*w).WriteHeader(http.StatusUnprocessableEntity)
+		log.Printf("error: cannot find all wizards")
+		return err
+	}
+
 	js, _ := json.Marshal(wizards)
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		log.Fatal("error: cannot serialize Wizard to JSON")
+		return err
+	}
 
 	_, err = fmt.Fprintf(*w, string(js))
 
