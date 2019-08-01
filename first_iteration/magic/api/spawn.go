@@ -46,7 +46,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 
 	(*w).WriteHeader(http.StatusCreated)
 
-	internal.Log(fmt.Sprintf("New wizard created")).Debug()
+	internal.Log(fmt.Sprintf("new wizard created")).Debug()
 
 	return nil
 }

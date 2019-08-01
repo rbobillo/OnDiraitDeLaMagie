@@ -18,12 +18,11 @@ func CreateWizards(w dao.Wizard, db *sql.DB) (err error) {
 	_, err = db.Exec(populateQuery, w.ID, w.FirstName, w.LastName, w.Age, w.Category, w.Arrested, w.Dead)
 
 	if err != nil {
-		internal.Log(fmt.Sprintf("cannot create wizard: %s", err )).Error()
+		internal.Log(fmt.Sprintf("cannot create wizard: %+v , %s ", w, err )).Error()
 		return err
 	}
 
-	internal.Log(fmt.Sprintf("Created wizard: ", w )).Debug()
-
+	internal.Log(fmt.Sprintf("created wizard: %+v", w)).Debug()
 	return nil
 }
 
@@ -36,7 +35,7 @@ func DeleteWizardsByID(db *sql.DB, id string) (err error) {
 		return err
 	}
 
-	internal.Log(fmt.Sprintf("Wizards %s have been deleted", id)).Debug()
+	internal.Log(fmt.Sprintf("wizards %s have been deleted", id)).Debug()
 
 	return nil
 }
@@ -83,7 +82,7 @@ func GetWizardsByID(db *sql.DB, query string, id string) (wz dao.Wizard, err err
 		return wz, err
 	}
 
-	internal.Log(fmt.Sprintf("Wizard %s have been found", id)).Debug()
+	internal.Log(fmt.Sprintf("wizard %s have been found", id)).Debug()
 
 	return wz, nil
 }
@@ -116,7 +115,7 @@ func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
 		panic(err)
 	}
 
-	internal.Log(fmt.Sprintf("Wizards table created")).Debug()
+	internal.Log(fmt.Sprintf("wizards table created")).Debug()
 
 	err = populateMagicInventory(db)
 
@@ -136,7 +135,7 @@ func UpdateWizards(db *sql.DB, query string, args ...interface{}) (err error) {
 		return err
 	}
 
-	internal.Log(fmt.Sprintf("Wizards updated")).Debug()
+	internal.Log(fmt.Sprintf("wizards updated")).Debug()
 
 	return nil
 }
@@ -157,7 +156,7 @@ func UpdateWizardsByID(db *sql.DB, id string, query string, args ...interface{})
 		return wz, err
 	}
 
-	internal.Log(fmt.Sprintf("Wizard %s's status has been updated", id)).Debug()
+	internal.Log(fmt.Sprintf("wizard %s's status has been updated", id)).Debug()
 
 	return wz, err
 }
@@ -177,6 +176,6 @@ func populateMagicInventory(db *sql.DB) error {
 		}
 	}
 
-	internal.Log(fmt.Sprintf("Wizards table populated")).Debug()
+	internal.Log(fmt.Sprintf("wizards table populated")).Debug()
 	return err
 }

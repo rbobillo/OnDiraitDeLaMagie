@@ -8,6 +8,8 @@ import (
 	"net/http"
 )
 
+// SingleWizardResponse try to serialize a wizard to JSON
+// then copy the JSON to the response header body
 func SingleWizardResponse(wizard dao.Wizard, w *http.ResponseWriter) error{
 	js, err := json.Marshal(wizard)
 

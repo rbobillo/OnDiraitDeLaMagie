@@ -37,7 +37,7 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 		return err
 	}
 
-	internal.Log(fmt.Sprintf("Wizard %s dead", id)).Debug()
+	internal.Log(fmt.Sprintf("wizard %s dead", id)).Debug()
 
 	return nil
 }
