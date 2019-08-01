@@ -77,11 +77,11 @@ func GetWizardsByID(db *sql.DB, query string, id string) (wz dao.Wizard, err err
 		return wz, internal.ErrWizardsNotFounds
 	}
 	if err != nil {
-		log.Println(fmt.Sprintf("cannot get wizards %s", id))
+		log.Printf("cannot get wizards %s", id)
 		return wz, err
 	}
 
-	log.Println(fmt.Sprintf("wizard %s have been found ", id))
+	log.Printf("wizard %s have been found ", id)
 	return wz, nil
 }
 
@@ -131,7 +131,7 @@ func UpdateWizards(db *sql.DB, query string, args ...interface{}) (err error) {
 		return err
 	}
 
-	log.Println(fmt.Sprintf("wizards updated"))
+	log.Printf("wizards updated")
 
 	return nil
 }

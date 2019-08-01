@@ -24,7 +24,7 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 
 	if err == internal.ErrWizardsNotFounds {
 		(*w).WriteHeader(http.StatusNotFound)
-		log.Println(fmt.Sprintf("wizard %s doesn't exists", id))
+		log.Printf("wizard %s doesn't exists", id)
 		return err
 	}
 
