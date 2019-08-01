@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
-	"log"
 )
 
 // CreateWizards inserts a new Wizard into magicinventory
@@ -19,11 +18,12 @@ func CreateWizards(w dao.Wizard, db *sql.DB) (err error) {
 	_, err = db.Exec(populateQuery, w.ID, w.FirstName, w.LastName, w.Age, w.Category, w.Arrested, w.Dead)
 
 	if err != nil {
-		log.Println("Cannot create wizard:", w, err)
+		internal.Log(fmt.Sprintf("cannot create wizard: %s", err )).Error()
 		return err
 	}
 
-	log.Println("Created wizard:", w)
+	internal.Log(fmt.Sprintf("Created wizard: ", w )).Debug()
+
 	return nil
 }
 
@@ -32,11 +32,12 @@ func DeleteWizardsByID(db *sql.DB, id string) (err error) {
 	_, err = db.Exec("DELETE FROM wizards WHERE id = $1;", id)
 
 	if err != nil {
-		log.Println("cannot delete wizard")
+		internal.Log(fmt.Sprintf("cannot delete wizard %s", id)).Error()
 		return err
 	}
 
-	log.Printf("wizards %s have been obliviated", id)
+	internal.Log(fmt.Sprintf("Wizards %s have been deleted", id)).Debug()
+
 	return nil
 }
 
@@ -49,7 +50,7 @@ func GetAllWizards(db *sql.DB, query string) (wizards []dao.Wizard, err error) {
 	}
 
 	if err != nil {
-		log.Println("cannot get all wizards")
+		internal.Log(fmt.Sprintf("cannot get all wizards")).Error()
 		return wizards, err
 	}
 
@@ -58,7 +59,7 @@ func GetAllWizards(db *sql.DB, query string) (wizards []dao.Wizard, err error) {
 		err = rows.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
 		if err != nil {
-			log.Println("cannot get all wizards: error while browsing wizards")
+			internal.Log(fmt.Sprintf("cannot get all wizards: error while browsing wizards")).Error()
 			return wizards, err
 		}
 
@@ -77,11 +78,13 @@ func GetWizardsByID(db *sql.DB, query string, id string) (wz dao.Wizard, err err
 		return wz, internal.ErrWizardsNotFounds
 	}
 	if err != nil {
-		log.Printf("cannot get wizards %s", id)
+		internal.Log(fmt.Sprintf("cannot get wizards %s", id)).Error()
+
 		return wz, err
 	}
 
-	log.Printf("wizard %s have been found ", id)
+	internal.Log(fmt.Sprintf("Wizard %s have been found", id)).Debug()
+
 	return wz, nil
 }
 
@@ -90,8 +93,10 @@ func GetWizardsByID(db *sql.DB, query string, id string) (wz dao.Wizard, err err
 // TODO: add an event listener ? https://godoc.org/github.com/lib/pq/example/listen
 func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", psqlInfo)
+
 	if err != nil {
-		panic(err)
+		internal.Log(fmt.Sprintf("error while opening db connection")).Error()
+		return db, err
 	}
 
 	initQuery :=
@@ -111,7 +116,7 @@ func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
 		panic(err)
 	}
 
-	log.Println("Wizards table created")
+	internal.Log(fmt.Sprintf("Wizards table created")).Debug()
 
 	err = populateMagicInventory(db)
 
@@ -127,11 +132,11 @@ func UpdateWizards(db *sql.DB, query string, args ...interface{}) (err error) {
 	}
 
 	if err != nil {
-		log.Printf("cannot update wizards")
+		internal.Log(fmt.Sprintf("cannot update wizards")).Error()
 		return err
 	}
 
-	log.Printf("wizards updated")
+	internal.Log(fmt.Sprintf("Wizards updated")).Debug()
 
 	return nil
 }
@@ -148,11 +153,11 @@ func UpdateWizardsByID(db *sql.DB, id string, query string, args ...interface{})
 	}
 
 	if err != nil {
-		log.Println("cannot update wizard status")
+		internal.Log(fmt.Sprintf("cannot update wizard status")).Error()
 		return wz, err
 	}
 
-	log.Printf("wizard %s's status has been updated", id)
+	internal.Log(fmt.Sprintf("Wizard %s's status has been updated", id)).Debug()
 
 	return wz, err
 }
@@ -167,10 +172,11 @@ func populateMagicInventory(db *sql.DB) error {
 		err = CreateWizards(w, db)
 
 		if err != nil {
+			internal.Log(fmt.Sprintf("cannot populate magic inventory")).Error()
 			return err
 		}
 	}
 
-	log.Println("Wizards table populated")
+	internal.Log(fmt.Sprintf("Wizards table populated")).Debug()
 	return err
 }

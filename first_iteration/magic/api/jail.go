@@ -2,12 +2,10 @@ package api
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
-	"log"
 	"net/http"
 )
 
@@ -16,7 +14,7 @@ import (
 func JailWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	id := mux.Vars(r)["id"]
 
-	log.Printf("/wizards/%s/jail", id)
+	internal.Log(fmt.Sprintf("/wizards/%s/jail", id)).Debug()
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -25,31 +23,21 @@ func JailWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 
 	if err == internal.ErrWizardsNotFounds {
 		(*w).WriteHeader(http.StatusNotFound)
-		log.Printf("wizard %s doesn't exists", id)
+		internal.Log(fmt.Sprintf("wizard %s doesn't exists", id)).Error()
 		return err
 	}
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		log.Printf("error: cannot arrest wizard %s", id)
+		internal.Log(fmt.Sprintf("cannot arrest wizard %s", id)).Error()
 		return err
 	}
 
-	js, err := json.Marshal(wz)
-
-	if err != nil {
-		(*w).WriteHeader(http.StatusInternalServerError)
-		log.Fatal("error: cannot serialize Wizard to JSON")
+	err = SingleWizardResponse(wz, w)
+	if  err != nil{
 		return err
 	}
-
-	_, err = fmt.Fprintf(*w, string(js))
-
-	if err != nil {
-		(*w).WriteHeader(http.StatusInternalServerError)
-		log.Fatal("warning: cannot convert Body to JSON")
-		return err
-	}
+	internal.Log(fmt.Sprintf("Wizard %s id in jail", id)).Debug()
 
 	return nil
 }

@@ -3,15 +3,16 @@
 package api
 
 import (
-	"log"
+	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"net/http"
-
+	"fmt"
 	_ "github.com/lib/pq" // go get -u github.com/lib/pq
 )
 
 // Index function exposes the swagger API description
 func Index(w *http.ResponseWriter, r *http.Request) (err error) {
-	log.Println("/ redirect to /swaggerui/")
+	internal.Log(fmt.Sprintf("/ redirect to /swaggerui/")).Debug()
+
 	http.Redirect(*w, r, "/swaggerui/", http.StatusFound)
 
 	return err

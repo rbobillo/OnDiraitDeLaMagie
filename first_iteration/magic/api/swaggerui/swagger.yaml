@@ -242,7 +242,7 @@ definitions:
     required:
       - "Age"
     properties:
-      Age:
+      age:
         type: "number"
         example: 0
   DeadWizard:
