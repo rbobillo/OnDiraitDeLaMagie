@@ -35,11 +35,19 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 
 	js, err := json.Marshal(wz)
 
-	// TODO: handle error
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		log.Fatal("error: cannot serialize Wizard to JSON")
+		return err
+	}
 
 	_, err = fmt.Fprintf(*w, string(js))
 
-	// TODO: handle error
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		log.Fatal("warning: cannot convert Body to JSON")
+		return err
+	}
 
 	return nil
 }

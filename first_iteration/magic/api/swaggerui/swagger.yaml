@@ -172,7 +172,7 @@ paths:
           description: "Cannot update the database"
         405:
           description: "Method not Allowed: Invalid input"
-  /wizards/obliviate:
+  /wizards/{id}/obliviate:
     delete:
       tags:
         - "wizards"
