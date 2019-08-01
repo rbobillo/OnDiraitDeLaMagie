@@ -18,6 +18,22 @@ var Pubq = make(map[string]amqp.Queue)
 // Subq is the queue Hogwarts listens to
 var Subq amqp.Queue
 
+// DeclareBasicQueue is used to declare once
+// a RabbitMQ queue, with default parameters
+func DeclareBasicQueue(name string) amqp.Queue {
+	q, err := Chan.QueueDeclare(name,
+		false, // durable
+		false, // autoDelete
+		false, // exclusive
+		false, // noWait
+		nil,   // args
+	)
+
+	FailOnError(err, "Failed to declare a queue")
+
+	return q
+}
+
 // Publish sends messages to 'pubq'
 func Publish(qname string, payload string) {
 	err := Chan.Publish(
@@ -40,12 +56,13 @@ func Subscribe() {
 	msgs, err := Chan.Consume(
 		Subq.Name, // queue
 		"",        // consumer
-		false,     // auto-ack (should the message be removed from queue after beind read)
+		false,     // auto-ack (should the message be removed from queue after being read)
 		false,     // exclusive
 		false,     // no-local
 		false,     // no-wait
 		nil,       // args
 	)
+
 	FailOnError(err, "Failed to register a consumer")
 
 	forever := make(chan bool)
@@ -64,19 +81,4 @@ func Subscribe() {
 	log.Printf("Waiting for mails...")
 
 	<-forever
-}
-
-// DeclareBasicQueue is used to declare once
-// a RabbitMQ queue, with default parameters
-func DeclareBasicQueue(name string) amqp.Queue {
-	q, err := Chan.QueueDeclare(name,
-		false, // durable
-		false, // autoDelete
-		false, // exclusive
-		false, // noWait
-		nil,   // args
-	)
-	FailOnError(err, "Failed to declare a queue")
-
-	return q
 }

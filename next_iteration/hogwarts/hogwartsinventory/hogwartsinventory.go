@@ -12,6 +12,7 @@ import (
 // InitHogwartsInventory function sets up the hogwartsinventory db
 func InitHogwartsInventory(psqlInfo string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", psqlInfo)
+
 	if err != nil {
 		panic(err)
 	}
@@ -47,8 +48,6 @@ func InitHogwartsInventory(psqlInfo string) (*sql.DB, error) {
 	}
 
 	log.Println("Students table created")
-
-	// TODO: create & populate other tables ?
 
 	return db, err
 }
