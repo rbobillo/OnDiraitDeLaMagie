@@ -25,6 +25,7 @@ func ObliviateWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) error 
 		return err
 	}
 
+	(*w).WriteHeader(http.StatusNoContent)
 	internal.Info(fmt.Sprintf("wizard %s have been oblivited", id))
 
 	return nil
