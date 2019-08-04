@@ -1,12 +1,15 @@
 package api
 
-import "testing"
+import (
+	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
+	"testing"
+)
 
 func TestGetWizards(t *testing.T) {
 	err := GetWizards(nil, nil)
 
 	if err != nil {
-		t.Fatal("No Error Expected")
+		internal.Error("No Error Expected")
 	}
 }
 
@@ -14,7 +17,7 @@ func TestInitMagic(t *testing.T) {
 	err := InitMagic(nil)
 
 	if err != nil {
-		t.Fatal("No Error Expected")
+		internal.Error("No Error Expected")
 	}
 }
 

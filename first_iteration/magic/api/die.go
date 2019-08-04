@@ -13,7 +13,7 @@ import (
 func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	id := mux.Vars(r)["id"]
 
-	internal.Log(fmt.Sprintf("/wizards/%s/die")).Debug()
+	internal.Debug(fmt.Sprintf("/wizards/%s/die"))
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -22,13 +22,13 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 
 	if err == internal.ErrWizardsNotFounds {
 		(*w).WriteHeader(http.StatusNotFound)
-		internal.Log(fmt.Sprintf("wizard %s doesn't exists")).Error()
+		internal.Error(fmt.Sprintf("wizard %s doesn't exists", id))
 		return err
 	}
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		internal.Log(fmt.Sprintf("cannot kill wizard %s")).Error()
+		internal.Error(fmt.Sprintf("cannot kill wizard %s", id))
 		return err
 	}
 
@@ -37,7 +37,7 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 		return err
 	}
 
-	internal.Log(fmt.Sprintf("wizard %s dead", id)).Debug()
+	internal.Debug(fmt.Sprintf("wizard %s dead", id))
 
 	return nil
 }

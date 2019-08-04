@@ -6,7 +6,6 @@ package internal
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/satori/go.uuid" // go get github.com/satori/go.uuid
 	"io/ioutil"
@@ -120,7 +119,7 @@ func GetRandomNames(qty int) (body []byte, errs []error) {
 		return body, append(errs, err)
 	}
 
-	Log(fmt.Sprintf("random names generated")).Debug()
+	Debug("random names generated")
 
 	return body, nil
 }

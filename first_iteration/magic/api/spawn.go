@@ -7,7 +7,6 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"net/http"
-	"fmt"
 )
 
 // SpawnWizard function requests the Magic Inventory to create a new wizard
@@ -15,7 +14,7 @@ import (
 func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	var wizard dao.Wizard
 
-	internal.Log(fmt.Sprintf("/wizards/spawn")).Debug()
+	internal.Debug("/wizards/spawn")
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -24,7 +23,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusMethodNotAllowed)
-		internal.Log(fmt.Sprintf("cannot convert Body to JSON")).Warn()
+		internal.Warn("cannot convert Body to JSON")
 		return err
 	}
 
@@ -32,7 +31,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		internal.Log(fmt.Sprintf("cannot insert new Wizard")).Warn()
+		internal.Warn("cannot insert new Wizard")
 		return err
 	}
 
@@ -40,13 +39,13 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Log(fmt.Sprintf("cannot serialize Wizard to JSON")).Error()
+		internal.Error("cannot serialize Wizard to JSON")
 		return err
 	}
 
 	(*w).WriteHeader(http.StatusCreated)
 
-	internal.Log(fmt.Sprintf("new wizard created")).Debug()
+	internal.Debug("new wizard created")
 
 	return nil
 }

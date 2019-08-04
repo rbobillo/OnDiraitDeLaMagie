@@ -20,7 +20,7 @@ import (
 func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	id := mux.Vars(r)["id"]
 
-	internal.Log(fmt.Sprintf("/wizards/%s", id)).Debug()
+	internal.Debug(fmt.Sprintf("/wizards/%s", id))
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -30,12 +30,12 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 
 	if err == internal.ErrWizardsNotFounds {
 		(*w).WriteHeader(http.StatusNotFound)
-		internal.Log(fmt.Sprintf("wizard %s may not exist", id)).Error()
+		internal.Error(fmt.Sprintf("wizard %s may not exist", id))
 		return err
 	}
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		internal.Log(fmt.Sprintf("cannot find wizard %s", id)).Error()
+		internal.Error(fmt.Sprintf("cannot find wizard %s", id))
 		return err
 	}
 
@@ -43,7 +43,7 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 	if  err != nil{
 		return err
 	}
-	internal.Log(fmt.Sprintf("Wizard %s have bee found", id)).Debug()
+	internal.Debug(fmt.Sprintf("Wizard %s have bee found", id))
 
 	return err
 }
@@ -51,7 +51,7 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 // GetWizards function requests the Magic Inventory
 // to find every wizards
 func GetWizards(w *http.ResponseWriter, db *sql.DB)  error {
-	internal.Log(fmt.Sprintf("/wizards/")).Debug()
+	internal.Debug(fmt.Sprintf("/wizards/"))
 
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -62,12 +62,12 @@ func GetWizards(w *http.ResponseWriter, db *sql.DB)  error {
 
 	if err == internal.ErrWizardsNotFounds {
 		(*w).WriteHeader(http.StatusNotFound)
-		internal.Log(fmt.Sprintf("wizards doesn't exists")).Error()
+		internal.Error("wizards doesn't exists")
 		return err
 	}
 	if err != nil{
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		internal.Log(fmt.Sprintf("cannot find all wizards")).Error()
+		internal.Error("cannot find all wizards")
 		return err
 	}
 
@@ -75,7 +75,7 @@ func GetWizards(w *http.ResponseWriter, db *sql.DB)  error {
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Log(fmt.Sprintf("cannot serialize Wizard to JSON")).Error()
+		internal.Error(fmt.Sprintf("cannot serialize Wizard to JSON"))
 		return err
 	}
 
@@ -83,11 +83,11 @@ func GetWizards(w *http.ResponseWriter, db *sql.DB)  error {
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Log(fmt.Sprintf("cannot convert Body to JSON")).Warn()
+		internal.Warn("cannot convert Body to JSON")
 		return err
 	}
 
-	internal.Log(fmt.Sprintf("all wizards have been found")).Debug()
+	internal.Debug("all wizards have been found")
 
 	return nil
 }

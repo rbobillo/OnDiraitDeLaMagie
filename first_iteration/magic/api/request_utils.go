@@ -15,7 +15,7 @@ func SingleWizardResponse(wizard dao.Wizard, w *http.ResponseWriter) error{
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Log(fmt.Sprintf("cannot serialize Wizard to JSON")).Error()
+		internal.Error("cannot serialize Wizard to JSON")
 		return err
 	}
 
@@ -23,7 +23,7 @@ func SingleWizardResponse(wizard dao.Wizard, w *http.ResponseWriter) error{
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Log(fmt.Sprintf("cannot convert Body to JSON")).Warn()
+		internal.Warn("cannot convert Body to JSON")
 		return err
 	}
 	return nil

@@ -13,7 +13,7 @@ import (
 func ObliviateWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) error {
 	id := mux.Vars(r)["id"]
 
-	internal.Log(fmt.Sprintf("/wizards/%s/obliviate", id)).Debug()
+	internal.Debug(fmt.Sprintf("/wizards/%s/obliviate", id))
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -21,11 +21,11 @@ func ObliviateWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) error 
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		internal.Log(fmt.Sprintf("cannot obliviate wizards %s", id)).Error()
+		internal.Error(fmt.Sprintf("cannot obliviate wizards %s", id))
 		return err
 	}
 
-	internal.Log(fmt.Sprintf("wizard %s have been oblivited", id)).Debug()
+	internal.Debug(fmt.Sprintf("wizard %s have been oblivited", id))
 
 	return nil
 }
