@@ -43,7 +43,7 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 	if err != nil {
 		return err
 	}
-	internal.Debug(fmt.Sprintf("Wizard %s have bee found", id))
+	internal.Debug(fmt.Sprintf("wizard %s have bee found", id))
 
 	return err
 }
@@ -74,7 +74,7 @@ func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Warn(fmt.Sprintf("cannot serialize Wizard to JSON"))
+		internal.Warn(fmt.Sprintf("cannot serialize wizard to JSON"))
 		return err
 	}
 

@@ -40,7 +40,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Error("cannot serialize Wizard to JSON")
+		internal.Warn("cannot serialize Wizard to JSON")
 		return err
 	}
 

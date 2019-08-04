@@ -15,7 +15,7 @@ func SingleWizardResponse(wizard dao.Wizard, w *http.ResponseWriter) error {
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Error("cannot serialize Wizard to JSON")
+		internal.Warn("cannot serialize Wizard to JSON")
 		return err
 	}
 
