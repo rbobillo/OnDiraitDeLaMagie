@@ -7,6 +7,7 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"net/http"
+	"fmt"
 )
 
 // SpawnWizard function requests the Magic Inventory to create a new wizard
@@ -45,7 +46,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 
 	(*w).WriteHeader(http.StatusCreated)
 
-	internal.Debug("new wizard created")
+	internal.Info(fmt.Sprintf("wizard has spawned: %v", wizard))
 
 	return nil
 }

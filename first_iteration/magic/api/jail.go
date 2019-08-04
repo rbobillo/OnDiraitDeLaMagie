@@ -37,7 +37,7 @@ func JailWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 	if  err != nil{
 		return err
 	}
-	internal.Debug(fmt.Sprintf("wizard %s id in jail", id))
+	internal.Info(fmt.Sprintf("wizard %s has been sent to jail", id))
 
 	return nil
 }

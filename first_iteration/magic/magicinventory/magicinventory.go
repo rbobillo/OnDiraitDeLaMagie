@@ -18,7 +18,7 @@ func CreateWizards(w dao.Wizard, db *sql.DB) (err error) {
 	_, err = db.Exec(populateQuery, w.ID, w.FirstName, w.LastName, w.Age, w.Category, w.Arrested, w.Dead)
 
 	if err != nil {
-		internal.Error("cannot create wizard: %v , %s ")
+		internal.Warn(fmt.Sprintf("cannot create wizard: %v , %s ", w, err))
 		return err
 	}
 
@@ -31,7 +31,7 @@ func DeleteWizardsByID(db *sql.DB, id string) (err error) {
 	_, err = db.Exec("DELETE FROM wizards WHERE id = $1;", id)
 
 	if err != nil {
-		internal.Error(fmt.Sprintf("cannot delete wizard %s", id))
+		internal.Warn(fmt.Sprintf("cannot delete wizard %s", id))
 		return err
 	}
 

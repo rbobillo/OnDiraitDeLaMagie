@@ -25,7 +25,7 @@ func ObliviateWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) error 
 		return err
 	}
 
-	internal.Debug(fmt.Sprintf("wizard %s have been oblivited", id))
+	internal.Info(fmt.Sprintf("wizard %s have been oblivited", id))
 
 	return nil
 }

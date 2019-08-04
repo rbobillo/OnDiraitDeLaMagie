@@ -22,7 +22,7 @@ func main() {
 	db, err := magicinventory.InitMagicInventory(psqlInfo)
 
 	if err != nil {
-		panic(err)
+		internal.Warn(err.Error())
 	}
 
 	err = api.InitMagic(db)

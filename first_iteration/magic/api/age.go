@@ -7,6 +7,7 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"net/http"
+	"fmt"
 )
 
 // AgeWizards function request the Magic Inventory to update every wizard age by increment it n times
@@ -36,6 +37,7 @@ func AgeWizards(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 	}
 
 	(*w).WriteHeader(http.StatusNoContent)
-	internal.Debug("wizards age successfully updated")
+	internal.Info(fmt.Sprintf("every wizards got older (+%f years)", wizard.Age))
+
 	return nil
 }

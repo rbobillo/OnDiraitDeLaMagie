@@ -13,7 +13,7 @@ import (
 func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	id := mux.Vars(r)["id"]
 
-	internal.Debug(fmt.Sprintf("/wizards/%s/die"))
+	internal.Debug(fmt.Sprintf("/wizards/%s/die"), is)
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -37,7 +37,7 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 		return err
 	}
 
-	internal.Debug(fmt.Sprintf("wizard %s dead", id))
+	internal.Info(fmt.Sprintf("wizard %s is dead", id))
 
 	return nil
 }
