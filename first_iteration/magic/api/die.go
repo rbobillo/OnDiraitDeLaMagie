@@ -33,7 +33,7 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 	}
 
 	err = SingleWizardResponse(wizard, w)
-	if  err != nil{
+	if err != nil {
 		return err
 	}
 

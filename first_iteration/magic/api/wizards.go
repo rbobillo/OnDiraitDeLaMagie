@@ -40,7 +40,7 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 	}
 
 	err = SingleWizardResponse(wizard, w)
-	if  err != nil{
+	if err != nil {
 		return err
 	}
 	internal.Debug(fmt.Sprintf("Wizard %s have bee found", id))
@@ -50,9 +50,8 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 
 // GetWizards function requests the Magic Inventory
 // to find every wizards
-func GetWizards(w *http.ResponseWriter, db *sql.DB)  error {
+func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
 	internal.Debug(fmt.Sprintf("/wizards/"))
-
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -65,7 +64,7 @@ func GetWizards(w *http.ResponseWriter, db *sql.DB)  error {
 		internal.Error("wizards doesn't exists")
 		return err
 	}
-	if err != nil{
+	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
 		internal.Error("cannot find all wizards")
 		return err

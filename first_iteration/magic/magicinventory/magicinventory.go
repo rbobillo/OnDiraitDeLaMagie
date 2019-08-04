@@ -72,7 +72,7 @@ func GetWizardsByID(db *sql.DB, query string, id string) (wz dao.Wizard, err err
 	row := db.QueryRow(query, id)
 	err = row.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
-	if err == sql.ErrNoRows{
+	if err == sql.ErrNoRows {
 		return wz, internal.ErrWizardsNotFounds
 	}
 	if err != nil {
@@ -126,7 +126,7 @@ func UpdateWizards(db *sql.DB, query string, args ...interface{}) (err error) {
 	_, err = db.Exec(query, args...)
 
 	if err == sql.ErrNoRows {
-		return  internal.ErrWizardsNotFounds
+		return internal.ErrWizardsNotFounds
 	}
 
 	if err != nil {

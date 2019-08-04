@@ -3,11 +3,11 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"net/http"
-	"fmt"
 )
 
 // SpawnWizard function requests the Magic Inventory to create a new wizard

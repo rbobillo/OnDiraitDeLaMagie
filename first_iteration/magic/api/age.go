@@ -3,11 +3,11 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
 	"net/http"
-	"fmt"
 )
 
 // AgeWizards function request the Magic Inventory to update every wizard age by increment it n times
