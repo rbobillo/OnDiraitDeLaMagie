@@ -43,7 +43,7 @@ func GetWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) 
 	if err != nil {
 		return err
 	}
-	internal.Debug(fmt.Sprintf("wizard %s have bee found", id))
+	internal.Debug(fmt.Sprintf("wizard %s hase been found", id))
 
 	return err
 }
@@ -86,7 +86,7 @@ func GetWizards(w *http.ResponseWriter, db *sql.DB) error {
 		return err
 	}
 
-	internal.Debug("all wizards have been found")
+	internal.Debug("all wizards has been found")
 
 	return nil
 }
