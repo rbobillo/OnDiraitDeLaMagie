@@ -13,7 +13,7 @@ import (
 func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error) {
 	id := mux.Vars(r)["id"]
 
-	internal.Debug(fmt.Sprintf("/wizards/%s/die"), is)
+	internal.Debug(fmt.Sprintf("/wizards/%s/die", id))
 
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
