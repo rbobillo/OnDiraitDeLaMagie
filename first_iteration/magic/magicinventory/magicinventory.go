@@ -35,7 +35,7 @@ func DeleteWizardsByID(db *sql.DB, id string) (err error) {
 		return err
 	}
 
-	internal.Debug(fmt.Sprintf("wizards %s have been deleted", id))
+	internal.Debug(fmt.Sprintf("wizards %s has been deleted", id))
 	return nil
 }
 
@@ -48,7 +48,7 @@ func GetAllWizards(db *sql.DB, query string) (wizards []dao.Wizard, err error) {
 	}
 
 	if err != nil {
-		internal.Error("cannot get all wizards")
+		internal.Warn("cannot get all wizards")
 		return wizards, err
 	}
 
@@ -57,7 +57,7 @@ func GetAllWizards(db *sql.DB, query string) (wizards []dao.Wizard, err error) {
 		err = rows.Scan(&wz.ID, &wz.FirstName, &wz.LastName, &wz.Age, &wz.Category, &wz.Arrested, &wz.Dead)
 
 		if err != nil {
-			internal.Error("cannot get all wizards: error while browsing wizards")
+			internal.Warn("cannot get all wizards: error while browsing wizards")
 			return wizards, err
 		}
 
@@ -76,12 +76,12 @@ func GetWizardsByID(db *sql.DB, query string, id string) (wz dao.Wizard, err err
 		return wz, internal.ErrWizardsNotFounds
 	}
 	if err != nil {
-		internal.Error(fmt.Sprintf("cannot get wizards %s", id))
+		internal.Warn(fmt.Sprintf("cannot get wizards %s", id))
 
 		return wz, err
 	}
 
-	internal.Debug(fmt.Sprintf("wizard %s have been found", id))
+	internal.Debug(fmt.Sprintf("wizard %s has been found", id))
 
 	return wz, nil
 }
@@ -93,7 +93,7 @@ func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", psqlInfo)
 
 	if err != nil {
-		internal.Error("error while opening db connection")
+		internal.Warn("error while opening db connection")
 		return db, err
 	}
 
@@ -111,7 +111,8 @@ func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
 	_, err = db.Query(initQuery)
 
 	if err != nil {
-		panic(err)
+		internal.Error(err.Error())
+		return db, err
 	}
 
 	internal.Debug("wizards table created")
@@ -130,7 +131,7 @@ func UpdateWizards(db *sql.DB, query string, args ...interface{}) (err error) {
 	}
 
 	if err != nil {
-		internal.Error("cannot update wizards")
+		internal.Warn("cannot update wizards")
 		return err
 	}
 
@@ -151,7 +152,7 @@ func UpdateWizardsByID(db *sql.DB, id string, query string, args ...interface{})
 	}
 
 	if err != nil {
-		internal.Error("cannot update wizard status")
+		internal.Warn("cannot update wizard status")
 		return wz, err
 	}
 
@@ -170,7 +171,7 @@ func populateMagicInventory(db *sql.DB) error {
 		err = CreateWizards(w, db)
 
 		if err != nil {
-			internal.Error("cannot populate magic inventory")
+			internal.Warn("cannot populate magic inventory")
 			return err
 		}
 	}

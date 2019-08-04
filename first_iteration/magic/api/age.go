@@ -32,7 +32,7 @@ func AgeWizards(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		internal.Error("cannot update wizards's age")
+		internal.Warn("cannot update wizards's age")
 		return err
 	}
 

@@ -21,7 +21,7 @@ func ObliviateWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) error 
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		internal.Error(fmt.Sprintf("cannot obliviate wizards %s", id))
+		internal.Warn(fmt.Sprintf("cannot obliviate wizards %s", id))
 		return err
 	}
 

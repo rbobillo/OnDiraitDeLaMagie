@@ -22,18 +22,19 @@ func KillWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error)
 
 	if err == internal.ErrWizardsNotFounds {
 		(*w).WriteHeader(http.StatusNotFound)
-		internal.Error(fmt.Sprintf("wizard %s doesn't exists", id))
+		internal.Warn(fmt.Sprintf("wizard %s doesn't exists", id))
 		return err
 	}
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		internal.Error(fmt.Sprintf("cannot kill wizard %s", id))
+		internal.Warn(fmt.Sprintf("cannot kill wizard %s", id))
 		return err
 	}
 
 	err = SingleWizardResponse(wizard, w)
 	if err != nil {
+		internal.Error(err.Error())
 		return err
 	}
 
