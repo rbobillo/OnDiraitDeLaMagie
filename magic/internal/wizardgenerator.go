@@ -1,14 +1,12 @@
-// main is a standalone package,
-// it is used to generate and print
-// random wizards names
-// its functions (except 'main', of course)
-// should be used to "create Magic Life"
-// -> well, for the MAGIC CRUD...
-package main
+// Package internal groups some useful
+// internal libraries
+// here, the wizardgenerator uses randomuser.me
+// to generator a bunch of random Wizard
+package internal
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/dao"
 	"github.com/satori/go.uuid" // go get github.com/satori/go.uuid
 	"io/ioutil"
 	"math/rand"
@@ -40,21 +38,10 @@ type Identity struct {
 // cf: https://randomuser.me/documentation#howto
 type Names struct {
 	Results []Identity
-	// if
 }
 
-// Wizard is the content for the Magic Inventory DB
-type Wizard struct {
-	ID        string  `json:"id"`
-	FirstName string  `json:"first_name"`
-	LastName  string  `json:"last_name"`
-	Age       float64 `json:"age"`
-	Category  string  `json:"category"` // Families, Guests, Villains
-	Arrested  bool    `json:"arrested"`
-}
-
-// Any checks if id of a new Wizard doesn't already exist
-func Any(id string, wizards []Wizard) bool {
+// any checks if id of a new Wizard doesn't already exist
+func any(id uuid.UUID, wizards []dao.Wizard) bool {
 	for _, w := range wizards {
 		if w.ID == id {
 			return true
@@ -63,18 +50,19 @@ func Any(id string, wizards []Wizard) bool {
 	return false
 }
 
-// AddWizard adds a new one only if its generated id
+// addWizard adds a new one only if its generated id
 // does not already belong to another created Wizard
-func AddWizard(categories []string, name Name, wizards []Wizard) []Wizard {
-	wizard := Wizard{uuid.Must(uuid.NewV4()).String(), //GenerateRandomID(32),
-			strings.Title(name.First),
-			strings.Title(name.Last),
-			float64(rand.Int() % 20 + 20),
-			categories[rand.Int() % 3],
-			false}
+func addWizard(categories []string, name Name, wizards []dao.Wizard) []dao.Wizard {
+	wizard := dao.Wizard{ID: uuid.Must(uuid.NewV4()),
+		FirstName: strings.Title(name.First),
+		LastName:  strings.Title(name.Last),
+		Age:       float64(rand.Int()%20 + 20),
+		Category:  categories[rand.Int()%3],
+		Arrested:  false,
+		Dead:      false}
 
-	if Any(wizard.ID, wizards) {
-		return AddWizard(categories, name, wizards)
+	if any(wizard.ID, wizards) {
+		return addWizard(categories, name, wizards)
 	}
 
 	return append(wizards, wizard)
@@ -82,9 +70,9 @@ func AddWizard(categories []string, name Name, wizards []Wizard) []Wizard {
 
 // GenerateWizards is the function that will generate
 // random wizard identities, from GetRandomNames
-func GenerateWizards(body []byte) (wizards []Wizard, err error) {
+func GenerateWizards(body []byte) (wizards []dao.Wizard, err error) {
 	names := Names{}
-	categories := []string{"Families","Guests","Villains"}
+	categories := []string{"Families", "Guests", "Villains"}
 	err = json.Unmarshal(body, &names)
 
 	if err != nil {
@@ -92,7 +80,7 @@ func GenerateWizards(body []byte) (wizards []Wizard, err error) {
 	}
 
 	for _, name := range names.Results {
-		wizards = AddWizard(categories, name.Name, wizards)
+		wizards = addWizard(categories, name.Name, wizards)
 	}
 
 	return wizards, err
@@ -118,7 +106,7 @@ func GetRandomNames(qty int) (body []byte, errs []error) {
 		return body, append(errs, err)
 	}
 
-	defer func () {
+	defer func() {
 		err = resp.Body.Close()
 		if err != nil {
 			errs = append(errs, err)
@@ -131,15 +119,7 @@ func GetRandomNames(qty int) (body []byte, errs []error) {
 		return body, append(errs, err)
 	}
 
+	Debug("random names generated")
+
 	return body, nil
-}
-
-func main() {
-	body, _ := GetRandomNames(1000)
-	wizards, _ := GenerateWizards(body)
-
-	for _, w := range wizards {
-		j, _ := json.Marshal(w)
-		fmt.Println(string(j))
-	}
 }

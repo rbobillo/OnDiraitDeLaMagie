@@ -1,0 +1,340 @@
+#TODO: update refs : use 'SingleWizard' for age & jail just change one param
+swagger: "2.0"
+info:
+  description: "This is the `magic` server. Documented with [Swagger](http://swagger.io)."
+  version: "1.0.0"
+  title: "Magic Service"
+  termsOfService: "http://swagger.io/terms/"
+#  contact:
+#    email: ""
+#  license:
+#    name: "Apache 2.0"
+#    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:9090"
+basePath: "/"
+tags:
+  - name: "wizards"
+    description: "Everything about Wizards"
+#  externalDocs:
+#    description: "Find out more"
+#    url: "http://swagger.io"
+schemes:
+  - "http"
+#- "https"
+paths:
+  /wizards:
+    get:
+      tags:
+        - "wizards"
+      summary: "Find every Wizards from magicinventory DB"
+      description: ""
+      operationId: ""
+      produces:
+        - "application/json"
+      #      - "application/xml"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/MultipleWizardResponse'
+  #        405:
+  #          description: "Cannot reach database"
+  /wizards/{id}:
+    get:
+      tags:
+        - "wizards"
+      summary: "Find Wizard by ID"
+      description: "Returns a single wizard"
+      operationId: "GetWizardByID"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of Wizard to return"
+          required: true
+          type: "string"
+      #        format: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/SingleWizardResponse'
+        #        400:
+        #          description: "Invalid ID supplied"
+        404:
+          description: "Wizard not found"
+  /wizards/spawn:
+    post:
+      tags:
+        - "wizards"
+      summary: "Add Wizard to magicinventory DB"
+      description: ""
+      operationId: ""
+      consumes:
+        - "application/json"
+      #      - "application/xml"
+      produces:
+        - "application/json"
+      #      - "application/xml"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Wizard object that needs to be added to the store"
+          required: true
+          schema:
+            $ref: "#/definitions/Wizard"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/SingleWizardResponse'
+        422:
+          description: "Cannot insert to database (might be duplicate)"
+        405:
+          description: "Method not Allowed: Invalid input"
+  /wizards/age:
+    patch:
+      tags:
+        - "wizards"
+      summary: "Increase Wizards age by n"
+      description: ""
+      operationId: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "Age"
+          description: "Wizard object that needs to be update to the store"
+          required: true
+          schema:
+            $ref: "#/definitions/Age"
+      responses:
+        204:
+          description: "successful operation"
+        #          schema:
+        #            $ref: '#/definitions/SingleWizardResponse'
+        404:
+          description: "Not Found"
+  #        405:
+  #          description: "Method not Allowed: Invalid input"
+  /wizards/{id}/die:
+    patch:
+      tags:
+        - "wizards"
+      summary: "Kill a wizard"
+      description: ""
+      operationId: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of Wizard to kill"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/SingleDeadWizardResponse'
+        422:
+          description: "Cannot update the database (may be already dead)"
+        405:
+          description: "Method not Allowed: Invalid input"
+  /wizards/{id}/jail:
+    patch:
+      tags:
+        - "wizards"
+      summary: "Put a wizard in jail"
+      description: ""
+      operationId: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of Wizard to put in jail"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/SingleArrestedWizardResponse'
+        422:
+          description: "Cannot update the database"
+        405:
+          description: "Method not Allowed: Invalid input"
+  /wizards/{id}/obliviate:
+    delete:
+      tags:
+        - "wizards"
+      summary: "Obliviate a wizard"
+      description: ""
+      operationId: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of Wizard to obliviate"
+          required: true
+          type: "string"
+      responses:
+        204:
+          description: "successful operation"
+        422:
+          description: "Cannot update the database"
+        405:
+          description: "Method not Allowed: Invalid input"
+definitions:
+  Wizard:
+    type: "object"
+    required:
+      - "id"
+      - "first_name"
+      - "last_name"
+      - "age"
+      - "category"
+    properties:
+      id:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+      first_name:
+        type: "string"
+        example: "john"
+      last_name:
+        type: "string"
+        example: "doe"
+      age:
+        type: "number"
+        example: 0
+      category:
+        type: "string"
+        description: "Wizard category in the magicinventory"
+        enum:
+          - "Families"
+          - "Guests"
+          - "Villains"
+      arrested:
+        type: "boolean"
+        description: "Wizard jail status in the magicinventory"
+        enum:
+          - false
+          - true
+      dead:
+        type: "boolean"
+        description: "Wizard life status in the magicinventory"
+        enum:
+          - false
+          - true
+  Age:
+    type: "object"
+    required:
+      - "Age"
+    properties:
+      age:
+        type: "number"
+        example: 0
+  DeadWizard:
+    type: "object"
+    required:
+      - "id"
+      - "first_name"
+      - "last_name"
+      - "age"
+      - "category"
+    properties:
+      id:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+      first_name:
+        type: "string"
+        example: "john"
+      last_name:
+        type: "string"
+        example: "doe"
+      age:
+        type: "number"
+        example: 0
+      category:
+        type: "string"
+        description: "Wizard category in the magicinventory"
+        enum:
+          - "Families"
+          - "Guests"
+          - "Villains"
+      arrested:
+        type: "boolean"
+        description: "Wizard jail status in the magicinventory"
+        enum:
+          - false
+          - true
+      dead:
+        type: "boolean"
+        description: "Wizard life status in the magicinventory"
+        enum:
+          - true
+          - false
+  ArrestedWizard:
+    type: "object"
+    required:
+      - "id"
+      - "first_name"
+      - "last_name"
+      - "age"
+      - "category"
+    properties:
+      id:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+      first_name:
+        type: "string"
+        example: "john"
+      last_name:
+        type: "string"
+        example: "doe"
+      age:
+        type: "number"
+        example: 0
+      category:
+        type: "string"
+        description: "Wizard category in the magicinventory"
+        enum:
+          - "Families"
+          - "Guests"
+          - "Villains"
+      arrested:
+        type: "boolean"
+        description: "Wizard jail status in the magicinventory"
+        enum:
+          - true
+          - false
+      dead:
+        type: "boolean"
+        description: "Wizard life status in the magicinventory"
+        enum:
+          - false
+          - true
+  SingleWizardResponse:
+    $ref: '#/definitions/Wizard'
+  MultipleWizardResponse:
+    type: "array"
+    items:
+      $ref: '#/definitions/Wizard'
+  SingleDeadWizardResponse:
+    $ref: '#/definitions/DeadWizard'
+  SingleArrestedWizardResponse:
+    $ref: '#/definitions/ArrestedWizard'
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
