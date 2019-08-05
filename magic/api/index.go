@@ -4,7 +4,7 @@ package api
 
 import (
 	_ "github.com/lib/pq" // go get -u github.com/lib/pq
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
 	"net/http"
 )
 

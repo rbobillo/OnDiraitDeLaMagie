@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/magicinventory"
 	"net/http"
 )
 

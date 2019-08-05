@@ -7,8 +7,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/magicinventory"
 	"net/http"
 
 	_ "github.com/lib/pq" // go get -u github.com/lib/pq

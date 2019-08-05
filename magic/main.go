@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/api"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/api"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/magicinventory"
 	"log"
 	"net/http"
 )

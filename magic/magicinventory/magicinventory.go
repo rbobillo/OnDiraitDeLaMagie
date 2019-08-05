@@ -5,8 +5,8 @@ package magicinventory
 import (
 	"database/sql"
 	"fmt"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/dao"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
 )
 
 // CreateWizards inserts a new Wizard into magicinventory

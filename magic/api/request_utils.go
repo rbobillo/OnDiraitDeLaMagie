@@ -3,8 +3,8 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/dao"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
 	"net/http"
 )
 

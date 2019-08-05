@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
 	"testing"
 )
 

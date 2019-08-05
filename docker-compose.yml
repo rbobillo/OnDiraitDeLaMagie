@@ -9,7 +9,7 @@ services:
       - ./magic/magicinventory/pgdata:/pgdata
       # store locally the Dockerized postgres data
     env_file:
-      - ./magic/magic.env
+      - magic/magic.env
       # use env vars from a common file, to setup postgres DB
     environment:
       - PGDATA=/pgdata
@@ -25,7 +25,7 @@ services:
     ports:
       - "9090:9090"
     env_file:
-      - ./magic/magic.env
+      - magic/magic.env
     restart: "on-failure"
       # restart the service if a start failure happened (unreachable DB, for example)
     depends_on:
@@ -34,5 +34,5 @@ services:
     links:
       - magic_inventory
     volumes:
-      - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic
+      - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/magic
       # copies current dir to container, according to this project packages structure

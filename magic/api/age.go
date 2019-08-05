@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/dao"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/internal"
-	"github.com/rbobillo/OnDiraitDeLaMagie/first_iteration/magic/magicinventory"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/dao"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/magic/magicinventory"
 	"net/http"
 )
 

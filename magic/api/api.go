@@ -16,9 +16,9 @@ import (
 // And joins it to swagger-ui dir relative path
 // Then it loads this dir (and trims it from serve path)
 func serveSwaggerUI(rt *mux.Router) {
-	_, cwd, _, _ := runtime.Caller(1)
+	_, cwd, _, _ := runtime.Caller(2)
 
-	ui := path.Join(path.Dir(cwd), "/swaggerui/")
+	ui := path.Join(path.Dir(cwd), "/third_party/swaggerui/")
 
 	rt.PathPrefix("/swaggerui/").Handler(
 		http.StripPrefix("/swaggerui/", http.FileServer(http.Dir(ui))))
