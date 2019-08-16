@@ -25,6 +25,14 @@
      - `ministry` receives the Help message, and tries to PATCH http://hogwarts:9091/actions/protect, but `hogwarts` is unavailable
      - `ministry` must be able to replay this action when `hogwarts` is available
      - this action must still be replayable if `ministry` crashes before replaying the action
+ - Bonus:
+   - An essential brick is not available `owls`, `{...}inventory`...
+   - The service using it should be able to replay the action it was supposed to do, anytime
+   - For example: interaction between `ministry` and `owls`:
+     - `owls` is unavailable (crash...)
+     - `ministry` tries to send a message, but `owla` cannot be reached
+     - the message should be resent when `owls` is available
+     - this action must still be replayable if `ministry` crashes before replaying the action (by any means necessary)
 
 ### Run with
 ```
