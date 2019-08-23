@@ -6,10 +6,10 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/api"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/hogwartsinventory"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
-	log "github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
 	"github.com/streadway/amqp"
 	"net/http"
 	"strings"
+	"log"
 )
 
 func setupOwls() (err error) {
@@ -21,10 +21,16 @@ func setupOwls() (err error) {
 	url := fmt.Sprintf("amqp://%s:%s@%s:%S/", user, pass, host, port)
 
 	internal.Conn, err = amqp.Dial(url)
-	internal.HandleError(err,"failed to connect to RabbitMQ", log.Error)
+	if err != nil {
+		internal.Error(err.Error())
+		return err
+	}
 
 	internal.Chan, err = internal.Conn.Channel()
-	internal.HandleError(err, "failed to open a channel", log.Error)
+	if err != nil {
+		internal.Error(err.Error())
+		return err
+	}
 
 	internal.Info("listening OWL service...")
 
@@ -51,13 +57,21 @@ func setupHogwartsInventory() (*sql.DB, error){
 
 func main() {
 	db, err := setupHogwartsInventory()
-	internal.HandleError(err, "failed to setup hogwarts database", log.Error)
+	if err != nil {
+		internal.Error(err.Error())
+	}
 
 	err = api.InitHogwarts(db)
-	internal.HandleError(err, "failed to init hogwarts database", log.Error)
+	if err != nil {
+		internal.Error(err.Error())
+	}
+
 
 	err = setupOwls()
-	internal.HandleError(err, "failed to setup hogwarts Owls service", log.Error)
+	if err != nil {
+		internal.Error(err.Error())
+	}
+
 
 	go internal.Subscribe()
 
@@ -66,5 +80,6 @@ func main() {
 	defer internal.Conn.Close()
 	defer db.Close()
 
-	internal.HandleError(http.ListenAndServe(":9091", nil), "nya", log.Info)
+
+	log.Fatal(http.ListenAndServe(":9091", nil))
 }
