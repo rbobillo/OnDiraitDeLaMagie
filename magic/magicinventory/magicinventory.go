@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
+	"log"
 )
 
 // CreateWizards inserts a new Wizard into magicinventory
@@ -96,7 +97,6 @@ func InitMagicInventory(psqlInfo string) (*sql.DB, error) {
 		internal.Warn("error while opening db connection")
 		return db, err
 	}
-
 	initQuery :=
 		`create table if not exists wizards (
             id         uuid        not null primary key,

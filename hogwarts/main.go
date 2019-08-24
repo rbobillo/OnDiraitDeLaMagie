@@ -18,7 +18,7 @@ func setupOwls() (err error) {
 	user := internal.GetEnvOrElse("RABBIT_USER", "magic")
 	pass := internal.GetEnvOrElse("RABBIT_PASS", "magic")
 
-	url := fmt.Sprintf("amqp://%s:%s@%s:%S/", user, pass, host, port)
+	url := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, pass, host, port)
 
 	internal.Conn, err = amqp.Dial(url)
 	if err != nil {
@@ -65,20 +65,20 @@ func main() {
 	if err != nil {
 		internal.Error(err.Error())
 	}
-
-
-	err = setupOwls()
-	if err != nil {
-		internal.Error(err.Error())
-	}
-
-
-	go internal.Subscribe()
-
-	// Todo : Handle defer errors
-	defer internal.Chan.Close()
-	defer internal.Conn.Close()
-	defer db.Close()
+	//
+	//
+	//err = setupOwls()
+	//if err != nil {
+	//	internal.Error(err.Error())
+	//}
+	//
+	//
+	//go internal.Subscribe()
+	//
+	//// Todo : Handle defer errors
+	//defer internal.Chan.Close()
+	//defer internal.Conn.Close()
+	//defer db.Close()
 
 
 	log.Fatal(http.ListenAndServe(":9091", nil))

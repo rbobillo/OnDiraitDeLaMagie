@@ -5,6 +5,7 @@ package hogwartsinventory
 import (
 	"database/sql"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
+	"log"
 )
 
 func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){
@@ -12,6 +13,11 @@ func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){
 	if err != nil {
 		internal.Error("failed to establish sql connection")
 		return db, err
+	}
+	log.Println(db)
+	err = db.Ping()
+	if err != nil {
+		panic(err)
 	}
 
 	initActionsQuery :=
@@ -25,6 +31,7 @@ func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){
 	_, err = db.Query(initActionsQuery)
 	if err != nil {
 		internal.Error("cannot create actions table")
+		internal.Error(err.Error())
 		return db, err
 	}
 
