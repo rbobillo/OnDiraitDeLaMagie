@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
-	"log"
 )
 
 // CreateWizards inserts a new Wizard into magicinventory

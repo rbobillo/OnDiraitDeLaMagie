@@ -22,7 +22,7 @@ func setupOwls() (err error) {
 
 	internal.Conn, err = amqp.Dial(url)
 	if err != nil {
-		internal.Error(err.Error())
+		internal.Error("failed to connect to RabbitMQ")
 		return err
 	}
 
@@ -65,21 +65,21 @@ func main() {
 	if err != nil {
 		internal.Error(err.Error())
 	}
-	//
-	//
-	//err = setupOwls()
-	//if err != nil {
-	//	internal.Error(err.Error())
-	//}
-	//
-	//
+
+
+	err = setupOwls()
+	if err != nil {
+		internal.Error(err.Error())
+	}
+
+
 	//go internal.Subscribe()
-	//
+
 	//// Todo : Handle defer errors
-	//defer internal.Chan.Close()
-	//defer internal.Conn.Close()
-	//defer db.Close()
+	defer internal.Chan.Close()
+	defer internal.Conn.Close()
+	defer db.Close()
 
 
-	log.Fatal(http.ListenAndServe(":9091", nil))
+	log.Fatal(http.ListenAndServe(":9092", nil))
 }
