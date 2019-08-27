@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/ministry/internal"
-	"log"
 	"strings"
 
 	"github.com/streadway/amqp" // go get github.com/streadway/amqp
@@ -13,15 +12,19 @@ import (
 // it creates 'ministry' queue, and 'hogwarts' queue
 // then it listens to 'ministry' queue
 func initMinistry(url string) (err error) {
-	log.Println("Listening OWL service...")
+	internal.Debug("Listening OWL service...")
 
 	internal.Conn, err = amqp.Dial(url)
-
-	internal.FailOnError(err, "Failed to connect to RabbitMQ")
+	if err != nil {
+		internal.Warn("Failed to connect to RabbitMQ")
+		return err
+	}
 
 	internal.Chan, err = internal.Conn.Channel()
-
-	internal.FailOnError(err, "Failed to open a channel")
+	if err != nil {
+		internal.Warn("Failed to open a channel")
+		return err
+	}
 
 	// subscribe to the ministry queue
 	// if it doesn't exist, it creates it
@@ -46,12 +49,12 @@ func main() {
 
 	url := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, pass, host, port)
 
-	log.Println("Starting ministry service...")
+	internal.Info("Starting ministry service...")
 
 	err := initMinistry(url)
 
 	if err != nil {
-		panic(err)
+		internal.Error(err.Error())
 	}
 
 	defer internal.Chan.Close()

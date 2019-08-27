@@ -3,7 +3,7 @@ package internal
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/rbobillo/hogwarts/dto"
+	"github.com/rbobillo/OnDiraitDeLaMagie/ministry/dto"
 	"github.com/streadway/amqp"
 	"log"
 	"net/http"
