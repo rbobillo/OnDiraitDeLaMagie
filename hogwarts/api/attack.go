@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/dto"
+	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/hogwartsinventory"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
 	uuid "github.com/satori/go.uuid"
 	"net/http"
@@ -22,10 +23,17 @@ func AttackHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusMethodNotAllowed)
-		internal.Warn("warning: cannot convert Body to JSON")
+		internal.Warn("cannot convert Body to JSON")
 		return err
 	}
+
 	// TODO: implement attack logic (impact on Hogwarts services + table insert...)
+	err = hogwartsinventory.CreateAttack(attack, db)
+	if err != nil {
+		(*w).WriteHeader(http.StatusUnprocessableEntity)
+		internal.Warn("cannot insert new Attack")
+		return err
+	}
 
 	help, err := json.Marshal(dto.Help{
 		ID: uuid.Must(uuid.NewV4()),
@@ -37,7 +45,7 @@ func AttackHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 	})
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Warn("error: cannot serialize Wizard to JSON")
+		internal.Warn("cannot serialize Attack to JSON")
 		return err
 	}
 

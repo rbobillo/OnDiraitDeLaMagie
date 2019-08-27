@@ -4,9 +4,62 @@ package hogwartsinventory
 
 import (
 	"database/sql"
+	"fmt"
+	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/dao"
+	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/dto"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
 )
 
+// CreateAttack should insert in the attack table the current attack
+// CreateWizards inserts a new Wizard into magicinventory
+func CreateAttack(a dto.Attack, db *sql.DB) (err error) {
+	attackQuery :=
+		`insert into actions (id, quick,stong)
+                     values ($1, $2, $3);`
+
+	_, err = db.Exec(attackQuery, a.ID, a.Quick, a.Strong)
+
+	if err != nil {
+		internal.Warn(fmt.Sprintf("cannot create action: %v , %s ", a, err))
+		return err
+	}
+
+	internal.Debug(fmt.Sprintf("created action: %v", a))
+	return nil
+}
+
+
+// GetAllStudents should search in the hogwartsinventory and return all students
+func GetAllStudents(db *sql.DB, query string) (students []dao.Student, err error) {
+	rows, err := db.Query(query)
+
+	if err == sql.ErrNoRows {
+		return students, internal.ErrStudentsNotFounds
+	}
+
+	if err != nil {
+		internal.Warn("cannot get all wizards")
+		return students, err
+	}
+
+	for rows.Next() {
+		var stud dao.Student
+		err = rows.Scan(&stud.ID, &stud.MagicID, &stud.House, &stud.Status)
+
+		if err != nil {
+			internal.Warn("cannot get all wizards: error while browsing wizards")
+			return students, err
+		}
+
+		students = append(students, stud)
+	}
+
+	return students, nil
+}
+
+
+// InitHogwartsInventory create table actions and students
+// in the hogwarts database
 func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
