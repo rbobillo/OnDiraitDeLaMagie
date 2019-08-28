@@ -43,7 +43,7 @@ func initMinistry(url string) (err error) {
 }
 
 func main() {
-	host := internal.GetEnvOrElse("RABBITMQ_HOST", "localhost")
+	host := internal.GetEnvOrElse("RABBITMQ_HOST", "owls")
 	port := internal.GetEnvOrElse("RABBITMQ_PORT", "5672")
 	user := internal.GetEnvOrElse("RABBITMQ_USER", "magic")
 	pass := internal.GetEnvOrElse("RABBITMQ_PASSWORD", "magic")

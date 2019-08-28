@@ -34,7 +34,7 @@ services:
   owls:
     container_name: owls
     image: "rabbitmq:3-management"
-    hostname: "rabbit"
+    hostname: "owls"
     ports:
       - "15672:15672"
       - "5672:5672"
