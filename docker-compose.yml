@@ -34,7 +34,7 @@ services:
   owls:
     container_name: owls
     image: "rabbitmq:3-management"
-    hostname: "rabbit"
+    hostname: "owls"
     ports:
       - "15672:15672"
       - "5672:5672"
@@ -64,10 +64,10 @@ services:
       env_file:
         - ./hogwarts/hogwarts.env
       restart: "on-failure"
-      depends_on:
-        - magic_inventory
-        - hogwarts_inventory
-        - owls
+#      depends_on:
+#        - magic_inventory
+#        - hogwarts_inventory
+#        - owls
       links:
         - magic
         - owls
