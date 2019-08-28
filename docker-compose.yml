@@ -39,7 +39,7 @@ services:
       - "15672:15672"
       - "5672:5672"
     volumes:
-      - ./owls/rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+      - ./owls/rabbit/rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
   ministry:
     container_name: ministry
     build: ministry
