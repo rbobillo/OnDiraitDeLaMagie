@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/rbobillo/OnDiraitDeLaMagie/ministry/debug"
 	"github.com/rbobillo/OnDiraitDeLaMagie/ministry/internal"
 	"strings"
 
@@ -48,7 +47,6 @@ func main() {
 	user := internal.GetEnvOrElse("RABBITMQ_USER", "magic")
 	pass := internal.GetEnvOrElse("RABBITMQ_PASSWORD", "magic")
 
-	debug.PrintEnv()
 	url := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, pass, host, port)
 	internal.Info("Starting ministry service...")
 

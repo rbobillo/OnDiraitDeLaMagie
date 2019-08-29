@@ -25,10 +25,10 @@ var Subq amqp.Queue
 // Publish sends messages to 'pubq'
 func Publish(qname string, payload string) {
 	err := Chan.Publish(
-		"",               // exchange
-		Pubq[qname].Name, // routing key
-		false,            // mandatory
-		false,            // immediate
+		    "",    		// exchange
+		Pubq[qname].Name,			// routing key
+		false,			// mandatory
+		false,			// immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        []byte(payload),
@@ -42,13 +42,13 @@ func Publish(qname string, payload string) {
 // it is parsed and handled
 func Subscribe() {
 	msgs, err := Chan.Consume(
-		Subq.Name, // queue
-		"",        // consumer
-		false,     // auto-ack (should the message be removed from queue after beind read)
-		false,     // exclusive
-		false,     // no-local
-		false,     // no-wait
-		nil,       // args
+		Subq.Name,			// queue
+		"",		// consumer
+		false,		// auto-ack (should the message be removed from queue after beind read)
+		false,		// exclusive
+		false,		// no-local
+		false,		// no-wait
+		nil,			// args
 	)
 	FailOnError(err, "Failed to register a consumer")
 
@@ -60,6 +60,7 @@ func Subscribe() {
 
 			// TODO: check message content, and publish on condition, to the right queue
 			if d.Body != nil {
+
 				var help dto.Help
 
 				cannotParseHelp := json.Unmarshal(d.Body, &help) // check if 'help' is well created ?
