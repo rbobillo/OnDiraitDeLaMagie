@@ -59,17 +59,26 @@ func Subscribe() {
 			log.Printf("Received a mail: %s", d.Body)
 
 			// TODO: check message content, and publish on condition, to the right queue
+
 			if d.Body != nil {
 
-				var help dto.Help
+				var help     dto.Help
+				var born     dto.Born
+				var arrested dto.Arrested
 
-				cannotParseHelp := json.Unmarshal(d.Body, &help) // check if 'help' is well created ?
+				cannotParseHelp 	:= json.Unmarshal(d.Body, &help) // check if 'help' is well created ?
+				cannotParseBorn 	:= json.Unmarshal(d.Body, &born)
+				cannotParseArrested := json.Unmarshal(d.Body, &arrested)
 
 				if cannotParseHelp == nil {
 					ProtectHogwarts(help)
 					d.Ack(false)
-				} else {
+				} else if cannotParseBorn == nil {
+					BornWizard(born)
+					d.Ack(false)
 					// try to parse another type of message, or fail
+				} else if cannotParseArrested == nil {
+					ArrestedWizard(arrested)
 				}
 			}
 		}

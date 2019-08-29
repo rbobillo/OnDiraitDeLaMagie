@@ -18,3 +18,4 @@ type Help struct {
 	Message   string    `json:"message"`
 	Emergency Emergency `json:"emergency"`
 }
+
