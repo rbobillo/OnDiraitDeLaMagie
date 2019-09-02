@@ -31,3 +31,17 @@ services:
       - magic_inventory
     volumes:
       - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/magic
+  villains:
+    container_name: magic
+      build: magic
+      ports:
+        - "9090:9094"
+      env_file:
+        - ./villains/villlains.env
+      restart: "on-failure"
+      depends_on:
+        - magic_inventory
+      links:
+        - magic_inventory
+      volumes:
+        - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/magic
