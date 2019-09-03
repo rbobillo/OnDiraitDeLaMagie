@@ -29,5 +29,5 @@ func main() {
 
 	defer db.Close()
 
-	log.Fatal(http.ListenAndServe(":9090", nil))
+	log.Fatal(http.ListenAndServe(":9092", nil))
 }
