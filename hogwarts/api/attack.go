@@ -27,6 +27,7 @@ func AttackHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 		return err
 	}
 
+	//TODO : Stop hogwarts prossess and w8 for the protection
 	err = hogwartsinventory.CreateAttack(attack, db)
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
@@ -89,6 +90,6 @@ func sendAlertOwls(attack dao.Action) (err error) {
 	internal.Publish("ministry", string(help))
 	internal.Debug("Mail (help) sent to ministry !")
 
-	//// TODO: handle rabbit/queue disconnect errors ?
+	// TODO: handle rabbit/queue disconnect errors ?
 	return err
 }

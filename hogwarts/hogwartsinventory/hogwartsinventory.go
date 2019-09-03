@@ -44,8 +44,6 @@ func CreateVisit(visit dao.Action, db *sql.DB) (err error) {
 	return nil
 }
 
-
-
 // GetAllStudents should search in the hogwartsinventory and return all students
 func GetAllStudents(db *sql.DB, query string) (students []dao.Student, err error) {
 	rows, err := db.Query(query)
@@ -134,4 +132,23 @@ func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){
 	internal.Debug("students table created")
 
 	return db, err
+}
+
+func UpdateActionsByID(db *sql.DB, query string, id string, status string) (act dao.Action,err error){
+	row := db.QueryRow(query, id, status)
+
+	err = row.Scan(&act.ID, &act.Wizard_id, &act.Action, &act.Status)
+
+	if err == sql.ErrNoRows {
+		return act, internal.ErrActionsNotFounds
+	}
+
+	if err != nil {
+		internal.Warn(fmt.Sprintf("cannot update action %s status", id))
+		return act, err
+	}
+
+	internal.Debug(fmt.Sprintf("action %s's status has been updated", id))
+
+	return act, err
 }

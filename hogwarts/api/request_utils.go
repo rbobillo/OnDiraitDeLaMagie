@@ -28,3 +28,24 @@ func SingleStudentResponse(student dao.Student, w *http.ResponseWriter) error {
 	}
 	return nil
 }
+
+// SingleActionResponse try to serialize an action to JSON
+// then copy the JSON to the response header body
+func SingleActionResponse(action dao.Action, w *http.ResponseWriter) error {
+	js, err := json.Marshal(action)
+
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		internal.Warn("cannot serialize Action to JSON")
+		return err
+	}
+
+	_, err = fmt.Fprintf(*w, string(js))
+
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		internal.Warn("cannot convert Body to JSON")
+		return err
+	}
+	return nil
+}

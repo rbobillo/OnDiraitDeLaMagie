@@ -2,10 +2,9 @@ package api
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/dto"
+	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/hogwartsinventory"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
 	"net/http"
 )
@@ -14,23 +13,40 @@ import (
 // villains attack on Hogwarts
 // TODO: create DB update in hogwartsinventory (actions table)
 func ProtectHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error){
-	var protection dto.Protection
-
 	id := mux.Vars(r)["id"]
 
 	internal.Debug(fmt.Sprintf("/action/%s/protect : Ministery is protecting Hogwarts", id))
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	decoder := json.NewDecoder(r.Body)
-	err = decoder.Decode(&protection)
-	if err != nil {
-		(*w).WriteHeader(http.StatusMethodNotAllowed)
-		internal.Warn("cannot convert Body to JSON")
+	// TODO: implement protection logic (simple table update ? -> Action attack status : stopped)
+	query := "UPDATE actions SET status = $2 WHERE id = $1 RETURNING *;"
+	act, err := hogwartsinventory.UpdateActionsByID(db, query ,id, "done")
+
+	if err == internal.ErrActionsNotFounds {
+		(*w).WriteHeader(http.StatusNotFound)
+		internal.Warn(fmt.Sprintf("attack %s doesn't exists", id))
 		return err
 	}
 
-	// TODO: implement protection logic (simple table update ? -> Action attack status : stopped)
+	if err != nil {
+		(*w).WriteHeader(http.StatusUnprocessableEntity)
+		internal.Warn(fmt.Sprintf("cannot stop attack %s", id))
+		return err
+	}
 
+	err = SingleActionResponse(act, w)
+	if err != nil {
+
+		return err
+	}
+	internal.Info(fmt.Sprintf("attack %s was stopped", id))
+
+	sendSaftyOwls()
+
+	return err
+}
+
+func sendSaftyOwls(){
 	internal.Debug("telling Famillies and Guest that Hogwarts is now safe")
 
 	internal.Publish("families", "Hogwarts is safe") //Todo: better message
@@ -38,10 +54,4 @@ func ProtectHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err e
 
 	internal.Publish("guest", "Hogwarts is now safe") //Todo:better message
 	internal.Debug("Mail (safety) sent to Guest")
-
-	(*w).WriteHeader(http.StatusNoContent)
-
-	return err
-
-
 }
