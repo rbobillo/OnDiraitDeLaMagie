@@ -7,6 +7,7 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/magicinventory"
+	"io"
 	"net/http"
 )
 
@@ -21,8 +22,10 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 
 	decoder := json.NewDecoder(r.Body)
 	err = decoder.Decode(&wizard)
-
-	if err != nil {
+	if err == io.EOF {
+		internal.Debug("specified wizard not found. Generating random wizard")
+		wizard, err = internal.GenerateSingleWizard()
+	} else if err != nil {
 		(*w).WriteHeader(http.StatusMethodNotAllowed)
 		internal.Warn("cannot convert Body to JSON")
 		return err

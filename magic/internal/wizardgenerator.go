@@ -86,6 +86,17 @@ func GenerateWizards(body []byte) (wizards []dao.Wizard, err error) {
 	return wizards, err
 }
 
+func GenerateSingleWizard()( dao.Wizard,  error){
+	body, _ := GetRandomNames(1)
+	wz, err := GenerateWizards(body)
+
+	if err != nil {
+		Warn("cannot generate random wizard")
+	}
+
+	return wz[0], nil
+}
+
 // GetRandomNames build a custom URL
 // (target: random names generator API)
 // and print JSON data resulting from GET request
