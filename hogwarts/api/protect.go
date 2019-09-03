@@ -11,7 +11,6 @@ import (
 
 // ProtectHogwarts function cancels or avoids
 // villains attack on Hogwarts
-// TODO: create DB update in hogwartsinventory (actions table)
 func ProtectHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error){
 	id := mux.Vars(r)["id"]
 
@@ -41,12 +40,12 @@ func ProtectHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err e
 	}
 	internal.Info(fmt.Sprintf("attack %s was stopped", id))
 
-	sendSaftyOwls()
+	sendSafetyOwls()
 
 	return err
 }
 
-func sendSaftyOwls(){
+func sendSafetyOwls(){
 	internal.Debug("telling Famillies and Guest that Hogwarts is now safe")
 
 	internal.Publish("families", "Hogwarts is safe") //Todo: better message
