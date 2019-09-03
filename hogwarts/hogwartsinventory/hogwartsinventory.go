@@ -6,25 +6,24 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/dao"
-	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/dto"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
 )
 
 // CreateAttack should insert in the attack table the current attack
 // CreateWizards inserts a new Wizard into magicinventory
-func CreateAttack(a dto.Attack, db *sql.DB) (err error) {
+func CreateAttack(attack dao.Action, db *sql.DB) (err error) {
 	attackQuery :=
-		`insert into actions (id, quick,stong)
-                     values ($1, $2, $3);`
+		`insert into actions(id, wizard_id, action, status)
+                     values ($1, $2, $3, $4);`
 
-	_, err = db.Exec(attackQuery, a.ID, a.Quick, a.Strong)
+	_, err = db.Exec(attackQuery, attack.ID, attack.Wizard_id, attack.Action, attack.Status)
 
 	if err != nil {
-		internal.Warn(fmt.Sprintf("cannot create action: %v , %s ", a, err))
+		internal.Warn(fmt.Sprintf("cannot create action: %v , %s ", attack, err))
 		return err
 	}
 
-	internal.Debug(fmt.Sprintf("created action: %v", a))
+	internal.Debug(fmt.Sprintf("created action: %v", attack))
 	return nil
 }
 
@@ -71,7 +70,7 @@ func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){
 		`create table if not exists actions (
 	id        uuid        not null primary key,
     wizard_id uuid        not null,
-    category  varchar(50) not null,
+    action    varchar(50) not null,
     status    varchar(50) not null
 	); alter table actions owner to hogwarts;`
 
