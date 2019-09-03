@@ -55,7 +55,7 @@ func GetAllStudents(db *sql.DB, query string) (students []dao.Student, err error
 	}
 
 	if err != nil {
-		internal.Warn("cannot get all wizards")
+		internal.Warn("cannot get all students")
 		return students, err
 	}
 
@@ -64,7 +64,7 @@ func GetAllStudents(db *sql.DB, query string) (students []dao.Student, err error
 		err = rows.Scan(&stud.ID, &stud.MagicID, &stud.House, &stud.Status)
 
 		if err != nil {
-			internal.Warn("cannot get all wizards: error while browsing wizards")
+			internal.Warn("cannot get all students: error while browsing students")
 			return students, err
 		}
 
@@ -74,7 +74,23 @@ func GetAllStudents(db *sql.DB, query string) (students []dao.Student, err error
 	return students, nil
 }
 
+func GetStudentByID(db *sql.DB, query string, id string) (stud dao.Student, err error){
+	row := db.QueryRow(query, id)
+	err = row.Scan(&stud.ID, &stud.MagicID, &stud.House, &stud.Status)
 
+	if err == sql.ErrNoRows {
+		return stud, internal.ErrStudentsNotFounds
+	}
+	if err != nil {
+		internal.Warn(fmt.Sprintf("cannot get wizards %s", id))
+
+		return stud, err
+	}
+
+	internal.Debug(fmt.Sprintf("wizard %s has been found", id))
+
+	return stud, nil
+}
 // InitHogwartsInventory create table actions and students
 // in the hogwarts database
 func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){
