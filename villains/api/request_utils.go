@@ -15,7 +15,7 @@ func SingleVillainResponse(villain dao.Villain, w *http.ResponseWriter) error {
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Warn("cannot serialize Wizard to JSON")
+		internal.Warn("cannot serialize Villain to JSON")
 		return err
 	}
 

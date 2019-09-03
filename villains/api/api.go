@@ -12,11 +12,11 @@ func InitVillains() (err error) {
 	type R = http.Request
 
 	// GET actions
-	rt.Methods("GET").Path("/villain/{id}").HandlerFunc(func(w W, r *R) { err = GetVillain(&w, r) })
+	rt.Methods("GET").Path("/villains/{id}").HandlerFunc(func(w W, r *R) { err = GetVillain(&w, r) })
 
 	// POST actions
 	//rt.Methods("POST").Path("/villains/spawn").HandlerFunc(func(w W, r *R) { err = SpawnVillain(&w, r) })
-	//rt.Methods("POST").Path("/villains/die").HandlerFunc(func(w W, r *R) { err = KillVillain(&w, r) })
+	rt.Methods("POST").Path("/villains/{id}/die").HandlerFunc(func(w W, r *R) { KillVillain(&w, r) })
 
 	http.Handle("/", rt)
 
