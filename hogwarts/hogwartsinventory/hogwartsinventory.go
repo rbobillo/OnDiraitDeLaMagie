@@ -8,9 +8,9 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
 )
+// TODO : merge CreateAttack and CreatVisit in one generic function ?
 
-// CreateAttack should insert in the attack table the current attack
-// CreateWizards inserts a new Wizard into magicinventory
+// CreateAttack should insert in the actions table the current attack
 func CreateAttack(attack dao.Action, db *sql.DB) (err error) {
 	attackQuery :=
 		`insert into actions(id, wizard_id, action, status)
@@ -26,6 +26,24 @@ func CreateAttack(attack dao.Action, db *sql.DB) (err error) {
 	internal.Debug(fmt.Sprintf("created action: %v", attack))
 	return nil
 }
+
+// CreateVisit should insert in the actions table the current visit
+func CreateVisit(visit dao.Action, db *sql.DB) (err error) {
+	attackQuery :=
+		`insert into actions(id, wizard_id, action, status)
+                     values ($1, $2, $3, $4);`
+
+	_, err = db.Exec(attackQuery, visit.ID, visit.Wizard_id, visit.Action, visit.Status)
+
+	if err != nil {
+		internal.Warn(fmt.Sprintf("cannot create action: %v , %s ", visit, err))
+		return err
+	}
+
+	internal.Debug(fmt.Sprintf("created action: %v", visit))
+	return nil
+}
+
 
 
 // GetAllStudents should search in the hogwartsinventory and return all students

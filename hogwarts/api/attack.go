@@ -34,17 +34,36 @@ func AttackHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 		return err
 	}
 
+	err = sendAlertOwls(attack)
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		return err
+	}
+
+	_, err = json.Marshal(attack)
+
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		internal.Warn("cannot serialize Attack to JSON")
+		return err
+	}
+	(*w).WriteHeader(http.StatusCreated)
+	return err
+}
+
+func sendAlertOwls(attack dao.Action) (err error) {
 	internal.Debug("Alerting Families, and Guest")
+
 	alert, err := json.Marshal(dto.Alert{
 		ID: uuid.Must(uuid.NewV4()),
 		AttackID: attack.ID,
 		Message: "Hogwarts is under attack",
 	})
 	if err != nil {
-		(*w).WriteHeader(http.StatusInternalServerError)
 		internal.Warn("cannot serialize Attack to JSON")
 		return err
 	}
+
 	internal.Publish("families", string(alert))
 	internal.Debug("Mail (alert) sent to families") //TODO: better message
 
@@ -63,15 +82,13 @@ func AttackHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err er
 		},
 	})
 	if err != nil {
-		(*w).WriteHeader(http.StatusInternalServerError)
 		internal.Warn("cannot serialize Attack to JSON")
 		return err
 	}
+
 	internal.Publish("ministry", string(help))
 	internal.Debug("Mail (help) sent to ministry !")
 
 	//// TODO: handle rabbit/queue disconnect errors ?
-
-	(*w).WriteHeader(http.StatusNoContent)
 	return err
 }
