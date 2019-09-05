@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -8,6 +9,8 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/magicinventory"
 	"io"
+	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -39,7 +42,7 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 		return err
 	}
 
-	_, err = json.Marshal(wizard)
+	js, err := json.Marshal(wizard)
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
@@ -50,6 +53,25 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 	(*w).WriteHeader(http.StatusCreated)
 
 	internal.Info(fmt.Sprintf("wizard has spawned: %v", wizard))
+	req, err := http.NewRequest("POST", "http://localhost:9092/families/spawn", bytes.NewBuffer(js))
+	req.Header.Set("Content-Type", "application/json")
 
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println("response Body:", string(body))
+	if err != nil{
+		internal.Warn("error while giving birth")
+		log.Println(err)
+		return err
+	}
+	log.Println(resp)
 	return nil
 }

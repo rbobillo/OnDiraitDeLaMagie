@@ -12,7 +12,7 @@ import (
 
 func SpawnNewBorn(w *http.ResponseWriter, r *http.Request) (err error){
 	var born dao.Wizard
-	internal.Info("/actions/attack : Hogwarts is under attack")
+	internal.Info("/families/spawn : a new wizard just born !")
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	decoder := json.NewDecoder(r.Body)
@@ -42,7 +42,7 @@ func SpawnNewBorn(w *http.ResponseWriter, r *http.Request) (err error){
 }
 
 func sendBirthOwls(wizard dao.Wizard) (err error) {
-	internal.Debug("new wizard just born ! Sending owls to inform ministry")
+	internal.Debug("Sending owls to inform ministry")
 
 	alert, err := json.Marshal(dto.Birth{
 		ID : uuid.Must(uuid.NewV4()),
@@ -50,34 +50,12 @@ func sendBirthOwls(wizard dao.Wizard) (err error) {
 		Message: fmt.Sprintf("%s %s just born !", wizard.FirstName, wizard.LastName),
 	})
 	if err != nil {
-		internal.Warn("cannot serialize mail(bith) to JSON")
+		internal.Warn("cannot serialize mail(birth) to JSON")
 		return err
 	}
 
-	internal.Publish("families", string(alert))
-	internal.Debug("Mail (alert) sent to families") //TODO: better message
-
-	internal.Publish("guest", string(alert))
-	internal.Debug("Mail (alert) sent to guest") //TODO: better message
-
-
-	internal.Debug("Asking for help to Ministry")
-	help, err := json.Marshal(dto.Help{
-		ID: uuid.Must(uuid.NewV4()),
-		AttackID: attack.ID,
-		Message: "Hogwarts is under attack! Please send help",
-		Emergency: dto.Emergency{
-			Quick: true,
-			Strong: true,
-		},
-	})
-	if err != nil {
-		internal.Warn("cannot serialize Attack to JSON")
-		return err
-	}
-
-	internal.Publish("ministry", string(help))
-	internal.Debug("Mail (help) sent to ministry !")
+	internal.Publish("ministry", string(alert))
+	internal.Debug("Mail (birth) sent to ministry") //TODO: better message
 
 	// TODO: handle rabbit/queue disconnect errors ?
 	return err
