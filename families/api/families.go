@@ -45,36 +45,36 @@ func GetFamilies(w *http.ResponseWriter, r *http.Request) (err error) {
 		return err
 	}
 
-	err, wizard := internal.Filter(wizards, "id", id)
+	wizard  :=  internal.FilterByID(wizards, id)
 
-	if err != nil {
+	if len(wizard) <= 0 {
 		(*w).WriteHeader(http.StatusNotFound)
 		internal.Warn(fmt.Sprintf("wizard %s doesn't exists", id))
 		return err
 	}
 
-	err, families := internal.Filter(wizards, "families", wizard[0].LastName)
-	if err != nil {
-		(*w).WriteHeader(http.StatusNotFound)
-		internal.Warn(fmt.Sprintf( "%s familly doesn't exists", wizard[0].LastName))
-		return err
-	}
-
-	js, err := json.Marshal(families)
-
-	if err != nil {
-		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Warn(fmt.Sprintf("cannot serialize wizard to JSON"))
-		return err
-	}
-
-	_, err = fmt.Fprintf(*w, string(js))
-
-	if err != nil {
-		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Warn("cannot convert Body to JSON")
-		return err
-	}
+	//families, err := internal.FilterByFamilies(wizards, wizard[0].LastName)
+	//if err != nil {
+	//	(*w).WriteHeader(http.StatusNotFound)
+	//	internal.Warn(fmt.Sprintf( "%s familly doesn't exists", wizard[0].LastName))
+	//	return err
+	//}
+	//
+	//js, err := json.Marshal(families)
+	//
+	//if err != nil {
+	//	(*w).WriteHeader(http.StatusInternalServerError)
+	//	internal.Warn(fmt.Sprintf("cannot serialize wizard to JSON"))
+	//	return err
+	//}
+	//
+	//_, err = fmt.Fprintf(*w, string(js))
+	//
+	//if err != nil {
+	//	(*w).WriteHeader(http.StatusInternalServerError)
+	//	internal.Warn("cannot convert Body to JSON")
+	//	return err
+	//}
 
 	internal.Debug(fmt.Sprintf("the %s familly has been found", wizard[0].LastName))
 

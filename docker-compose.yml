@@ -19,6 +19,15 @@ services:
       timeout: 10s
       retries: 5
       # check if 'magicinventory' is properly running, to handle 'magic' start/restart (on docker-compose up)
+  owls:
+    container_name: owls
+    image: "rabbitmq:3-management"
+    hostname: "rabbit"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - ./owls/rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
   magic:
     container_name: magic
     build: magic

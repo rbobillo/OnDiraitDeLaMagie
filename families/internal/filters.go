@@ -3,49 +3,32 @@ package internal
 import (
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/dao"
+	uuid "github.com/satori/go.uuid"
 )
-type FilterSet func(wizard dao.Wizard, arg	interface{}) bool
-var filters = map[string]FilterSet{
-	"families": filterByFamilies,
-	"id"	  : filterByID,
-	"age"	  :	filterByAge,
-}
 
-func filterByFamilies(wizard dao.Wizard, lastName interface{}) bool {
-	if wizard.LastName != lastName {
-		return false
-	}
-	return true
-}
-
-func filterByID(wizard dao.Wizard, wizardID interface{}) bool {
-
-	id := fmt.Sprintf("%v", wizard.ID)
-	wzID := fmt.Sprintf("%v", wizardID)
-
-	if wzID != id{
-		return false
-	}
-	return true
-}
-
-func filterByAge(wizard dao.Wizard, age interface{}) bool {
-	if wizard.Age != age {
-		return false
-	}
-	return true
+type WizardType struct {
+	ID       uuid.UUID
+	strID    string
+	LastName string
 }
 
 
-func Filter(wizards []dao.Wizard, data string, value  interface{}) (err error, filteredWizard []dao.Wizard) {
+func Filter(wizards []dao.Wizard,  toCompare WizardType, f func (wizard dao.Wizard, toCompare WizardType) bool )  (fWizards []dao.Wizard) {
 
-	for _, entities := range wizards {
-		if filters[data](entities, value) {
-			filteredWizard = append(filteredWizard, entities)
+	for _, x := range wizards {
+		if f(x, toCompare) {
+			fWizards = append(fWizards, x)
 		}
 	}
-	if len(filteredWizard) <= 0 {
-		return fmt.Errorf("No match found"), filteredWizard
-	}
-	return nil, filteredWizard
+	return fWizards
+}
+
+func FilterByID(wizards []dao.Wizard, id string) []dao.Wizard {
+
+	isRightID := func(sWizard dao.Wizard,  toCompare WizardType) bool { return fmt.Sprintf("%v", sWizard.ID) == toCompare.strID }
+
+	var toCompare WizardType
+	toCompare.strID = id
+
+	return Filter(wizards, toCompare, isRightID)
 }

@@ -18,6 +18,6 @@ type Born struct {
 // Wizards in the families
 type Birth struct {
 	ID        uuid.UUID `json:"id"`
+	BornID	  uuid.UUID `json:"bornID"`
 	Message   string    `json:"message"`
-	Born 	  Born 		`json:"born"`
 }
