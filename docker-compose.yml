@@ -48,8 +48,8 @@ services:
     #        - magic_inventory
     #        - hogwarts_inventory
     #        - owls
-    links:
-      - magic
+#    links:
+#      - magic
 #      - owls
 #      - hogwarts_inventory
     volumes:

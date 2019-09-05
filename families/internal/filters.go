@@ -5,10 +5,9 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/dao"
 )
 type FilterSet func(wizard dao.Wizard, arg	interface{}) bool
-
 var filters = map[string]FilterSet{
 	"families": filterByFamilies,
-	"id"	  : filterByIDs,
+	"id"	  : filterByID,
 	"age"	  :	filterByAge,
 }
 
@@ -19,8 +18,12 @@ func filterByFamilies(wizard dao.Wizard, lastName interface{}) bool {
 	return true
 }
 
-func filterByIDs(wizard dao.Wizard, id interface{}) bool {
-	if wizard.ID != id {
+func filterByID(wizard dao.Wizard, wizardID interface{}) bool {
+
+	id := fmt.Sprintf("%v", wizard.ID)
+	wzID := fmt.Sprintf("%v", wizardID)
+
+	if wzID != id{
 		return false
 	}
 	return true
@@ -34,7 +37,7 @@ func filterByAge(wizard dao.Wizard, age interface{}) bool {
 }
 
 
-func Filter(wizards []dao.Wizard, data string, value... interface{}) (err error, filteredWizard []dao.Wizard) {
+func Filter(wizards []dao.Wizard, data string, value  interface{}) (err error, filteredWizard []dao.Wizard) {
 
 	for _, entities := range wizards {
 		if filters[data](entities, value) {

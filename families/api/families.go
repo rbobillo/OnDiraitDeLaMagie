@@ -45,22 +45,38 @@ func GetFamilies(w *http.ResponseWriter, r *http.Request) (err error) {
 		return err
 	}
 
-	err, families := internal.Filter(wizards, "families", id)
+	err, wizard := internal.Filter(wizards, "id", id)
+
 	if err != nil {
+		(*w).WriteHeader(http.StatusNotFound)
+		internal.Warn(fmt.Sprintf("wizard %s doesn't exists", id))
 		return err
 	}
 
-	_, err = json.Marshal(families)
+	err, families := internal.Filter(wizards, "families", wizard[0].LastName)
+	if err != nil {
+		(*w).WriteHeader(http.StatusNotFound)
+		internal.Warn(fmt.Sprintf( "%s familly doesn't exists", wizard[0].LastName))
+		return err
+	}
+
+	js, err := json.Marshal(families)
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Warn("cannot serialize Wizard to JSON")
+		internal.Warn(fmt.Sprintf("cannot serialize wizard to JSON"))
 		return err
 	}
 
-	(*w).WriteHeader(http.StatusCreated)
+	_, err = fmt.Fprintf(*w, string(js))
 
-	internal.Debug(fmt.Sprintf("families of wizards %s has been found", id))
+	if err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		internal.Warn("cannot convert Body to JSON")
+		return err
+	}
+
+	internal.Debug(fmt.Sprintf("the %s familly has been found", wizard[0].LastName))
 
 	return err
 
