@@ -15,8 +15,8 @@ func InitFamilies() (err error) {
 	rt.Methods("GET").Path("/families/{id}").HandlerFunc(func(w W, r *R) { err = GetFamilies(&w, r) })
 
 	// POST actions
-	//rt.Methods("POST").Path("/families/spawn").HandlerFunc(func(w W, r *R) { err = SpawnNewBorn(&w, r) })
-	//rt.Methods("POST").Path("/families/{id}/die").HandlerFunc(func(w W, r *R) { KillVillain(&w, r) })
+	rt.Methods("POST").Path("/families/spawn").HandlerFunc(func(w W, r *R) { err = SpawnNewBorn(&w, r) })
+	rt.Methods("POST").Path("/families/{id}/die").HandlerFunc(func(w W, r *R) { KillVillain(&w, r) })
 
 	http.Handle("/", rt)
 
