@@ -9,7 +9,6 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/magicinventory"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -63,15 +62,15 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
+	//fmt.Println("response Status:", resp.Status)
+	//fmt.Println("response Headers:", resp.Header)
+	//body, _ := ioutil.ReadAll(resp.Body)
+	//fmt.Println("response Body:", string(body))
 	if err != nil{
 		internal.Warn("error while giving birth")
 		log.Println(err)
 		return err
 	}
-	log.Println(resp)
+	//log.Println(resp)
 	return nil
 }

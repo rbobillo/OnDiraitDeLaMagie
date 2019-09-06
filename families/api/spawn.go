@@ -2,12 +2,13 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/dto"
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/internal"
 	uuid "github.com/satori/go.uuid"
+	"log"
 	"net/http"
+	"fmt"
 )
 
 func SpawnNewBorn(w *http.ResponseWriter, r *http.Request) (err error){
@@ -17,6 +18,8 @@ func SpawnNewBorn(w *http.ResponseWriter, r *http.Request) (err error){
 
 	decoder := json.NewDecoder(r.Body)
 	err = decoder.Decode(&born)
+
+	log.Println(born)
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusMethodNotAllowed)
@@ -42,9 +45,9 @@ func SpawnNewBorn(w *http.ResponseWriter, r *http.Request) (err error){
 }
 
 func sendBirthOwls(wizard dao.Wizard) (err error) {
-	internal.Debug("Sending owls to inform ministry")
+	internal.Debug("Sending owls to inform ministry...")
 
-	alert, err := json.Marshal(dto.Birth{
+	birthAnnounce, err := json.Marshal(dto.Birth{
 		ID : uuid.Must(uuid.NewV4()),
 		WizardID: wizard.ID,
 		Message: fmt.Sprintf("%s %s just born !", wizard.FirstName, wizard.LastName),
@@ -54,9 +57,9 @@ func sendBirthOwls(wizard dao.Wizard) (err error) {
 		return err
 	}
 
-	internal.Publish("ministry", string(alert))
+	internal.Publish("ministry", string(birthAnnounce))
 	internal.Debug("Mail (birth) sent to ministry") //TODO: better message
 
-	// TODO: handle rabbit/queue disconnect errors ?
+	//// TODO: handle rabbit/queue disconnect errors ?
 	return err
 }
