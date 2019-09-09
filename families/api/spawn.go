@@ -10,7 +10,8 @@ import (
 	"net/http"
 	"fmt"
 )
-
+// SpawnNewBorn receive the new wizard from magic
+// then send mail to inform ministry
 func SpawnNewBorn(w *http.ResponseWriter, r *http.Request) (err error){
 	var born dao.Wizard
 	internal.Info("/families/spawn : a new wizard just born !")

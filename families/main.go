@@ -1,14 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/api"
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/internal"
 	"github.com/streadway/amqp"
 	"log"
 	"net/http"
 	"strings"
-	"fmt"
 )
+
 func setupOwls() (err error) {
 	host := internal.GetEnvOrElse("RABBIT_HOST", "localhost")
 	port := internal.GetEnvOrElse("RABBIT_PORT", "5672")
@@ -33,13 +34,13 @@ func setupOwls() (err error) {
 
 	internal.Subq = internal.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "hogwarts"))
 
-	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES","ministery,families,guest"), ","){
+	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "ministery,families,guest"), ",") {
 		internal.Pubq[q] = internal.DeclareBasicQueue(q)
 	}
 	return err
 }
 
-func main(){
+func main() {
 	internal.Debug("starting families micro-service. Waiting for event...")
 	err := api.InitFamilies()
 

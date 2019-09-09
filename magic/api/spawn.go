@@ -9,7 +9,6 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/magic/magicinventory"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -42,35 +41,38 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 	}
 
 	js, err := json.Marshal(wizard)
-
 	if err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
 		internal.Warn("cannot serialize Wizard to JSON")
 		return err
 	}
 
-	(*w).WriteHeader(http.StatusCreated)
+	err = postWizardToFamilies(w, js)
+	if err != nil{
+		(*w).WriteHeader(http.StatusInternalServerError)
+		internal.Warn("error while requesting http://localhost:9092/families/spawn")
+		return err
+	}
 
-	internal.Info(fmt.Sprintf("wizard has spawned: %v", wizard))
+	internal.Info(fmt.Sprintf("a wizard spawned: %v", wizard))
+
+	return nil
+}
+
+func postWizardToFamilies(w *http.ResponseWriter, js []byte) (err error){
 	req, err := http.NewRequest("POST", "http://localhost:9092/families/spawn", bytes.NewBuffer(js))
+	if req == nil || err != nil {
+		(*w).WriteHeader(http.StatusInternalServerError)
+		internal.Warn("error while creating post request")
+		return err
+	}
+
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
+
 	defer resp.Body.Close()
 
-	//fmt.Println("response Status:", resp.Status)
-	//fmt.Println("response Headers:", resp.Header)
-	//body, _ := ioutil.ReadAll(resp.Body)
-	//fmt.Println("response Body:", string(body))
-	if err != nil{
-		internal.Warn("error while giving birth")
-		log.Println(err)
-		return err
-	}
-	//log.Println(resp)
-	return nil
+	return err
 }
