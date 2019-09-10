@@ -89,6 +89,32 @@ func GetStudentByID(db *sql.DB, query string, id string) (stud dao.Student, err 
 
 	return stud, nil
 }
+func GetActions(db *sql.DB, query string) (actions []dao.Action, err error){
+	rows, err := db.Query(query)
+
+	if err == sql.ErrNoRows {
+		return actions, internal.ErrActionsNotFounds
+	}
+
+	if err != nil {
+		internal.Warn("cannot get all students")
+		return actions, err
+	}
+
+	for rows.Next() {
+		var action dao.Action
+		err = rows.Scan(&action.ID, &action.Wizard_id, &action.Action, &action.Status)
+
+		if err != nil {
+			internal.Warn("cannot get all actions: error while browsing actions")
+			return actions, internal.ErrActionsNotFounds
+		}
+
+		actions = append(actions, action)
+	}
+
+	return actions, nil
+}
 // InitHogwartsInventory create table actions and students
 // in the hogwarts database
 func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){

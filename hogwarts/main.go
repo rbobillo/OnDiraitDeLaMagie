@@ -7,11 +7,10 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/hogwartsinventory"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
 	"github.com/streadway/amqp"
+	"log"
 	"net/http"
 	"strings"
-	"log"
 )
-
 func setupOwls() (err error) {
 	host := internal.GetEnvOrElse("RABBIT_HOST", "localhost")
 	port := internal.GetEnvOrElse("RABBIT_PORT", "5672")
@@ -73,7 +72,7 @@ func main() {
 	}
 
 
-	//go internal.Subscribe()
+	go internal.Subscribe(db)
 
 	//// Todo : Handle defer errors
 	defer internal.Chan.Close()
