@@ -6,7 +6,6 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/guest/dto"
 	"github.com/streadway/amqp"
 	"log"
-	"net/http"
 )
 
 // Conn is the main connection to rabbit
@@ -53,7 +52,7 @@ func Publish(qname string, payload string){
 // Subscribe listens to 'subq' (guest)
 // Each time a message is received
 // it is parsed and handled
-func Subscribe(w *http.ResponseWriter) {
+func Subscribe() {
 	msgs, err := Chan.Consume(
 		Subq.Name,			// queue
 		"",		// consumer
@@ -75,11 +74,12 @@ func Subscribe(w *http.ResponseWriter) {
 
 			if d.Body != nil {
 
-				var alert    dto.Alert
+				var slot    dto.Slot
 
-				cannotParseAlert 	:= json.Unmarshal(d.Body, &alert)    // check if 'alert' is well created ?
+				cannotParseAlert 	:= json.Unmarshal(d.Body, &slot)    // check if 'alert' is well created ?
 
 				if cannotParseAlert == nil {
+					log.Println("slot received")
 					//AlertHogwarts(alert)
 					d.Ack(false)
 

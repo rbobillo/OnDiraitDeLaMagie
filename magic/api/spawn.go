@@ -47,10 +47,10 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 		return err
 	}
 
-	err = postWizardToGuest(w, js)
+	err = postWizardToFamilies(w, js)
 	if err != nil{
 		(*w).WriteHeader(http.StatusInternalServerError)
-		internal.Warn("error while requesting http://localhost:9092/guest/spawn")
+		internal.Warn("error while requesting http://localhost:9092/families/spawn")
 		return err
 	}
 
@@ -59,8 +59,8 @@ func SpawnWizard(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error
 	return nil
 }
 
-func postWizardToGuest(w *http.ResponseWriter, js []byte) (err error){
-	req, err := http.NewRequest("POST", "http://localhost:9092/guest/spawn", bytes.NewBuffer(js))
+func postWizardToFamilies(w *http.ResponseWriter, js []byte) (err error){
+	req, err := http.NewRequest("POST", "http://localhost:9092/families/spawn", bytes.NewBuffer(js))
 	if req == nil || err != nil {
 		(*w).WriteHeader(http.StatusInternalServerError)
 		internal.Warn("error while creating post request")

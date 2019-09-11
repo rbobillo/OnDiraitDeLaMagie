@@ -25,7 +25,7 @@ func StartSlotEvent(w *http.ResponseWriter, r *http.Request) (err error){
 func spawnNewSlot(w *http.ResponseWriter, r *http.Request) (err error){
 	var guest dao.Wizard
 
-	internal.Info("/guest/spawn : a new wizard is going to visit Hogwarts!")
+	internal.Info("/guest/spawn : a new wizard want to visit Hogwarts!")
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	decoder := json.NewDecoder(r.Body)
@@ -56,7 +56,7 @@ func spawnNewSlot(w *http.ResponseWriter, r *http.Request) (err error){
 }
 
 func sendNewSlotRequest(guest dao.Wizard) (err error) {
-	internal.Debug("Sending owls to inform ministry...")
+	internal.Debug("Sending owls to inform Hogwarts...")
 
 	slotRequest, err := json.Marshal(dto.Slot{
 		ID : uuid.Must(uuid.NewV4()),

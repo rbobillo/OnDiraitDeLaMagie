@@ -32,9 +32,9 @@ func setupOwls() (err error) {
 
 	internal.Info("listening OWL service...")
 
-	internal.Subq = internal.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "hogwarts"))
+	internal.Subq = internal.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "guest"))
 
-	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "ministery,guest,guest"), ",") {
+	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "hogwarts"), ",") {
 		internal.Pubq[q] = internal.DeclareBasicQueue(q)
 	}
 	return err
@@ -53,7 +53,7 @@ func main() {
 		panic(err)
 	}
 
-	//go internal.Subscribe()
+	go internal.Subscribe()
 
 	defer internal.Chan.Close()
 	defer internal.Conn.Close()
