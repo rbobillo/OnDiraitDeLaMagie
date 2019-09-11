@@ -1,10 +1,9 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/rbobillo/OnDiraitDeLaMagie/families/dto"
+	"github.com/rbobillo/OnDiraitDeLaMagie/guest/dto"
 	"github.com/streadway/amqp"
 	"log"
 	"net/http"
@@ -51,7 +50,7 @@ func Publish(qname string, payload string){
 	HandleError(err, "failed to publish a message", Error)
 }
 
-// Subscribe listens to 'subq' (families)
+// Subscribe listens to 'subq' (guest)
 // Each time a message is received
 // it is parsed and handled
 func Subscribe(w *http.ResponseWriter) {
@@ -77,22 +76,12 @@ func Subscribe(w *http.ResponseWriter) {
 			if d.Body != nil {
 
 				var alert    dto.Alert
-				var eligible dto.Eligible
-				var safety   dto.Safety
 
 				cannotParseAlert 	:= json.Unmarshal(d.Body, &alert)    // check if 'alert' is well created ?
-				cannotParseEligible := json.Unmarshal(d.Body, &eligible) // check if 'eligible' is well created ?
-				cannotParseSafety   := json.Unmarshal(d.Body, &safety)   // check if 'safety' is well created ?
 
 				if cannotParseAlert == nil {
 					//AlertHogwarts(alert)
 					d.Ack(false)
-				} else if cannotParseEligible == nil {
-					AttendHogwarts(eligible)
-
-					d.Ack(false)
-					// try to parse another type of message, or fail
-				} else if cannotParseSafety == nil {
 
 				}
 			}
@@ -104,28 +93,28 @@ func Subscribe(w *http.ResponseWriter) {
 	<-forever
 }
 
-// AttendHogwarts evaluates the emergency
-// and helps Hogwarts
-func AttendHogwarts(eligible dto.Eligible) {
-	hogwartsURL := GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
-
-	attendEndpoint := "/actions/" + eligible.WizardID.String() + "/attend"
-
-	eligibleWizard, err := json.Marshal(eligible)
-
-	req, err := http.NewRequest("PATCH", hogwartsURL+attendEndpoint, bytes.NewBuffer(eligibleWizard))
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-
-	if err != nil {
-		panic(err)
-	}
-
-	defer resp.Body.Close()
-}
+//// AttendHogwarts evaluates the emergency
+//// and helps Hogwarts
+//func AttendHogwarts(eligible dto.Eligible) {
+//	hogwartsURL := GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
+//
+//	attendEndpoint := "/actions/" + eligible.WizardID.String() + "/attend"
+//
+//	eligibleWizard, err := json.Marshal(eligible)
+//
+//	req, err := http.NewRequest("PATCH", hogwartsURL+attendEndpoint, bytes.NewBuffer(eligibleWizard))
+//	req.Header.Set("Content-Type", "application/json")
+//
+//	client := &http.Client{}
+//
+//	resp, err := client.Do(req)
+//
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	defer resp.Body.Close()
+//}
 
 //func AlertHogwarts(alert dto.Alert, Conn amqp.Connection) {
 //	Conn.addB

@@ -45,13 +45,13 @@ services:
     volumes:
       - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/magic
       # copies current dir to container, according to this project packages structure
-  families:
-    container_name: families
-    build: families
+  guest:
+    container_name: guest
+    build: guest
     ports:
-      - "9092:9092"
+      - "9093:9093"
     env_file:
-      - ./families/families.env
+      - guest/guest.env
     restart: "on-failure"
     #      depends_on:
     #        - magic_inventory
@@ -62,4 +62,4 @@ services:
 #      - owls
 #      - hogwarts_inventory
     volumes:
-      - ./hogwarts:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/families
+      - ./hogwarts:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/guest

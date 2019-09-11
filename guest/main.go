@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/rbobillo/OnDiraitDeLaMagie/families/api"
-	"github.com/rbobillo/OnDiraitDeLaMagie/families/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/guest/api"
+	"github.com/rbobillo/OnDiraitDeLaMagie/guest/internal"
 	"github.com/streadway/amqp"
 	"log"
 	"net/http"
@@ -34,15 +34,15 @@ func setupOwls() (err error) {
 
 	internal.Subq = internal.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "hogwarts"))
 
-	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "ministery,families,guest"), ",") {
+	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "ministery,guest,guest"), ",") {
 		internal.Pubq[q] = internal.DeclareBasicQueue(q)
 	}
 	return err
 }
 
 func main() {
-	internal.Debug("starting families micro-service. Waiting for event...")
-	err := api.InitFamilies()
+	internal.Debug("starting guest micro-service. Waiting for event...")
+	err := api.InitGuest()
 
 	if err != nil {
 		internal.Warn(err.Error())
@@ -53,10 +53,10 @@ func main() {
 		panic(err)
 	}
 
-	go internal.Subscribe()
+	//go internal.Subscribe()
 
 	defer internal.Chan.Close()
 	defer internal.Conn.Close()
 
-	log.Fatal(http.ListenAndServe(":9092", nil))
+	log.Fatal(http.ListenAndServe(":9093", nil))
 }

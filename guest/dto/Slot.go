@@ -2,11 +2,11 @@ package dto
 
 import "github.com/satori/go.uuid" // go get github.com/satori/go.uuid
 
-// TODO: by who is sent the eligible mail ?
-// Eligible is the message sent by magic? (via Owls)
-// to families, announce a
-// Wizards is ready to go to Hogwarts
-type Eligible struct {
+
+// Slot is the message sent by Guest (via Owls)
+// to the Hogwarts, announce a new visits
+// from the guest
+type Slot struct {
 	ID       uuid.UUID `json:"id"`
 	WizardID uuid.UUID `json:"wizardID"`
 	Message  string    `json:"message"`

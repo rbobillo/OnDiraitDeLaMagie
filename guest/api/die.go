@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/rbobillo/OnDiraitDeLaMagie/families/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/guest/internal"
 	"net/http"
 )
 
