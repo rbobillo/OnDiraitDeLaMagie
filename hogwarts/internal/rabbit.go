@@ -66,11 +66,9 @@ func Subscribe(db *sql.DB) {
 				var slot dto.Slot
 
 				cannotParseSlot := json.Unmarshal(d.Body, &slot) // check if 'help' is well created ?
-				log.Println(cannotParseSlot)
 				if cannotParseSlot == nil {
 
 					err, availableSlot := checkSlot(slot, db)
-					log.Println(availableSlot)
 					if err != nil {
 						Warn(fmt.Sprintf("%s", err))
 
