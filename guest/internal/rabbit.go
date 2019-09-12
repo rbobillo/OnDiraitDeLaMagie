@@ -74,13 +74,12 @@ func Subscribe() {
 
 			if d.Body != nil {
 
-				var slot    dto.Slot
+				var available    dto.Available
 
-				cannotParseAlert 	:= json.Unmarshal(d.Body, &slot)    // check if 'alert' is well created ?
+				cannotParseAvailable 	:= json.Unmarshal(d.Body, &available)    // check if 'alert' is well created ?
 
-				if cannotParseAlert == nil {
-					log.Println("slot received")
-					//AlertHogwarts(alert)
+				if cannotParseAvailable == nil {
+					startVisit()
 					d.Ack(false)
 
 				}
