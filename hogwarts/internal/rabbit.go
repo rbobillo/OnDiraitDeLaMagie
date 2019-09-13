@@ -3,11 +3,11 @@ package internal
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/dto"
 	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
 	"log"
+	"fmt"
 )
 
 // Conn is the main connection to rabbit
@@ -25,6 +25,8 @@ var Subq amqp.Queue
 
 // Publish sends messages to 'pubq'
 func Publish(qname string, payload string) {
+	log.Println("coucou")
+	log.Println(payload)
 	err := Chan.Publish(
 		"",    		// exchange
 		Pubq[qname].Name,			// routing key
@@ -64,34 +66,63 @@ func Subscribe(db *sql.DB) {
 			if d.Body != nil {
 
 				var slot dto.Slot
+				var arrested dto.Arrested
 
-				cannotParseSlot := json.Unmarshal(d.Body, &slot) // check if 'help' is well created ?
+				cannotParseSlot     := json.Unmarshal(d.Body, &slot) // check if 'help' is well created ?
+				cannotParseArrested := json.Unmarshal(d.Body, &arrested) // check if 'help' is well created ?
+
 				if cannotParseSlot == nil {
 
-					err, availableSlot := checkSlot(slot, db)
-					if err != nil {
-						Warn(fmt.Sprintf("%s", err))
-
-						err := d.Nack(true, true)
-						if  err != nil {
-							Warn(fmt.Sprintf("cannot n.ack current message %s", slot.ID))
-							return
-						}
-					}
+					//TODO : resolve cycle import error
+					//err, availableSlot := calldbfromrabbit.CheckSlot(slot, db)
+					//if err != nil {
+					//	Warn(fmt.Sprintf("%s", err))
+					//
+					//	err := d.Nack(true, true)
+					//	if  err != nil {
+					//		Warn(fmt.Sprintf("cannot n.ack current message %s", slot.ID))
+					//		return
+					//	}
+					//}
+					//
+					//err = d.Ack(false)
+					//if err != nil {
+					//	Warn(fmt.Sprintf("cannot ack the current message : %s", slot.ID))
+					//	return
+					//}
+					//
+					//available, err := json.Marshal(dto.Available{
+					//	ID: 			uuid.Must(uuid.NewV4()),
+					//	AvailableSlot:  availableSlot,
+					//	Message: 		"Hogwarts is ready to receive new visits",
+					//})
+					//Publish("guest", string(available))
+				} else  if cannotParseArrested == nil {
 
 					err = d.Ack(false)
 					if err != nil {
-						Warn(fmt.Sprintf("cannot ack the current message : %s", slot.ID))
+						Warn(fmt.Sprintf("cannot ack the current message : %s", arrested.ID))
 						return
 					}
 
-					available, err := json.Marshal(dto.Available{
+					Debug("inform Guest and Families that Hogwarts is no longer under attack")
+
+					safety, err := json.Marshal(dto.Safety{
 						ID: 			uuid.Must(uuid.NewV4()),
-						AvailableSlot:  availableSlot,
+						WizardID: 		arrested.WizardID,
 						Message: 		"Hogwarts is ready to receive new visits",
 					})
-					Publish("guest", string(available))
-				} else  { // TODO: handle other type of receive message
+					if err != nil {
+						Warn("cannot serialize Attack to JSON")
+						return
+					}
+
+					Publish("families", string(safety))
+					Debug("Mail (safety) sent to families") //TODO: better message
+
+					Publish("guest", string(safety))
+					Debug("Mail (safety) sent to guest") //TODO: better message
+
 
 				}
 			}
@@ -116,20 +147,4 @@ func DeclareBasicQueue(name string) amqp.Queue {
 	HandleError(err, "Failed to declare a queue", Warn)
 
 	return q
-}
-
-
-func checkSlot(slot dto.Slot, db *sql.DB) (err error, available int ){
-
-	//query := "SELECT * FROM actions WHERE status = 'ongoing' and action = 'visit'"
-	//
-	//ongoing, err := hogwartsinventory.GetActions(db, query)
-	//if err !=  nil {
-	//	Warn("cannot get actions in hogwarts inventory")
-	//	return err, 0
-	//}
-	//if len(ongoing) > 10 {
-	//	return fmt.Errorf("hogwarts have 10 visit ongoing"), 0
-	//}
-	return err, 9
 }
