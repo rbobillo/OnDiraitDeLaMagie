@@ -31,7 +31,7 @@ func InitAzkabanInventory(psqlInfo string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", psqlInfo)
 
 	if err != nil {
-		internal.Warn("error while opening db connection")
+		internal.Error("failed to establish sql connection")
 		return db, err
 	}
 	initQuery :=

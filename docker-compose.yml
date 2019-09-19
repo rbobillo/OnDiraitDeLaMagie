@@ -30,7 +30,7 @@ services:
     links:
       - magic_inventory
     volumes:
-      - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/magic
+      - ./magic:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/magic
   owls:
     container_name: owls
     image: "rabbitmq:3-management"
@@ -39,20 +39,38 @@ services:
       - "15672:15672"
       - "5672:5672"
     volumes:
-      - ./owls/rabbit/rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
-  ministry:
-    container_name: ministry
-    build: ministry
+      - ./owls/rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+  azkaban_inventory:
+    container_name: azkabaninventory
+    image: postgres:latest
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./azkaban/azkabaninventory/pgdata:/pgdata
     env_file:
-      - ./ministry/ministry.env
+      - ./azkaban/azkaban.env
+    environment:
+      - PGDATA=/pgdata
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5432"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  azkaban:
+    container_name: azkaban
+    build: azkaban
+    ports:
+      - "9092:9092"
+    env_file:
+      - ./azkaban/azkaban.env
     restart: "on-failure"
-    depends_on:
-      - magic_inventory
-      - owls
-#      - hogwarts
+    #      depends_on:
+    #        - magic_inventory
+    #        - azkaban_inventory
+    #        - owls
     links:
       - magic
       - owls
-#      - hogwarts
+      - azkaban_inventory
     volumes:
-      - ./ministry:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/ministry
+      - ./azkaban:/go/src/github.com/rbobillo/OnDiraitDeLaMagie/next_iteration/azkaban

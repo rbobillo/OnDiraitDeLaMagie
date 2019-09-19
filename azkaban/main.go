@@ -1,13 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/azkaban/azkabaninventory"
 	"github.com/rbobillo/OnDiraitDeLaMagie/azkaban/internal"
 	"github.com/rbobillo/OnDiraitDeLaMagie/azkaban/rabbit"
+	"github.com/streadway/amqp"
 	"strings"
-	_ "github.com/lib/pq"
-	"github.com/streadway/amqp" //go get github.com/streadway/amqp
 )
 
 // initAzkabanOwls sets up Owls with azkaban related stuffs
@@ -50,10 +50,7 @@ func initAzkabanOwls() (err error) {
 	return err
 }
 
-
-
-
-func main() {
+func setUpAzkabanInventory()(db *sql.DB, err error){
 	hostname := internal.GetEnvOrElse("PG_HOST", "localhost")
 	portaddr := internal.GetEnvOrElse("PG_PORT", "5434")
 	username := internal.GetEnvOrElse("POSTGRES_USER", "azkaban")
@@ -63,7 +60,13 @@ func main() {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		hostname, portaddr, username, password, database)
 
-	db, err := azkabaninventory.InitAzkabanInventory(psqlInfo)
+	return azkabaninventory.InitAzkabanInventory(psqlInfo)
+}
+
+
+
+func main() {
+	db, err := setUpAzkabanInventory()
 	if err != nil {
 		internal.Error(err.Error())
 	}
@@ -74,6 +77,7 @@ func main() {
 	}
 	rabbit.Subscribe(db)
 
+	defer db.Close()
 	defer rabbit.Chan.Close()
 	defer rabbit.Conn.Close()
 }
