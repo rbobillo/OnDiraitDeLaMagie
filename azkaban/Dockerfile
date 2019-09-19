@@ -11,7 +11,6 @@ RUN cat /etc/sysconfig/azkaban | sed -e "s/^/export /g" >> ~/.bashrc
 # get go project external dependencies
 RUN go get github.com/satori/go.uuid
 RUN go get github.com/streadway/amqp
-
 # build project create binary file
 RUN go build && mv ./azkaban /go/bin/azkaban
 

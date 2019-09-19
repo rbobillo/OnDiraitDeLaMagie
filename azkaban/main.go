@@ -8,13 +8,15 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/azkaban/rabbit"
 	"github.com/streadway/amqp"
 	"strings"
+	_ "github.com/lib/pq"
+
 )
 
 // initAzkabanOwls sets up Owls with azkaban related stuffs
 // it creates 'ministry' queue
 // then it listens to 'azkaban' queue
 func initAzkabanOwls() (err error) {
-	host := internal.GetEnvOrElse("RABBITMQ_HOST", "owls")
+	host := internal.GetEnvOrElse("RABBITMQ_HOST", "localhost")
 	port := internal.GetEnvOrElse("RABBITMQ_PORT", "5672")
 	user := internal.GetEnvOrElse("RABBITMQ_USER", "magic")
 	pass := internal.GetEnvOrElse("RABBITMQ_PASSWORD", "magic")
@@ -70,11 +72,12 @@ func main() {
 	if err != nil {
 		internal.Error(err.Error())
 	}
-	err = initAzkabanOwls()
 
+	err = initAzkabanOwls()
 	if err != nil {
 		internal.Error(err.Error())
 	}
+
 	rabbit.Subscribe(db)
 
 	defer db.Close()

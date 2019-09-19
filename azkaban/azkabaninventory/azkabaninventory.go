@@ -15,7 +15,7 @@ func CreatePrisoners(p dao.Prisoner, db *sql.DB) (err error) {
 		`insert into prisoners (id, magic_id)
                      values ($1, $2)`
 
-	_, err = db.Exec(populateQuery, p.ID, p.MagicID)
+	_, err = db.Exec(populateQuery, p.ID, p.WizardID)
 
 	if err != nil {
 		internal.Warn(fmt.Sprintf("cannot create wizard: %v , %s ", p, err))
@@ -28,6 +28,7 @@ func CreatePrisoners(p dao.Prisoner, db *sql.DB) (err error) {
 
 // InitAzkabanInventory function sets up the azkabaninventory db
 func InitAzkabanInventory(psqlInfo string) (*sql.DB, error) {
+
 	db, err := sql.Open("postgres", psqlInfo)
 
 	if err != nil {
@@ -37,9 +38,9 @@ func InitAzkabanInventory(psqlInfo string) (*sql.DB, error) {
 	initQuery :=
 		`create table if not exists prisoners (
             id         uuid        not null primary key,
-            magic_id   uuid        not null primary key,
+            magic_id   uuid        not null,
             arrested   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
-         ); alter table prisoners owner to magic;`
+         ); alter table prisoners owner to azkaban;`
 
 	_, err = db.Query(initQuery)
 

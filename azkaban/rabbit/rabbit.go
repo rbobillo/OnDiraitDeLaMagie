@@ -1,14 +1,17 @@
 package rabbit
 
 import (
+	"bytes"
 	"database/sql"
 	"encoding/json"
 	"github.com/rbobillo/OnDiraitDeLaMagie/azkaban/azkabaninventory"
 	"github.com/rbobillo/OnDiraitDeLaMagie/azkaban/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/azkaban/dto"
 	"github.com/rbobillo/OnDiraitDeLaMagie/azkaban/internal"
+	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
 	"log"
+	"fmt"
 )
 
 // Conn is the main connection to rabbit
@@ -64,27 +67,23 @@ func Subscribe(db *sql.DB) {
 
 			if d.Body != nil {
 
-				//var arrest   dto.Arrest
-				var arrested dto.Arrested
+				var arrest   dto.Arrest
 
-				cannotParseArrested := json.Unmarshal(d.Body, &arrested)
+				dec := json.NewDecoder(bytes.NewReader(d.Body))
+				dec.DisallowUnknownFields()
 
-				if cannotParseArrested == nil {
-					prisoner := dao.Prisoner{
-						ID:      arrested.ID,
-						MagicID: arrested.WizardID,
-					}
-					err = azkabaninventory.CreatePrisoners(prisoner, db)
-					//ProtectHogwarts(help)
+				err := dec.Decode(&arrest)
+				if err != nil {
+					internal.Warn("bad format in message : cannot use data")
 					d.Ack(false)
 				}
-				// else if cannotParseBorn == nil {
-				//	BornWizard(born)
-				//	d.Ack(false)
-				//	// try to parse another type of message, or fail
-				//} else if cannotParseArrested == nil {
-				//	ArrestedWizard(arrested)
-				//}
+				err = arrestWizard(arrest, db)
+				if err != nil {
+					internal.Warn("cannot arrest wizard")
+					d.Ack(false)
+
+				}
+				d.Ack(false)
 			}
 		}
 	}()
@@ -94,33 +93,28 @@ func Subscribe(db *sql.DB) {
 	<-forever
 }
 
-// ProtectHogwarts evaluates the emergency
-// and helps Hogwarts
-//func ProtectHogwarts(help dto.Help) {
-//	hogwartsURL := internal.GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
-//
-//	protection, err := json.Marshal(dto.Protection{
-//		Quick:  help.Emergency.Quick,
-//		Strong: help.Emergency.Strong,
-//	})
-//
-//	protectEndpoint := "/actions/" + help.AttackID.String() + "/protect"
-//
-//	req, err := http.NewRequest("POST", hogwartsURL+protectEndpoint, bytes.NewBuffer(protection))
-//	req.Header.Set("Content-Type", "application/json")
-//
-//	client := &http.Client{}
-//
-//	// TODO: help logic (delay before sending help ? ...)
-//	resp, err := client.Do(req)
-//
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	defer resp.Body.Close()
-//}
-
+func arrestWizard(arrest dto.Arrest, db *sql.DB)(err error){
+	prisoner := dao.Prisoner{
+		ID:       arrest.ID,
+		WizardID: arrest.WizardID,
+	}
+	err = azkabaninventory.CreatePrisoners(prisoner, db)
+	if err != nil {
+		internal.Warn(fmt.Sprintf("cannot put wizard %s in prison", arrest.WizardID))
+		return err
+	}
+	arrested, err := json.Marshal(dto.Arrested{
+		ID: 			uuid.Must(uuid.NewV4()),
+		WizardID:		arrest.WizardID,
+		Message: 		fmt.Sprintf("Wizard %s has been put in jail !"),
+	})
+	if err != nil {
+		internal.Warn("fail to format message to json")
+		return err
+	}
+	Publish("ministry", string(arrested))
+	return err
+}
 // DeclareBasicQueue is used to declare once
 // a RabbitMQ queue, with default parameters
 func DeclareBasicQueue(name string) amqp.Queue {
