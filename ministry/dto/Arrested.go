@@ -9,5 +9,5 @@ import uuid "github.com/satori/go.uuid"
 type Arrested struct {
 	ID               uuid.UUID `json:"id"`
 	WizardID         uuid.UUID `json:"wizard_id"`
-	Message          string    `json:"message"`
+	ArrestedMessage  string    `json:"arrested_message"`
 }

@@ -70,10 +70,16 @@ func Subscribe() {
 				dec := json.NewDecoder(bytes.NewReader(d.Body))
 				dec.DisallowUnknownFields()
 
-				cannotParseHelp := dec.Decode(&help)  // check if 'help' is well created ?
+				cannotParseHelp := dec.Decode(&help) // check if 'help' is well created ?
+				dec = json.NewDecoder(bytes.NewReader(d.Body))
+				dec.DisallowUnknownFields()
+
 				cannotParseBorn := dec.Decode(&born)
+				dec = json.NewDecoder(bytes.NewReader(d.Body))
+				dec.DisallowUnknownFields()
+
 				cannotParseArrested := dec.Decode(&arrested)
-				internal.Warn("coucou")
+
 				if cannotParseHelp == nil {
 					err := ProtectHogwarts(help)
 					if err != nil {
@@ -96,6 +102,9 @@ func Subscribe() {
 					} else {
 						d.Ack(false)
 					}
+				} else {
+					internal.Warn("cannot read message : bad format")
+					log.Println(cannotParseBorn)
 				}
 			}
 		}
@@ -141,11 +150,13 @@ func ProtectHogwarts(help dto.Help) (err error) {
 func bornWizard(born dto.Born) (err error){
 	payload, err := json.Marshal(born)
 	Publish("hogwarts", string(payload))
+	internal.Debug("hogwarts receive birth announce")
 	return  err
 }
 func arrestWizard(arrest dto.Arrested) (err error){
 	payload, err := json.Marshal(arrest)
 	Publish("hogwarts", string(payload))
+	internal.Debug("hogwarts receive arrest announce")
 	return  err
 }
 

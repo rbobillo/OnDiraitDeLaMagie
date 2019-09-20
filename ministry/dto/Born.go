@@ -8,6 +8,6 @@ import "github.com/satori/go.uuid" // go get github.com/satori/go.uuid
 // Wizards in the families
 type Born struct {
 	ID       uuid.UUID `json:"id"`
-	WizardID uuid.UUID `json:"wizardID"`
-	Message  string    `json:"message"`
+	WizardID uuid.UUID `json:"wizard_id"`
+	BornMessage  string`json:"born_message"`
 }

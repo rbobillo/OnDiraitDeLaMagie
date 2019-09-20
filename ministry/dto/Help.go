@@ -13,9 +13,9 @@ type Emergency struct {
 // Emergency is true if enemies are already here
 // false, if they are on their way to Hogwarts
 type Help struct {
-	ID        uuid.UUID `json:"id"`
-	AttackID  uuid.UUID `json:"attack_id"`
-	Message   string    `json:"message"`
-	Emergency Emergency `json:"emergency"`
+	ID          uuid.UUID `json:"id"`
+	AttackID    uuid.UUID `json:"attack_id"`
+	HelpMessage string    `json:"help_message"`
+	Emergency   Emergency `json:"emergency"`
 }
 
