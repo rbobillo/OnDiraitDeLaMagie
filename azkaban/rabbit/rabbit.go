@@ -112,6 +112,7 @@ func arrestWizard(arrest dto.Arrest, db *sql.DB)(err error){
 		internal.Warn("fail to format message to json")
 		return err
 	}
+	internal.Debug(fmt.Sprintf("informing ministry that wizard %s has been arrested", arrest.WizardID))
 	Publish("ministry", string(arrested))
 	return err
 }
