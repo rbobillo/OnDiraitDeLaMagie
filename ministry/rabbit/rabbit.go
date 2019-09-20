@@ -69,19 +69,18 @@ func Subscribe() {
 
 				dec := json.NewDecoder(bytes.NewReader(d.Body))
 				dec.DisallowUnknownFields()
-
 				cannotParseHelp := dec.Decode(&help) // check if 'help' is well created ?
+
 				dec = json.NewDecoder(bytes.NewReader(d.Body))
 				dec.DisallowUnknownFields()
-
 				cannotParseBorn := dec.Decode(&born)
+
 				dec = json.NewDecoder(bytes.NewReader(d.Body))
 				dec.DisallowUnknownFields()
-
 				cannotParseArrested := dec.Decode(&arrested)
 
 				if cannotParseHelp == nil {
-					err := ProtectHogwarts(help)
+					err := protectHogwarts(help)
 					if err != nil {
 						internal.Warn("cannot protect hogwarts")
 					} else {
@@ -94,7 +93,6 @@ func Subscribe() {
 					} else {
 						d.Ack(false)
 					}
-					// try to parse another type of message, or fail
 				} else if cannotParseArrested == nil {
 					err := arrestWizard(arrested)
 					if err != nil {
@@ -104,7 +102,6 @@ func Subscribe() {
 					}
 				} else {
 					internal.Warn("cannot read message : bad format")
-					log.Println(cannotParseBorn)
 				}
 			}
 		}
@@ -115,9 +112,7 @@ func Subscribe() {
 	<-forever
 }
 
-// ProtectHogwarts evaluates the emergency
-// and helps Hogwarts
-func ProtectHogwarts(help dto.Help) (err error) {
+func protectHogwarts(help dto.Help) (err error) {
 	hogwartsURL := internal.GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
 
 	protection, err := json.Marshal(dto.Protection{
@@ -129,7 +124,7 @@ func ProtectHogwarts(help dto.Help) (err error) {
 
 	req, err := http.NewRequest("POST", hogwartsURL+protectEndpoint, bytes.NewBuffer(protection))
 	if err != nil {
-		internal.Warn("create a new request")
+		internal.Warn("cannot create a new request")
 		return err
 	}
 	req.Header.Set("Content-Type", "application/json")
