@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/ministry/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/ministry/rabbit"
 	"strings"
 
 	"github.com/streadway/amqp" // go get github.com/streadway/amqp
@@ -14,13 +15,13 @@ import (
 func initMinistry(url string) (err error) {
 	internal.Debug("Listening OWL service...")
 
-	internal.Conn, err = amqp.Dial(url)
+	rabbit.Conn, err = amqp.Dial(url)
 	if err != nil {
 		internal.Warn("Failed to connect to RabbitMQ")
 		return err
 	}
 
-	internal.Chan, err = internal.Conn.Channel()
+	rabbit.Chan, err = rabbit.Conn.Channel()
 	if err != nil {
 		internal.Warn("Failed to open a channel")
 		return err
@@ -28,15 +29,15 @@ func initMinistry(url string) (err error) {
 
 	// subscribe to the ministry queue
 	// if it doesn't exist, it creates it
-	internal.Subq = internal.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "ministry"))
+	rabbit.Subq = rabbit.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "ministry"))
 
 	// set up queues to publish in
 	// if they dont exist, it creates them
 	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "hogwarts"), ",") {
-		internal.Pubq[q] = internal.DeclareBasicQueue(q)
+		rabbit.Pubq[q] = rabbit.DeclareBasicQueue(q)
 	}
 
-	internal.Subscribe()
+	rabbit.Subscribe()
 
 	return err
 }
@@ -56,6 +57,6 @@ func main() {
 		internal.Error(err.Error())
 	}
 
-	defer internal.Chan.Close()
-	defer internal.Conn.Close()
+	defer rabbit.Chan.Close()
+	defer rabbit.Conn.Close()
 }

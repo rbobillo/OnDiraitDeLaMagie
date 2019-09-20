@@ -1,9 +1,10 @@
-package internal
+package rabbit
 
 import (
 	"bytes"
 	"encoding/json"
 	"github.com/rbobillo/OnDiraitDeLaMagie/ministry/dto"
+	"github.com/rbobillo/OnDiraitDeLaMagie/ministry/internal"
 	"github.com/streadway/amqp"
 	"log"
 	"net/http"
@@ -34,7 +35,7 @@ func Publish(qname string, payload string) {
 			Body:        []byte(payload),
 		})
 
-	FailOnError(err, "Failed to publish a message")
+	internal.FailOnError(err, "Failed to publish a message")
 }
 
 // Subscribe listens to 'subq' (ministry)
@@ -50,7 +51,7 @@ func Subscribe() {
 		false,		// no-wait
 		nil,			// args
 	)
-	FailOnError(err, "Failed to register a consumer")
+	internal.FailOnError(err, "Failed to register a consumer")
 
 	forever := make(chan bool)
 
@@ -74,11 +75,21 @@ func Subscribe() {
 					ProtectHogwarts(help)
 					d.Ack(false)
 				} else if cannotParseBorn == nil {
-					BornWizard(born)
-					d.Ack(false)
+					err := bornWizard(born)
+					if err != nil {
+						internal.Warn("cannot inform hogwarts about new born wizard")
+					} else {
+						d.Ack(false)
+					}
+
 					// try to parse another type of message, or fail
 				} else if cannotParseArrested == nil {
-					ArrestedWizard(arrested)
+					err := arrestWizard(arrested)
+					if err != nil {
+						internal.Warn("cannot inform hogwarts about arrested wizard")
+					} else {
+						d.Ack(false)
+					}
 				}
 			}
 		}
@@ -92,7 +103,7 @@ func Subscribe() {
 // ProtectHogwarts evaluates the emergency
 // and helps Hogwarts
 func ProtectHogwarts(help dto.Help) {
-	hogwartsURL := GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
+	hogwartsURL := internal.GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
 
 	protection, err := json.Marshal(dto.Protection{
 		Quick:  help.Emergency.Quick,
@@ -115,6 +126,16 @@ func ProtectHogwarts(help dto.Help) {
 
 	defer resp.Body.Close()
 }
+func bornWizard(born dto.Born) (err error){
+	payload, err := json.Marshal(born)
+	Publish("hogwarts", string(payload))
+	return  err
+}
+func arrestWizard(arrest dto.Arrested) (err error){
+	payload, err := json.Marshal(arrest)
+	Publish("hogwarts", string(payload))
+	return  err
+}
 
 // DeclareBasicQueue is used to declare once
 // a RabbitMQ queue, with default parameters
@@ -126,7 +147,7 @@ func DeclareBasicQueue(name string) amqp.Queue {
 		false, // noWait
 		nil,   // args
 	)
-	FailOnError(err, "Failed to declare a queue")
+	internal.FailOnError(err, "Failed to declare a queue")
 
 	return q
 }
