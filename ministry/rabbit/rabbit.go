@@ -67,13 +67,20 @@ func Subscribe() {
 				var born     dto.Born
 				var arrested dto.Arrested
 
-				cannotParseHelp 	:= json.Unmarshal(d.Body, &help) // check if 'help' is well created ?
-				cannotParseBorn 	:= json.Unmarshal(d.Body, &born)
-				cannotParseArrested := json.Unmarshal(d.Body, &arrested)
+				dec := json.NewDecoder(bytes.NewReader(d.Body))
+				dec.DisallowUnknownFields()
 
+				cannotParseHelp := dec.Decode(&help)  // check if 'help' is well created ?
+				cannotParseBorn := dec.Decode(&born)
+				cannotParseArrested := dec.Decode(&arrested)
+				internal.Warn("coucou")
 				if cannotParseHelp == nil {
-					ProtectHogwarts(help)
-					d.Ack(false)
+					err := ProtectHogwarts(help)
+					if err != nil {
+						internal.Warn("cannot protect hogwarts")
+					} else {
+						d.Ack(false)
+					}
 				} else if cannotParseBorn == nil {
 					err := bornWizard(born)
 					if err != nil {
@@ -81,7 +88,6 @@ func Subscribe() {
 					} else {
 						d.Ack(false)
 					}
-
 					// try to parse another type of message, or fail
 				} else if cannotParseArrested == nil {
 					err := arrestWizard(arrested)
@@ -102,7 +108,7 @@ func Subscribe() {
 
 // ProtectHogwarts evaluates the emergency
 // and helps Hogwarts
-func ProtectHogwarts(help dto.Help) {
+func ProtectHogwarts(help dto.Help) (err error) {
 	hogwartsURL := internal.GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
 
 	protection, err := json.Marshal(dto.Protection{
@@ -113,6 +119,10 @@ func ProtectHogwarts(help dto.Help) {
 	protectEndpoint := "/actions/" + help.AttackID.String() + "/protect"
 
 	req, err := http.NewRequest("POST", hogwartsURL+protectEndpoint, bytes.NewBuffer(protection))
+	if err != nil {
+		internal.Warn("create a new request")
+		return err
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -121,10 +131,12 @@ func ProtectHogwarts(help dto.Help) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		panic(err)
+		internal.Warn("hogwarts is not reachable")
+		return err
 	}
 
 	defer resp.Body.Close()
+	return err
 }
 func bornWizard(born dto.Born) (err error){
 	payload, err := json.Marshal(born)
