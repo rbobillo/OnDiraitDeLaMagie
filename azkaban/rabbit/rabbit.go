@@ -106,7 +106,7 @@ func arrestWizard(arrest dto.Arrest, db *sql.DB)(err error){
 	arrested, err := json.Marshal(dto.Arrested{
 		ID: 			uuid.Must(uuid.NewV4()),
 		WizardID:		arrest.WizardID,
-		Message: 		fmt.Sprintf("Wizard %s has been put in jail !"),
+		Message: 		fmt.Sprintf("Wizard %s has been put in jail !", arrest.WizardID),
 	})
 	if err != nil {
 		internal.Warn("fail to format message to json")
