@@ -7,6 +7,7 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/dto"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/hogwartsinventory"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/rabbit"
 	uuid "github.com/satori/go.uuid"
 	"net/http"
 )
@@ -65,10 +66,10 @@ func sendAlertOwls(attack dao.Action) (err error) {
 		return err
 	}
 
-	internal.Publish("families", string(alert))
+	rabbit.Publish("families", string(alert))
 	internal.Debug("Mail (alert) sent to families") //TODO: better message
 
-	internal.Publish("guest", string(alert))
+	rabbit.Publish("guest", string(alert))
 	internal.Debug("Mail (alert) sent to guest") //TODO: better message
 
 
@@ -87,7 +88,7 @@ func sendAlertOwls(attack dao.Action) (err error) {
 		return err
 	}
 
-	internal.Publish("ministry", string(help))
+	rabbit.Publish("ministry", string(help))
 	internal.Debug("Mail (help) sent to ministry !")
 
 	// TODO: handle rabbit/queue disconnect errors ?

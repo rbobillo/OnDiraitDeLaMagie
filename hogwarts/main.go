@@ -6,6 +6,7 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/api"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/hogwartsinventory"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/rabbit"
 	"github.com/streadway/amqp"
 	"log"
 	"net/http"
@@ -19,13 +20,13 @@ func setupOwls() (err error) {
 
 	url := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, pass, host, port)
 
-	internal.Conn, err = amqp.Dial(url)
+	rabbit.Conn, err = amqp.Dial(url)
 	if err != nil {
 		internal.Error("failed to connect to RabbitMQ")
 		return err
 	}
 
-	internal.Chan, err = internal.Conn.Channel()
+	rabbit.Chan, err = rabbit.Conn.Channel()
 	if err != nil {
 		internal.Error(err.Error())
 		return err
@@ -33,10 +34,10 @@ func setupOwls() (err error) {
 
 	internal.Info("listening OWL service...")
 
-	internal.Subq = internal.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "hogwarts"))
+	rabbit.Subq = rabbit.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "hogwarts"))
 
 	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES","ministry,families,guest"), ","){
-		internal.Pubq[q] = internal.DeclareBasicQueue(q)
+		rabbit.Pubq[q] = rabbit.DeclareBasicQueue(q)
 	}
 	return err
 }
@@ -72,11 +73,11 @@ func main() {
 	}
 
 
-	go internal.Subscribe(db)
+	go rabbit.Subscribe(db)
 
 	//// Todo : Handle defer errors
-	defer internal.Chan.Close()
-	defer internal.Conn.Close()
+	defer rabbit.Chan.Close()
+	defer rabbit.Conn.Close()
 	defer db.Close()
 
 

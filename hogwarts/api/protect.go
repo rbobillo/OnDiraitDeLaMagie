@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/hogwartsinventory"
 	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/hogwarts/rabbit"
 	"net/http"
 )
 
@@ -48,9 +49,9 @@ func ProtectHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err e
 func sendSafetyOwls(){
 	internal.Debug("telling Famillies and Guest that Hogwarts is now safe")
 
-	internal.Publish("families", "Hogwarts is safe") //Todo: better message
+	rabbit.Publish("families", "Hogwarts is safe") //Todo: better message
 	internal.Debug("Mail (safety) sent to Families")
 
-	internal.Publish("guest", "Hogwarts is now safe") //Todo:better message
+	rabbit.Publish("guest", "Hogwarts is now safe") //Todo:better message
 	internal.Debug("Mail (safety) sent to Guest")
 }
