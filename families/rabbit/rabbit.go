@@ -1,10 +1,11 @@
-package internal
+package rabbit
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/dto"
+	"github.com/rbobillo/OnDiraitDeLaMagie/families/internal"
 	"github.com/streadway/amqp"
 	"log"
 	"net/http"
@@ -33,7 +34,7 @@ func DeclareBasicQueue(name string) amqp.Queue{
 		false,
 		nil,
 	)
-	HandleError(err, fmt.Sprintf("failed to declare the queue %s"), Error)
+	internal.HandleError(err, fmt.Sprintf("failed to declare the queue %s"), internal.Error)
 	return q
 }
 
@@ -48,13 +49,14 @@ func Publish(qname string, payload string){
 			ContentType: "text/plain",
 			Body:        []byte(payload),
 		})
-	HandleError(err, "failed to publish a message", Error)
+	internal.HandleError(err, "failed to publish a message", internal.Error)
 }
 
 // Subscribe listens to 'subq' (families)
 // Each time a message is received
 // it is parsed and handled
 func Subscribe(w *http.ResponseWriter) {
+
 	msgs, err := Chan.Consume(
 		Subq.Name,			// queue
 		"",		// consumer
@@ -64,7 +66,7 @@ func Subscribe(w *http.ResponseWriter) {
 		false,		// no-wait
 		nil,			// args
 	)
-	HandleError(err, "Failed to register a consumer", Warn)
+	internal.HandleError(err, "Failed to register a consumer", internal.Warn)
 
 	forever := make(chan bool)
 
@@ -80,9 +82,20 @@ func Subscribe(w *http.ResponseWriter) {
 				var eligible dto.Eligible
 				var safety   dto.Safety
 
-				cannotParseAlert 	:= json.Unmarshal(d.Body, &alert)    // check if 'alert' is well created ?
-				cannotParseEligible := json.Unmarshal(d.Body, &eligible) // check if 'eligible' is well created ?
-				cannotParseSafety   := json.Unmarshal(d.Body, &safety)   // check if 'safety' is well created ?
+				dec := json.NewDecoder(bytes.NewReader(d.Body))
+				dec.DisallowUnknownFields()
+
+				cannotParseAlert := dec.Decode(&alert)
+
+				dec = json.NewDecoder(bytes.NewReader(d.Body))
+				dec.DisallowUnknownFields()
+
+				cannotParseEligible := dec.Decode(&eligible)
+
+				dec = json.NewDecoder(bytes.NewReader(d.Body))
+				dec.DisallowUnknownFields()
+
+				cannotParseSafety := dec.Decode(&safety)
 
 				if cannotParseAlert == nil {
 					//AlertHogwarts(alert)
@@ -107,7 +120,7 @@ func Subscribe(w *http.ResponseWriter) {
 // AttendHogwarts evaluates the emergency
 // and helps Hogwarts
 func AttendHogwarts(eligible dto.Eligible) {
-	hogwartsURL := GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
+	hogwartsURL := internal.GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
 
 	attendEndpoint := "/actions/" + eligible.WizardID.String() + "/attend"
 

@@ -2,13 +2,14 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/dto"
 	"github.com/rbobillo/OnDiraitDeLaMagie/families/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/families/rabbit"
 	uuid "github.com/satori/go.uuid"
 	"log"
 	"net/http"
-	"fmt"
 )
 // SpawnNewBorn receive the new wizard from magic
 // then send mail to inform ministry
@@ -58,7 +59,7 @@ func sendBirthOwls(wizard dao.Wizard) (err error) {
 		return err
 	}
 
-	internal.Publish("ministry", string(birthAnnounce))
+	rabbit.Publish("ministry", string(birthAnnounce))
 	internal.Debug("Mail (birth) sent to ministry") //TODO: better message
 
 	//// TODO: handle rabbit/queue disconnect errors ?
