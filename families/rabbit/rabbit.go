@@ -21,7 +21,7 @@ var Chan *amqp.Channel
 // where Hogwarts should publish in
 var Pubq = make(map[string]amqp.Queue)
 
-// Subq is the queue Hogwarts listens to
+// Subq is the queue Families listens to
 var Subq amqp.Queue
 
 // DeclareBasicQueue is used to declare once a
@@ -108,6 +108,13 @@ func Subscribe() {
 				cannotParseSafety   := mailDecode(d.Body, &safety)
 
 				if cannotParseAlert == nil {
+					test, err := Chan.QueueInspect("families")
+					if err != nil {
+						internal.Warn("cannot inspect queue hogwarts")
+						log.Println(err)
+						return
+					}
+					log.Println(test.Messages)
 					//TODO: inspect queue,
 					// get number of Alert mail
 					// stop publish in hogwarts queue
