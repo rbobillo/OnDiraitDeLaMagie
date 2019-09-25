@@ -12,25 +12,24 @@ import (
 
 // ProtectHogwarts function cancels or avoids
 // villains attack on Hogwarts
-func ProtectHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error){
+func LeaveHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err error){
 	id := mux.Vars(r)["id"]
 
-	internal.Debug(fmt.Sprintf("/actions/%s/protect : Ministery is protecting Hogwarts", id))
+	internal.Debug(fmt.Sprintf("/actions/%s/leave", id))
 	(*w).Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	// TODO: implement protection logic (simple table update ? -> Action attack status : stopped)
 	query := "UPDATE actions SET status = $2 WHERE id = $1 RETURNING *;"
 	act, err := hogwartsinventory.UpdateActionsByID(db, query ,id, "done")
 
 	if err == internal.ErrActionsNotFounds {
 		(*w).WriteHeader(http.StatusNotFound)
-		internal.Warn(fmt.Sprintf("attack %s doesn't exists", id))
+		internal.Warn(fmt.Sprintf("visits %s doesn't exists", id))
 		return err
 	}
 
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		internal.Warn(fmt.Sprintf("cannot stop attack %s", id))
+		internal.Warn(fmt.Sprintf("cannot stop visits %s", id))
 		return err
 	}
 
@@ -39,19 +38,16 @@ func ProtectHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err e
 
 		return err
 	}
-	internal.Info(fmt.Sprintf("attack %s was stopped", id))
+	internal.Info(fmt.Sprintf("visits %s was stopped", id))
 
-	sendSafetyOwls()
+	sendAvailableOwls()
 
 	return err
 }
 
-func sendSafetyOwls(){
-	internal.Debug("telling Famillies and Guest that Hogwarts is now safe")
+func sendAvailableOwls(){
+	internal.Debug("telling Guests that Hogwarts is now ready to start a new visits")
 
-	rabbit.Publish("families", "Hogwarts is safe") //Todo: better message
-	internal.Debug("Mail (safety) sent to Families")
-
-	rabbit.Publish("guest", "Hogwarts is now safe") //Todo:better message
+	rabbit.Publish("guest", "Hogwarts is now available") //Todo:better message
 	internal.Debug("Mail (safety) sent to Guest")
 }

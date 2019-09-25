@@ -72,6 +72,7 @@ func GetAllStudents(db *sql.DB, query string) (students []dao.Student, err error
 	return students, nil
 }
 
+// GetStudentByID call hogwartsinventory, students table and return the student with the given ID
 func GetStudentByID(db *sql.DB, query string, id string) (stud dao.Student, err error){
 	row := db.QueryRow(query, id)
 	err = row.Scan(&stud.ID, &stud.MagicID, &stud.House, &stud.Status)
@@ -89,6 +90,8 @@ func GetStudentByID(db *sql.DB, query string, id string) (stud dao.Student, err 
 
 	return stud, nil
 }
+
+// GetActions call hogwartsinventory return every entry in actions
 func GetActions(db *sql.DB, query string) (actions []dao.Action, err error){
 	rows, err := db.Query(query)
 
@@ -160,7 +163,28 @@ func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){
 	return db, err
 }
 
+// UpdateActionsByID update the action with the given id on "actions" table
 func UpdateActionsByID(db *sql.DB, query string, id string, status string) (act dao.Action,err error){
+	row := db.QueryRow(query, id, status)
+
+	err = row.Scan(&act.ID, &act.Wizard_id, &act.Action, &act.Status)
+
+	if err == sql.ErrNoRows {
+		return act, internal.ErrActionsNotFounds
+	}
+
+	if err != nil {
+		internal.Warn(fmt.Sprintf("cannot update action %s status", id))
+		return act, err
+	}
+
+	internal.Debug(fmt.Sprintf("action %s's status has been updated", id))
+
+	return act, err
+}
+
+// UpdateStudentsByID update the student with the given id on "students" table
+func UpdateStudentsByID(db *sql.DB, query string, id string, status string) (act dao.Action,err error){
 	row := db.QueryRow(query, id, status)
 
 	err = row.Scan(&act.ID, &act.Wizard_id, &act.Action, &act.Status)
