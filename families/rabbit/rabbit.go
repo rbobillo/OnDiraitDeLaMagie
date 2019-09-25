@@ -34,10 +34,31 @@ func DeclareBasicQueue(name string) amqp.Queue{
 		false,
 		nil,
 	)
-	internal.HandleError(err, fmt.Sprintf("failed to declare the queue %s"), internal.Error)
+	internal.HandleError(err, fmt.Sprintf("failed to declare the queue %s", name), internal.Error)
 	return q
 }
 
+func DeclareBindQueue(queueName string, routingKey string, exchange string) (err error){
+	err = Chan.QueueBind(
+		queueName,     // queue name
+		routingKey,    // routing key
+		exchange,      // exchange
+		false,
+		nil)
+	return err
+}
+func DeclareExchange(name string, kind string){
+	err := Chan.ExchangeDeclare(
+		name, // name
+		kind,      // type
+		true,          // durable
+		false,         // auto-deleted
+		false,         // internal
+		false,         // no-wait
+		nil,           // arguments
+	)
+	internal.HandleError(err, fmt.Sprintf("failed to declare an exchange %s", name), internal.Error)
+}
 // Publish sends payload to 'pubq'
 func Publish(qname string, payload string){
 	err := Chan.Publish(
@@ -55,7 +76,7 @@ func Publish(qname string, payload string){
 // Subscribe listens to 'subq' (families)
 // Each time a message is received
 // it is parsed and handled
-func Subscribe(w *http.ResponseWriter) {
+func Subscribe() {
 
 	msgs, err := Chan.Consume(
 		Subq.Name,			// queue
@@ -82,31 +103,36 @@ func Subscribe(w *http.ResponseWriter) {
 				var eligible dto.Eligible
 				var safety   dto.Safety
 
-				dec := json.NewDecoder(bytes.NewReader(d.Body))
-				dec.DisallowUnknownFields()
-
-				cannotParseAlert := dec.Decode(&alert)
-
-				dec = json.NewDecoder(bytes.NewReader(d.Body))
-				dec.DisallowUnknownFields()
-
-				cannotParseEligible := dec.Decode(&eligible)
-
-				dec = json.NewDecoder(bytes.NewReader(d.Body))
-				dec.DisallowUnknownFields()
-
-				cannotParseSafety := dec.Decode(&safety)
+				cannotParseAlert    := mailDecode(d.Body, &alert)
+				cannotParseEligible := mailDecode(d.Body, &eligible)
+				cannotParseSafety   := mailDecode(d.Body, &safety)
 
 				if cannotParseAlert == nil {
-					//AlertHogwarts(alert)
-					d.Ack(false)
-				} else if cannotParseEligible == nil {
-					AttendHogwarts(eligible)
+					//TODO: inspect queue,
+					// get number of Alert mail
+					// stop publish in hogwarts queue
+					// until number of Alert mail = 0
 
-					d.Ack(false)
-					// try to parse another type of message, or fail
+					internal.Debug("families just receive an Alert mail")
+				} else if cannotParseEligible  == nil {
+					internal.Debug("families just receive an Eligible mail")
+					err = AttendHogwarts(eligible)
 				} else if cannotParseSafety == nil {
+					internal.Debug("families just receive a Safety mail")
+					test, err := Chan.QueueInspect("hogwarts")
+					if err != nil {
+						internal.Warn("cannot inspect queue hogwarts")
+						return
+					}
+					log.Println(test)
+				}
 
+				if err != nil {
+					//TODO : set requeue arg to true
+					// to test in real condition
+					d.Nack(true, true)
+				} else {
+					d.Ack(false)
 				}
 			}
 		}
@@ -117,9 +143,21 @@ func Subscribe(w *http.ResponseWriter) {
 	<-forever
 }
 
+func mailDecode(payload []byte, dtoFormat interface{}) (err error){
+
+	dec := json.NewDecoder(bytes.NewReader(payload))
+	dec.DisallowUnknownFields()
+
+	err = dec.Decode(&dtoFormat)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 // AttendHogwarts evaluates the emergency
 // and helps Hogwarts
-func AttendHogwarts(eligible dto.Eligible) {
+func AttendHogwarts(eligible dto.Eligible) (err error) {
 	hogwartsURL := internal.GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
 
 	attendEndpoint := "/actions/" + eligible.WizardID.String() + "/attend"
@@ -134,10 +172,12 @@ func AttendHogwarts(eligible dto.Eligible) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		panic(err)
+		internal.Warn("hogwarts is not available")
+		return err
 	}
 
 	defer resp.Body.Close()
+	return nil
 }
 
 //func AlertHogwarts(alert dto.Alert, Conn amqp.Connection) {

@@ -33,9 +33,9 @@ func setupOwls() (err error) {
 
 	internal.Info("listening OWL service...")
 
-	rabbit.Subq = rabbit.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "hogwarts"))
+	rabbit.Subq = rabbit.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "families"))
 
-	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "ministery,families,guest"), ",") {
+	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "ministry"), ",") {
 		rabbit.Pubq[q] = rabbit.DeclareBasicQueue(q)
 	}
 	return err

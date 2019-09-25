@@ -52,7 +52,7 @@ func sendBirthOwls(wizard dao.Wizard) (err error) {
 	birthAnnounce, err := json.Marshal(dto.Birth{
 		ID : uuid.Must(uuid.NewV4()),
 		WizardID: wizard.ID,
-		Message: fmt.Sprintf("%s %s just born !", wizard.FirstName, wizard.LastName),
+		BornMessage: fmt.Sprintf("%s %s just born !", wizard.FirstName, wizard.LastName),
 	})
 	if err != nil {
 		internal.Warn("cannot serialize mail(birth) to JSON")
