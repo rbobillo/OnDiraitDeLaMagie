@@ -6,6 +6,7 @@ import (
 	"github.com/rbobillo/OnDiraitDeLaMagie/guest/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/guest/dto"
 	"github.com/rbobillo/OnDiraitDeLaMagie/guest/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/guest/rabbit"
 	uuid "github.com/satori/go.uuid"
 	"net/http"
 )
@@ -68,7 +69,7 @@ func sendNewSlotRequest(guest dao.Wizard) (err error) {
 		return err
 	}
 
-	internal.Publish("hogwarts", string(slotRequest))
+	rabbit.Publish("hogwarts", string(slotRequest))
 	internal.Debug("Mail (slot) sent to hogwarts") //TODO: better message
 
 	//// TODO: handle rabbit/queue disconnect errors ?

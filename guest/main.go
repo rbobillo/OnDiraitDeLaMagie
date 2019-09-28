@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/guest/api"
 	"github.com/rbobillo/OnDiraitDeLaMagie/guest/internal"
+	"github.com/rbobillo/OnDiraitDeLaMagie/guest/rabbit"
 	"github.com/streadway/amqp"
 	"log"
 	"net/http"
@@ -18,13 +19,13 @@ func setupOwls() (err error) {
 
 	url := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, pass, host, port)
 
-	internal.Conn, err = amqp.Dial(url)
+	rabbit.Conn, err = amqp.Dial(url)
 	if err != nil {
 		internal.Error("failed to connect to RabbitMQ")
 		return err
 	}
 
-	internal.Chan, err = internal.Conn.Channel()
+	rabbit.Chan, err = rabbit.Conn.Channel()
 	if err != nil {
 		internal.Error(err.Error())
 		return err
@@ -32,10 +33,10 @@ func setupOwls() (err error) {
 
 	internal.Info("listening OWL service...")
 
-	internal.Subq = internal.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "guest"))
+	rabbit.Subq = rabbit.DeclareBasicQueue(internal.GetEnvOrElse("SUBSCRIBE_QUEUE", "guest"))
 
 	for _, q := range strings.Split(internal.GetEnvOrElse("PUBLISH_QUEUES", "hogwarts"), ",") {
-		internal.Pubq[q] = internal.DeclareBasicQueue(q)
+		rabbit.Pubq[q] = rabbit.DeclareBasicQueue(q)
 	}
 	return err
 }
@@ -53,10 +54,10 @@ func main() {
 		panic(err)
 	}
 
-	go internal.Subscribe()
+	go rabbit.Subscribe()
 
-	defer internal.Chan.Close()
-	defer internal.Conn.Close()
+	defer rabbit.Chan.Close()
+	defer rabbit.Conn.Close()
 
 	log.Fatal(http.ListenAndServe(":9093", nil))
 }

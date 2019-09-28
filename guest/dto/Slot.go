@@ -7,7 +7,7 @@ import "github.com/satori/go.uuid" // go get github.com/satori/go.uuid
 // to the Hogwarts, announce a new visits
 // from the guest
 type Slot struct {
-	ID       uuid.UUID `json:"id"`
-	WizardID uuid.UUID `json:"wizardID"`
-	Message  string    `json:"message"`
+	ID          uuid.UUID `json:"id"`
+	WizardID    uuid.UUID `json:"wizard_id"`
+	SlotMessage string    `json:"slot_message"`
 }

@@ -6,7 +6,7 @@ import "github.com/satori/go.uuid" // go get github.com/satori/go.uuid
 // to guest, to inform that Hogwarts is
 // no longer under attack
 type Safety struct {
-	ID       uuid.UUID `json:"id"`
-	WizardID uuid.UUID `json:"wizardID"`
-	Message  string    `json:"message"`
+	ID            uuid.UUID `json:"id"`
+	WizardID      uuid.UUID `json:"wizard_id"`
+	SafetyMessage string    `json:"safety_message"`
 }

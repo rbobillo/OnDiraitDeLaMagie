@@ -7,7 +7,7 @@ import uuid "github.com/satori/go.uuid"
 // to inform guest that
 // Hogwarts is under attack
 type Alert struct {
-	ID        uuid.UUID `json:"id"`
-	AttackID  uuid.UUID `json:"attack_id"`
-	Message   string    `json:"message"`
+	ID        uuid.UUID   `json:"id"`
+	AttackID  uuid.UUID   `json:"attack_id"`
+	AlertMessage   string `json:"alert_message"`
 }

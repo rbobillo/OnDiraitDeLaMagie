@@ -1,9 +1,11 @@
-package internal
+package rabbit
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/rbobillo/OnDiraitDeLaMagie/guest/dto"
+	"github.com/rbobillo/OnDiraitDeLaMagie/guest/internal"
 	"github.com/streadway/amqp"
 	"log"
 )
@@ -31,7 +33,7 @@ func DeclareBasicQueue(name string) amqp.Queue{
 		false,
 		nil,
 	)
-	HandleError(err, fmt.Sprintf("failed to declare the queue %s"), Error)
+	internal.HandleError(err, fmt.Sprintf("failed to declare the queue %s"), internal.Error)
 	return q
 }
 
@@ -46,7 +48,7 @@ func Publish(qname string, payload string){
 			ContentType: "text/plain",
 			Body:        []byte(payload),
 		})
-	HandleError(err, "failed to publish a message", Error)
+	internal.HandleError(err, "failed to publish a message", internal.Error)
 }
 
 // Subscribe listens to 'subq' (guest)
@@ -62,7 +64,7 @@ func Subscribe() {
 		false,		// no-wait
 		nil,			// args
 	)
-	HandleError(err, "Failed to register a consumer", Warn)
+	internal.HandleError(err, "Failed to register a consumer", internal.Warn)
 
 	forever := make(chan bool)
 
@@ -74,7 +76,14 @@ func Subscribe() {
 
 			if d.Body != nil {
 
-				var available    dto.Available
+				var alert     dto.Alert
+				var available dto.Available
+				var safety    dto.Safety
+
+				cannotParseAlert     := mailDecode(d.Body, &alert)
+				cannotParseAvailable := mailDecode(d.Body, &available)
+				cannotParseSafety    := mailDecode(d.Body, &safety)
+
 
 				cannotParseAvailable 	:= json.Unmarshal(d.Body, &available)    // check if 'alert' is well created ?
 
@@ -92,6 +101,17 @@ func Subscribe() {
 	<-forever
 }
 
+func mailDecode(payload []byte, dtoFormat interface{}) (err error){
+
+	dec := json.NewDecoder(bytes.NewReader(payload))
+	dec.DisallowUnknownFields()
+
+	err = dec.Decode(&dtoFormat)
+	if err != nil {
+		return err
+	}
+	return err
+}
 //// AttendHogwarts evaluates the emergency
 //// and helps Hogwarts
 //func AttendHogwarts(eligible dto.Eligible) {
