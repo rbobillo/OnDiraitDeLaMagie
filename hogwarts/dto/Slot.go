@@ -9,5 +9,5 @@ import "github.com/satori/go.uuid" // go get github.com/satori/go.uuid
 type Slot struct {
 	ID       uuid.UUID `json:"id"`
 	WizardID uuid.UUID `json:"wizardID"`
-	Message  string    `json:"message"`
+	SlotMessage  string    `json:"slot_message"`
 }

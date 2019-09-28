@@ -8,5 +8,5 @@ import "github.com/satori/go.uuid" // go get github.com/satori/go.uuid
 type Safety struct {
 	ID       uuid.UUID `json:"id"`
 	WizardID uuid.UUID `json:"wizardID"`
-	Message  string    `json:"message"`
+	SafetyMessage  string    `json:"safety_message"`
 }

@@ -1,6 +1,7 @@
 package rabbit
 
 import (
+	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -68,9 +69,21 @@ func Subscribe(db *sql.DB) {
 
 				var slot dto.Slot
 				var arrested dto.Arrested
+				var born dto.Birth
 
-				cannotParseSlot     := json.Unmarshal(d.Body, &slot) // check if 'help' is well created ?
-				cannotParseArrested := json.Unmarshal(d.Body, &arrested) // check if 'help' is well created ?
+
+				dec := json.NewDecoder(bytes.NewReader(d.Body))
+				dec.DisallowUnknownFields()
+				cannotParseSlot := dec.Decode(&slot)
+
+				dec = json.NewDecoder(bytes.NewReader(d.Body))
+				dec.DisallowUnknownFields()
+				cannotParseArrested := dec.Decode(&arrested)
+
+				dec = json.NewDecoder(bytes.NewReader(d.Body))
+				dec.DisallowUnknownFields()
+				cannotParseBorn := dec.Decode(&born)
+
 
 				if cannotParseSlot == nil {
 
@@ -90,13 +103,9 @@ func Subscribe(db *sql.DB) {
 						internal.Warn(fmt.Sprintf("cannot ack the current message : %s", slot.ID))
 						return
 					}
+					err := slotHogwarts(availableSlot)
 
-					available, err := json.Marshal(dto.Available{
-						ID: 			uuid.Must(uuid.NewV4()),
-						AvailableSlot:  availableSlot,
-						Message: 		"Hogwarts is ready to receive new visits",
-					})
-					Publish("guest", string(available))
+
 				} else  if cannotParseArrested == nil {
 
 					err = d.Ack(false)
@@ -110,7 +119,7 @@ func Subscribe(db *sql.DB) {
 					safety, err := json.Marshal(dto.Safety{
 						ID: 			uuid.Must(uuid.NewV4()),
 						WizardID: 		arrested.WizardID,
-						Message: 		"Hogwarts is ready to receive new visits",
+						SafetyMessage: 		"Hogwarts is ready to receive new visits",
 					})
 					if err != nil {
 						internal.Warn("cannot serialize Attack to JSON")
@@ -163,4 +172,17 @@ func checkSlot(slot dto.Slot, db *sql.DB) (err error, available int ){
 		return fmt.Errorf("hogwarts have 10 visit ongoing"), 0
 	}
 	return err, 9
+}
+
+func slotHogwarts(availableSlot int) (err error){
+	available, err := json.Marshal(dto.Available{
+		ID: 			uuid.Must(uuid.NewV4()),
+		AvailableSlot:  availableSlot,
+		AvailableMessage: 		"Hogwarts is ready to receive new visits",
+	})
+	Publish("guest", string(available))
+	if err != nil {
+
+	}
+	return nil
 }
