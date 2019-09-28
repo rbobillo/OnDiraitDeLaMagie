@@ -75,17 +75,10 @@ func Subscribe(db *sql.DB) {
 				var arrested dto.Arrested
 				var born dto.Birth
 
-				dec := json.NewDecoder(bytes.NewReader(d.Body))
-				dec.DisallowUnknownFields()
-				cannotParseSlot := dec.Decode(&slot)
 
-				dec = json.NewDecoder(bytes.NewReader(d.Body))
-				dec.DisallowUnknownFields()
-				cannotParseArrested := dec.Decode(&arrested)
-
-				dec = json.NewDecoder(bytes.NewReader(d.Body))
-				dec.DisallowUnknownFields()
-				cannotParseBorn := dec.Decode(&born)
+				cannotParseSlot     := mailDecode(d.Body, &slot)
+				cannotParseArrested := mailDecode(d.Body, &arrested)
+				cannotParseBorn     := mailDecode(d.Body, &born)
 
 				if cannotParseSlot == nil {
 					internal.Debug("new mail is a slot request")
@@ -187,6 +180,18 @@ func checkSlot(db *sql.DB) (err error, available int) {
 		return fmt.Errorf("hogwarts have 10 visit ongoing"), 0
 	}
 	return err, 9
+}
+
+func mailDecode(payload []byte, dtoFormat interface{}) (err error){
+
+	dec := json.NewDecoder(bytes.NewReader(payload))
+	dec.DisallowUnknownFields()
+
+	err = dec.Decode(&dtoFormat)
+	if err != nil {
+		return err
+	}
+	return err
 }
 
 func safetyHogwarts(arrested dto.Arrested) (err error) {
