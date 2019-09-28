@@ -16,7 +16,7 @@ func CreateAttack(attack dao.Action, db *sql.DB) (err error) {
 		`insert into actions(id, wizard_id, action, status)
                      values ($1, $2, $3, $4);`
 
-	_, err = db.Exec(attackQuery, attack.ID, attack.Wizard_id, attack.Action, attack.Status)
+	_, err = db.Exec(attackQuery, attack.ID, attack.WizardID, attack.Action, attack.Status)
 
 	if err != nil {
 		internal.Warn(fmt.Sprintf("cannot create action: %v , %s ", attack, err))
@@ -33,7 +33,7 @@ func CreateVisit(visit dao.Action, db *sql.DB) (err error) {
 		`insert into actions(id, wizard_id, action, status)
                      values ($1, $2, $3, $4);`
 
-	_, err = db.Exec(attackQuery, visit.ID, visit.Wizard_id, visit.Action, visit.Status)
+	_, err = db.Exec(attackQuery, visit.ID, visit.WizardID, visit.Action, visit.Status)
 
 	if err != nil {
 		internal.Warn(fmt.Sprintf("cannot create action: %v , %s ", visit, err))
@@ -41,6 +41,19 @@ func CreateVisit(visit dao.Action, db *sql.DB) (err error) {
 	}
 
 	internal.Debug(fmt.Sprintf("created action: %v", visit))
+	return nil
+}
+func CreateStudent(student dao.Student, db *sql.DB) (err error){
+	newStudentQuery := `insert into students(id, wizard_id, house, status)
+									values($1, $2, $3, $4);`
+
+	_, err = db.Exec(newStudentQuery, student.ID, student.WizardID, student.House, student.Status)
+	if err != nil {
+		internal.Warn(fmt.Sprintf("cannot create student: %v , %s ", student, err))
+		return err
+	}
+
+	internal.Debug(fmt.Sprintf("created student: %v", student))
 	return nil
 }
 
@@ -59,7 +72,7 @@ func GetAllStudents(db *sql.DB, query string) (students []dao.Student, err error
 
 	for rows.Next() {
 		var stud dao.Student
-		err = rows.Scan(&stud.ID, &stud.MagicID, &stud.House, &stud.Status)
+		err = rows.Scan(&stud.ID, &stud.WizardID, &stud.House, &stud.Status)
 
 		if err != nil {
 			internal.Warn("cannot get all students: error while browsing students")
@@ -75,7 +88,7 @@ func GetAllStudents(db *sql.DB, query string) (students []dao.Student, err error
 // GetStudentByID call hogwartsinventory, students table and return the student with the given ID
 func GetStudentByID(db *sql.DB, query string, id string) (stud dao.Student, err error){
 	row := db.QueryRow(query, id)
-	err = row.Scan(&stud.ID, &stud.MagicID, &stud.House, &stud.Status)
+	err = row.Scan(&stud.ID, &stud.WizardID, &stud.House, &stud.Status)
 
 	if err == sql.ErrNoRows {
 		return stud, internal.ErrStudentsNotFounds
@@ -106,7 +119,7 @@ func GetActions(db *sql.DB, query string) (actions []dao.Action, err error){
 
 	for rows.Next() {
 		var action dao.Action
-		err = rows.Scan(&action.ID, &action.Wizard_id, &action.Action, &action.Status)
+		err = rows.Scan(&action.ID, &action.WizardID, &action.Action, &action.Status)
 
 		if err != nil {
 			internal.Warn("cannot get all actions: error while browsing actions")
@@ -147,7 +160,7 @@ func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){
 	initStudentsQuery :=
 		`create table if not exists students (
 	id       uuid	     not null primary key,
-	magic_id uuid        not null,
+	wizard_id uuid        not null,
 	house    varchar(50) not null,
     status   varchar(50) not null
     ); alter table students owner to hogwarts;`
@@ -167,7 +180,7 @@ func InitHogwartsInventory(psqlInfo string) (*sql.DB, error){
 func UpdateActionsByID(db *sql.DB, query string, id string, status string) (act dao.Action,err error){
 	row := db.QueryRow(query, id, status)
 
-	err = row.Scan(&act.ID, &act.Wizard_id, &act.Action, &act.Status)
+	err = row.Scan(&act.ID, &act.WizardID, &act.Action, &act.Status)
 
 	if err == sql.ErrNoRows {
 		return act, internal.ErrActionsNotFounds
@@ -187,7 +200,7 @@ func UpdateActionsByID(db *sql.DB, query string, id string, status string) (act 
 func UpdateStudentsByID(db *sql.DB, query string, id string, status string) (act dao.Action,err error){
 	row := db.QueryRow(query, id, status)
 
-	err = row.Scan(&act.ID, &act.Wizard_id, &act.Action, &act.Status)
+	err = row.Scan(&act.ID, &act.WizardID, &act.Action, &act.Status)
 
 	if err == sql.ErrNoRows {
 		return act, internal.ErrActionsNotFounds

@@ -59,7 +59,7 @@ func sendAlertOwls(attack dao.Action) (err error) {
 	alert, err := json.Marshal(dto.Alert{
 		ID: uuid.Must(uuid.NewV4()),
 		AttackID: attack.ID,
-		Message: "Hogwarts is under attack",
+		AlertMessage: "Hogwarts is under attack",
 	})
 	if err != nil {
 		internal.Warn("cannot serialize Attack to JSON")
@@ -77,7 +77,7 @@ func sendAlertOwls(attack dao.Action) (err error) {
 	help, err := json.Marshal(dto.Help{
 		ID: uuid.Must(uuid.NewV4()),
 		AttackID: attack.ID,
-		Message: "Hogwarts is under attack! Please send help",
+		HelpMessage: "Hogwarts is under attack! Please send help",
 		Emergency: dto.Emergency{
 			Quick: true,
 			Strong: true,

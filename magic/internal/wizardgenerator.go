@@ -56,7 +56,7 @@ func addWizard(categories []string, name Name, wizards []dao.Wizard) []dao.Wizar
 	wizard := dao.Wizard{ID: uuid.Must(uuid.NewV4()),
 		FirstName: strings.Title(name.First),
 		LastName:  strings.Title(name.Last),
-		Age:       float64(rand.Int()%20 + 20),
+		Age:       float64(9), //rand.Int()%20 + 20
 		Category:  categories[rand.Int()%3],
 		Arrested:  false,
 		Dead:      false}
