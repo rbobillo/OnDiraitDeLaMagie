@@ -83,12 +83,12 @@ func Subscribe(db *sql.DB) {
 				if cannotParseSlot == nil {
 					internal.Debug("new mail is a slot request")
 
-					err, availableSlot := checkSlot(db)
+					err  := checkSlot(db)
 					if err != nil {
 						internal.Warn(err.Error())
 					}
 
-					err = slotHogwarts(availableSlot)
+					err = slotHogwarts(slot)
 					if err != nil {
 						internal.Warn("cannot inform guest about available slot")
 					}
@@ -166,20 +166,20 @@ func bornStudent(born dto.Birth, db *sql.DB) (student dao.Student, err error) {
 	return newStudent, err
 }
 
-func checkSlot(db *sql.DB) (err error, available int) {
+func checkSlot(db *sql.DB) (err error) {
 
 	query := "SELECT * FROM actions WHERE status = 'ongoing' and action = 'visit'"
 
 	ongoing, err := hogwartsinventory.GetActions(db, query)
 	if err != nil {
 		internal.Warn("cannot get actions in hogwarts inventory")
-		return err, 0
+		return err
 	}
 
 	if len(ongoing) > 10 {
-		return fmt.Errorf("hogwarts have 10 visit ongoing"), 0
+		return fmt.Errorf("hogwarts have 10 visit ongoing")
 	}
-	return err, 9
+	return err
 }
 
 func mailDecode(payload []byte, dtoFormat interface{}) (err error){
@@ -215,10 +215,10 @@ func safetyHogwarts(arrested dto.Arrested) (err error) {
 	return nil
 }
 
-func slotHogwarts(availableSlot int) (err error) {
+func slotHogwarts(slot dto.Slot) (err error) {
 	available, err := json.Marshal(dto.Available{
 		ID:               uuid.Must(uuid.NewV4()),
-		AvailableSlot:    availableSlot,
+		GuestID:          slot.WizardID,
 		AvailableMessage: "Hogwarts is ready to receive new visits",
 	})
 	if err != nil {
