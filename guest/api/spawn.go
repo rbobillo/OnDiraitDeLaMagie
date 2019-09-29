@@ -62,7 +62,7 @@ func sendNewSlotRequest(guest dao.Wizard) (err error) {
 	slotRequest, err := json.Marshal(dto.Slot{
 		ID : uuid.Must(uuid.NewV4()),
 		WizardID: guest.ID,
-		Message: fmt.Sprintf("%s %s want to visit Hogwarts", guest.FirstName, guest.LastName),
+		SlotMessage: fmt.Sprintf("%s %s want to visit Hogwarts", guest.FirstName, guest.LastName),
 	})
 	if err != nil {
 		internal.Warn("cannot serialize mail(slot) to JSON")
