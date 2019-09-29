@@ -109,6 +109,8 @@ func Subscribe(db *sql.DB) {
 						internal.Warn("cannot enrolled the new student")
 					}
 					go isTenYo(student)
+				} else {
+					internal.Warn("mail bad format")
 				}
 
 				if err != nil {
