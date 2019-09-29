@@ -6,6 +6,6 @@ import uuid "github.com/satori/go.uuid"
 // indicating that there is less than 10 ongoing visits
 type Available struct {
 	ID               uuid.UUID `json:"id"`
-	AvailableSlot    int       `json:"available_slot"`
+	GuestID          uuid.UUID `json:"guest_id"`
 	AvailableMessage string    `json:"available_message"`
 }

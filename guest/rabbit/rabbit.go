@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/rbobillo/OnDiraitDeLaMagie/guest/dao"
 	"github.com/rbobillo/OnDiraitDeLaMagie/guest/dto"
 	"github.com/rbobillo/OnDiraitDeLaMagie/guest/internal"
+	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
 	"log"
+	"net/http"
 )
 
 // Conn is the main connection to rabbit
@@ -84,13 +87,22 @@ func Subscribe() {
 				cannotParseAvailable := mailDecode(d.Body, &available)
 				cannotParseSafety    := mailDecode(d.Body, &safety)
 
+				if cannotParseAlert == nil {
+					internal.Debug("guest just receive an Alert mail")
+				} else if cannotParseAvailable  == nil {
+					internal.Debug("guest just receive an Available mail")
+					err = startVisitHogwarts(available)
+				} else if cannotParseSafety == nil {
+					internal.Debug("guest just receive a Safety mail")
 
-				cannotParseAvailable 	:= json.Unmarshal(d.Body, &available)    // check if 'alert' is well created ?
+				}
 
-				if cannotParseAvailable == nil {
-					startVisit()
+				if err != nil {
+					//TODO : set requeue arg to true
+					// to test in real condition
+					d.Nack(true, true)
+				} else {
 					d.Ack(false)
-
 				}
 			}
 		}
@@ -112,27 +124,41 @@ func mailDecode(payload []byte, dtoFormat interface{}) (err error){
 	}
 	return err
 }
+
+func startVisitHogwarts(available dto.Available)(err error){
+	hogwartsURL := internal.GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
+
+	visitEndpoint := "/actions/visit"
+
+	newVisit, err := json.Marshal(dao.Action{
+		ID       : uuid.Must(uuid.NewV4()),
+		WizardID : available.GuestID,
+		Action   : "visit",
+	})
+
+	req, err := http.NewRequest("POST", hogwartsURL+visitEndpoint, bytes.NewBuffer(newVisit))
+	if err != nil {
+		internal.Warn("cannot create a new http request")
+		return err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		internal.Warn("cannot reach hogwarts")
+		return err
+	}
+
+	_ = resp.Body.Close()
+	return err
+}
 //// AttendHogwarts evaluates the emergency
 //// and helps Hogwarts
 //func AttendHogwarts(eligible dto.Eligible) {
-//	hogwartsURL := GetEnvOrElse("HOGWARTS_URL", "http://localhost:9091")
-//
-//	attendEndpoint := "/actions/" + eligible.WizardID.String() + "/attend"
-//
-//	eligibleWizard, err := json.Marshal(eligible)
-//
-//	req, err := http.NewRequest("PATCH", hogwartsURL+attendEndpoint, bytes.NewBuffer(eligibleWizard))
-//	req.Header.Set("Content-Type", "application/json")
-//
-//	client := &http.Client{}
-//
-//	resp, err := client.Do(req)
-//
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	defer resp.Body.Close()
+
 //}
 
 //func AlertHogwarts(alert dto.Alert, Conn amqp.Connection) {
