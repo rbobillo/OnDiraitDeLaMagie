@@ -29,7 +29,7 @@ func VisitHogwarts(w *http.ResponseWriter, r *http.Request, db *sql.DB) (err err
 	err = hogwartsinventory.CreateVisit(visit, db)
 	if err != nil {
 		(*w).WriteHeader(http.StatusUnprocessableEntity)
-		internal.Warn("cannot insert new Attack")
+		internal.Warn("cannot insert new Visit")
 		return err
 	}
 
